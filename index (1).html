@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ADEUL AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+<audio id="hoverSound" src="https://actions.google.com/sounds/v1/ui/button_click.ogg" preload="auto"></audio>
+
+<div id="loginScreen" class="absolute inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md px-4">
+<div class="w-full max-w-[28rem] glass-panel rounded-[2.5rem] p-8 lg:p-12 flex flex-col items-center shadow-2xl relative overflow-hidden">
+<h2 class="text-4xl lg:text-5xl font-extrabold tracking-[0.3em] text-white mb-2 uppercase relative z-10">ADEUL</h2>
+<p class="text-[0.5rem] lg:text-[0.6rem] tracking-[0.4em] text-white/40 uppercase mb-10 text-center relative z-10" data-i18n="subtitle">Architectural Core Intelligence</p>
+<form class="w-full flex flex-col gap-5 relative z-10" onsubmit="handleLoginAdvanced(event)">
+<input type="email" id="loginEmail" name="email" data-i18n-ph="email" autocomplete="username" placeholder="EMAIL ADDRESS" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+<input type="password" name="password" data-i18n-ph="password" autocomplete="current-password" placeholder="PASSWORD" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+<button type="submit" data-i18n="login" class="w-full bg-white text-black font-extrabold py-5 rounded-2xl tracking-[0.2em] hover:bg-gray-200 transition mt-4 uppercase">Login</button>
+</form>
+
+<div class="w-full flex items-center gap-4 my-8 relative z-10">
+<div class="h-[1px] bg-white/10 flex-1"></div>
+<span class="text-[0.5rem] text-white/30 tracking-widest uppercase" data-i18n="orLogin">Or Login With</span>
+<div class="h-[1px] bg-white/10 flex-1"></div>
+</div>
+
+<div class="w-full flex flex-col lg:flex-row gap-3 relative z-10">
+<button onclick="quickLogin('Google')" class="flex-1 bg-white/5 border border-white/10 py-4 rounded-2xl hover:bg-white/10 transition flex items-center justify-center gap-2">
+<span class="text-lg">G</span> <span class="text-[0.65rem] font-bold tracking-widest uppercase">Google</span>
+</button>
+<button onclick="quickLogin('Apple')" class="flex-1 bg-white/5 border border-white/10 py-4 rounded-2xl hover:bg-white/10 transition flex items-center justify-center gap-2">
+<span class="text-lg"></span> <span class="text-[0.65rem] font-bold tracking-widest uppercase">Apple</span>
+</button>
+<button onclick="quickLogin('Office')" class="flex-1 bg-white/5 border border-white/10 py-4 rounded-2xl hover:bg-white/10 transition flex items-center justify-center gap-2">
+<span class="text-lg">⊞</span> <span class="text-[0.65rem] font-bold tracking-widest uppercase">Office</span>
+</button>
+</div>
+</div>
+</div>
+
+<div id="appContent">
+<div class="fixed bottom-4 left-0 right-0 text-center z-[60] pointer-events-none px-4">
+<p class="text-[0.45rem] lg:text-[0.55rem] text-white/30 tracking-[0.25em] uppercase font-bold drop-shadow-md" data-i18n="warning">
+ADEUL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERIFY RESULTS.
+</p>
+</div>
+
+<div class="absolute top-4 lg:top-8 right-4 lg:right-10 z-[80] flex items-center gap-3 lg:gap-6 text-xs lg:text-sm font-bold tracking-wider text-white">
+<div class="relative">
+<button id="langBtn" onclick="toggleLangMenu()" class="flex items-center gap-2 lg:gap-3 hover:bg-white/10 px-2 lg:px-3 py-2 rounded-xl transition bg-black/40 border border-white/10 backdrop-blur-md">
+<span id="activeFlag">🇺🇸</span> <span id="activeCode">EN</span> <span class="text-[0.5rem] lg:text-[0.6rem] opacity-50 ml-1">▼</span>
+</button>
+<div id="langDropdown" class="absolute top-full mt-2 right-0 w-40 bg-[#111111] border border-white/10 rounded-xl shadow-2xl flex-col overflow-hidden hidden transition-all backdrop-blur-3xl z-[90]">
+<button onclick="selectLang('EN', '🇺🇸')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇺🇸</span> EN</button>
+<button onclick="selectLang('TR', '🇹🇷')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇹🇷</span> TR</button>
+<button onclick="selectLang('ES', '🇪🇸')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇪🇸</span> ES</button>
+<button onclick="selectLang('DE', '🇩🇪')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇩🇪</span> DE</button>
+<button onclick="selectLang('FR', '🇫🇷')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇫🇷</span> FR</button>
+<button onclick="selectLang('PT', '🇧🇷')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇧🇷</span> PT</button>
+<button onclick="selectLang('ID', '🇮🇩')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇮🇩</span> ID</button>
+<button onclick="selectLang('HI', '🇮🇳')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇮🇳</span> HI</button>
+<button onclick="selectLang('AR', '🇦🇪')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇦🇪</span> AR</button>
+</div>
+</div>
+<div class="flex items-center gap-2 lg:gap-4 border-l border-white/20 pl-3 lg:pl-6">
+<div class="bg-black/40 px-3 lg:px-4 py-2 rounded-full text-[0.55rem] lg:text-[0.65rem] border border-white/10 flex items-center gap-2 cursor-pointer hover:bg-white/20 transition backdrop-blur-md" onclick="toggleUserMenu()">
+<span class="text-yellow-400">⚡</span> <span id="topCreditDisplay">1,240</span>
+</div>
+<div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-black/40 border border-white/20 flex items-center justify-center cursor-pointer hover:bg-white/30 transition shadow-lg backdrop-blur-md" onclick="toggleUserMenu()">
+<span class="text-xs lg:text-sm">👤</span>
+</div>
+</div>
+</div>
+
+<div id="userSidePanel" class="fixed top-0 right-0 w-full lg:w-[24rem] h-full glass-panel z-[100] transform translate-x-full p-6 lg:p-10 flex flex-col border-l border-white/10 shadow-2xl bg-black/80">
+<div class="flex justify-between items-start mb-10">
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center text-3xl">👤</div>
+<div>
+<div class="text-lg font-bold tracking-widest text-white uppercase" id="panelUserName">Ahmet Taşkıran</div>
+<div class="text-[0.65rem] opacity-70 tracking-[0.3em] text-green-300 mt-1 uppercase" id="panelUserPlan">PRO PLAN</div>
+</div>
+</div>
+<button onclick="toggleUserMenu()" class="text-3xl text-white/50 hover:text-white transition">✕</button>
+</div>
+<div class="bg-white/5 border border-white/10 rounded-2xl p-5 mb-10 flex flex-col justify-center relative overflow-hidden group hover:bg-white/10 transition cursor-pointer">
+<div class="text-[0.55rem] text-white/50 tracking-[0.2em] uppercase mb-2" data-i18n="credits">REMAINING CREDITS</div>
+<div class="text-2xl font-bold text-white tracking-widest"><span id="panelCreditDisplay">1,240</span> <span class="text-yellow-400 text-lg">⚡</span></div>
+<div class="absolute right-6 bottom-5 text-xs font-bold bg-white text-black px-3 py-1.5 rounded-lg opacity-80 group-hover:opacity-100 transition tracking-widest" data-i18n="add">+ ADD</div>
+</div>
+
+<div class="flex-1 overflow-y-auto pr-4 custom-scrollbar text-white">
+<div class="text-[0.55rem] opacity-40 tracking-[0.3em] uppercase mb-4 mt-2 ml-2" data-i18n="workspace">WORKSPACE</div>
+<nav class="flex flex-col gap-2 mb-8 uppercase">
+<button class="side-menu-item focus:outline-none" data-i18n="dashboard_menu">DASHBOARD</button>
+<button class="side-menu-item focus:outline-none"><span data-i18n="projects">PROJECTS</span> <span class="bg-white/20 text-white px-2 py-1 rounded-md text-[0.6rem]">12</span></button>
+<button class="side-menu-item focus:outline-none" data-i18n="renders">RENDERS</button>
+<button class="side-menu-item focus:outline-none" data-i18n="assets">ASSETS</button>
+<button class="side-menu-item focus:outline-none" data-i18n="workflows">WORKFLOWS</button>
+<button class="side-menu-item focus:outline-none" data-i18n="feed">FEED</button>
+</nav>
+
+<div class="text-[0.55rem] opacity-40 tracking-[0.3em] uppercase mb-4 ml-2" data-i18n="account">ACCOUNT & SETTINGS</div>
+<nav class="flex flex-col gap-2 pb-10 uppercase">
+<button class="side-menu-item focus:outline-none" data-i18n="settings">SETTINGS</button>
+<button class="side-menu-item focus:outline-none" data-i18n="billing">BILLING</button>
+<button class="side-menu-item focus:outline-none"><span data-i18n="invite">INVITE TEAM</span> <span class="text-green-300 text-lg leading-none">+</span></button>
+<button class="side-menu-item focus:outline-none" data-i18n="myaccount">MY ACCOUNT</button>
+<button class="side-menu-item focus:outline-none text-red-400" onclick="logOut()">LOGOUT</button>
+</nav>
+</div>
+</div>
+
+<div id="landing" class="absolute inset-0 flex flex-col justify-center items-center text-white z-20">
+<div class="bg-overlay"></div>
+<div class="flex items-stretch mt-[2vh] relative z-10">
+<div class="w-[2px] bg-white/70 mr-6"></div>
+<nav class="flex flex-col justify-between py-2 uppercase gap-4">
+<button onclick="enterDashboard('INTERIOR')" data-i18n="interior" class="menu-item text-left focus:outline-none">INTERIOR</button>
+<button onclick="enterDashboard('EXTERIOR')" data-i18n="exterior" class="menu-item text-left focus:outline-none">EXTERIOR</button>
+<button onclick="enterDashboard('ARCHITECTURE')" data-i18n="architecture" class="menu-item text-left focus:outline-none">ARCHITECTURE</button>
+<button onclick="enterDashboard('DESIGN')" data-i18n="design" class="menu-item text-left focus:outline-none !text-green-200 hover:!text-green-100">DESIGN</button>
+<button onclick="enterDashboard('PLAN')" data-i18n="planResize" class="menu-item text-left focus:outline-none !text-yellow-100 hover:!text-white">PLAN BOYUTLANDIRMA</button>
+<button onclick="enterDashboard('PRESENTATION')" data-i18n="presentation" class="menu-item text-left focus:outline-none !text-blue-200 hover:!text-blue-100">PRESENTATION</button>
+</nav>
+</div>
+<button onclick="activateFreeTrial();" class="mt-16 px-8 lg:px-12 py-4 glass-panel rounded-full text-[0.6rem] lg:text-[0.7rem] font-bold tracking-[0.5em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer relative z-10" data-i18n="freetrial">
+Start Free Trial
+</button>
+</div>
+
+<div id="dashboard" class="absolute inset-0 flex flex-col lg:flex-row p-4 lg:p-8 gap-4 lg:gap-8 text-white z-10 bg-black/80 pt-20 lg:pt-24 overflow-y-auto lg:overflow-hidden">
+<div class="absolute top-4 lg:top-8 left-4 lg:left-8 text-2xl lg:text-4xl font-extrabold tracking-widest cursor-pointer hidden lg:block" onclick="exitDashboard()">ADEUL</div>
+
+<div class="w-full lg:flex-1 glass-panel rounded-3xl p-5 lg:p-10 flex flex-col relative transition-all duration-500 overflow-y-visible lg:overflow-hidden h-auto lg:h-full">
+<div id="workspaceArea" class="flex flex-col lg:flex-row justify-between items-start h-full transition-opacity duration-500 w-full relative z-10">
+<div class="w-full flex items-center justify-between lg:hidden mb-4 border-b border-white/20 pb-3">
+<h2 class="text-xl font-bold tracking-widest uppercase text-white" id="dashboardTitleMobile"></h2>
+<button onclick="exitDashboard()" class="text-red-400 hover:text-white hover:bg-red-500 font-bold tracking-widest text-[0.65rem] bg-red-400/10 px-4 py-2 rounded-xl border border-red-400/30 uppercase flex items-center gap-2 transition">
+<span class="text-lg leading-none">✕</span> GERİ DÖN
+</button>
+</div>
+
+<h2 id="dashboardTitle" class="hidden lg:block text-4xl font-light tracking-widest rotate-180 uppercase" style="writing-mode: vertical-rl;">INTERIOR</h2>
+
+<div class="flex-1 flex flex-col w-full lg:ml-10 h-full">
+<input type="file" id="fileScene" hidden accept="image/*" onchange="previewImage(this, 'boxScene')">
+<input type="file" id="fileItem" hidden accept="image/*" onchange="previewImage(this, 'boxItem')">
+<input type="file" id="fileRef" hidden accept="image/*" onchange="previewImage(this, 'boxRef')">
+<input type="file" id="filePresentationRender" hidden accept="image/*" onchange="previewImage(this, 'boxPresentationRender')">
+<input type="file" id="fileDesign" hidden accept="image/*" onchange="previewImage(this, 'boxDesign')">
+<input type="file" id="fileSketch" hidden accept="image/*" onchange="previewImage(this, 'boxSketch')">
+<input type="file" id="fileMax" hidden accept="image/*" onchange="previewImage(this, 'boxMax')">
+<input type="file" id="filePlan" hidden accept="image/png, image/jpeg" onchange="previewImage(this, 'boxPlan')">
+
+<div id="dualUpload" class="flex flex-col lg:flex-row gap-4 lg:gap-6 w-full mb-6">
+<div id="boxScene" onclick="document.getElementById('fileScene').click()" class="flex-1 h-32 lg:h-40 border border-white/30 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative">
+<span class="text-2xl lg:text-3xl mb-2">↑</span><span class="text-[0.65rem] lg:text-xs tracking-widest uppercase font-bold text-center px-2" data-i18n="uploadScene">UPLOAD SCENE</span>
+</div>
+<div id="boxItem" onclick="document.getElementById('fileItem').click()" class="flex-1 h-32 lg:h-40 border border-white/30 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative">
+<span class="text-2xl lg:text-3xl mb-2">↑</span><span class="text-[0.65rem] lg:text-xs tracking-widest uppercase font-bold text-center px-2" data-i18n="uploadItem">UPLOAD ITEM</span>
+</div>
+</div>
+
+<div id="singleUpload" class="hidden w-full mb-6 flex flex-col lg:flex-row gap-4 lg:gap-6 h-auto lg:h-64">
+<div class="flex-1 flex flex-col gap-3">
+<div id="boxRef" onclick="document.getElementById('fileRef').click()" class="flex-1 h-32 lg:h-auto border border-white/30 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative">
+<span class="text-[0.65rem] lg:text-xs tracking-widest uppercase font-bold text-center px-4 opacity-70" data-i18n="putProduct">ÜRÜN KOY</span>
+</div>
+<input type="text" id="texturePrompt" placeholder="Texture & Sunum Promptu (Örn: Show wireframe...)" class="w-full bg-white/5 border border-white/20 rounded-xl p-3 text-white outline-none focus:bg-white/30 transition text-[0.65rem]">
+<button id="btnPresentationRender" onclick="generateTextureRender('btnPresentationRender')" class="w-full bg-white/5 hover:bg-white/10 text-white font-extrabold tracking-widest py-3 lg:py-4 rounded-xl transition shadow-lg uppercase text-[0.6rem] lg:text-[0.65rem] border border-white/10" data-i18n="createTexture">
+TEXTURE RENDER OLUŞTUR
+</button>
+</div>
+<div class="flex-1 flex flex-col gap-3">
+<div id="boxPresentationRender" onclick="handlePresentationBoxClick()" class="h-40 lg:h-full border border-white/30 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative bg-black/40">
+<span class="text-[0.65rem] lg:text-xs tracking-widest uppercase font-bold text-center px-4 opacity-70" data-i18n="createPresentation">SUNUM OLUŞTUR</span>
+</div>
+</div>
+</div>
+
+<div id="boardSelectionArea" class="hidden w-full flex flex-col lg:flex-row gap-2 lg:gap-3 mb-6">
+<button onclick="selectBoardType(1)" id="btnBord1" class="flex-1 bg-white border border-black/20 text-black py-3 rounded-xl text-[0.6rem] lg:text-[0.65rem] font-bold tracking-widest uppercase transition shadow-md">
+<span data-i18n="board1">BOARD 1</span><br><span class="font-normal text-[0.5rem] lg:text-[0.55rem]" data-i18n="round">ROUND</span>
+</button>
+<button onclick="selectBoardType(2)" id="btnBord2" class="flex-1 bg-white/5 border border-white/10 text-white hover:bg-white/10 py-3 rounded-xl text-[0.6rem] lg:text-[0.65rem] font-bold tracking-widest uppercase transition">
+<span data-i18n="board2">BOARD 2</span><br><span class="font-normal opacity-70 text-[0.5rem] lg:text-[0.55rem]" data-i18n="square">SQUARE</span>
+</button>
+<button onclick="selectBoardType(3)" id="btnBord3" class="flex-1 bg-white/5 border border-white/10 text-white hover:bg-white/10 py-3 rounded-xl text-[0.6rem] lg:text-[0.65rem] font-bold tracking-widest uppercase transition">
+<span data-i18n="board3">BOARD 3</span><br><span class="font-normal opacity-70 text-[0.5rem] lg:text-[0.55rem]" data-i18n="schema">SCHEMATIC</span>
+</button>
+</div>
+
+<div id="designUpload" onclick="document.getElementById('fileDesign').click()" class="hidden w-full mb-6 h-32 lg:h-48 border border-green-300/40 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative">
+<div id="boxDesign" class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-3xl lg:text-4xl mb-2 lg:mb-4 text-green-200">✨</span><span class="text-[0.65rem] lg:text-sm tracking-widest uppercase text-green-100 font-bold px-2 text-center" data-i18n="uploadDesign">PRODUCT PLACEMENT & REVISION</span>
+</div>
+</div>
+
+<div id="sketchUpload" onclick="document.getElementById('fileSketch').click()" class="hidden w-full mb-4 lg:mb-6 h-28 lg:h-40 border border-white/30 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative">
+<div id="boxSketch" class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl lg:text-3xl mb-1 lg:mb-2 opacity-70">✏️</span><span class="text-[0.65rem] lg:text-xs tracking-widest font-bold uppercase text-center px-2" data-i18n="uploadSketch">UPLOAD SKETCH</span>
+</div>
+</div>
+
+<div id="maxUpload" onclick="document.getElementById('fileMax').click()" class="hidden w-full mb-4 lg:mb-6 h-28 lg:h-40 border border-white/30 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative">
+<div id="boxMax" class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl lg:text-3xl mb-1 lg:mb-2 opacity-70">🖥️</span><span class="text-[0.65rem] lg:text-xs tracking-widest font-bold uppercase text-center px-2" data-i18n="uploadMax">UPLOAD MAX VIEWPORT</span>
+</div>
+</div>
+
+<div id="planUpload" onclick="document.getElementById('filePlan').click()" class="hidden w-full mb-6 h-48 lg:h-56 border border-white/30 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative bg-white/5">
+<div id="boxPlan" class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-3xl lg:text-4xl mb-2 lg:mb-3 opacity-50">📐</span><span class="text-[0.65rem] lg:text-xs tracking-widest font-bold uppercase text-center px-2 opacity-70" data-i18n="uploadPlan">PNG / JPG PLAN YÜKLE</span>
+</div>
+</div>
+
+<div class="flex justify-between items-end mb-2 mt-2 w-full">
+<p class="text-[0.6rem] lg:text-[0.65rem] tracking-widest opacity-70 uppercase font-bold" data-i18n="writePrompt">WRITE PROMPT</p>
+<div class="flex gap-1" id="ratioSelector">
+<button type="button" onclick="setRatio('16:9', this)" class="ratio-btn active bg-white/20 text-white px-3 py-1 rounded-lg text-[0.55rem] font-bold tracking-wider transition border border-white/10">16:9</button>
+<button type="button" onclick="setRatio('9:16', this)" class="ratio-btn bg-white/5 hover:bg-white/10 text-white/50 hover:text-white px-3 py-1 rounded-lg text-[0.55rem] font-bold tracking-wider transition border border-white/10">9:16 (IG)</button>
+<button type="button" onclick="setRatio('1:1', this)" class="ratio-btn bg-white/5 hover:bg-white/10 text-white/50 hover:text-white px-3 py-1 rounded-lg text-[0.55rem] font-bold tracking-wider transition border border-white/10">1:1</button>
+</div>
+</div>
+<textarea id="promptArea" data-i18n-ph="promptPh" placeholder="Describe your architectural vision..." class="w-full h-20 lg:h-24 bg-white/10 border border-white/20 rounded-xl p-3 lg:p-4 text-white outline-none focus:bg-white/20 resize-none mb-4 text-[0.6rem] lg:text-[0.65rem]"></textarea>
+
+<div class="flex flex-row gap-2 w-full mb-4 lg:mb-0">
+<button id="generateBtnNormal" onclick="simulateAPIConnection('generateBtnNormal', false)" class="flex-1 bg-white/5 border border-white/20 text-white font-extrabold tracking-widest py-4 lg:py-5 rounded-xl hover:bg-white/10 transition shadow-lg uppercase text-[0.65rem] lg:text-sm">
+GENERATE
+</button>
+<button id="generateBtn8K" onclick="simulateAPIConnection('generateBtn8K', true)" class="flex-1 bg-white/5 border border-white/20 text-white font-extrabold tracking-widest py-4 lg:py-5 rounded-xl hover:bg-white/10 transition shadow-lg uppercase text-[0.65rem] lg:text-sm flex items-center justify-center gap-2">
+GENERATE <span class="text-yellow-400">8K</span>
+</button>
+</div>
+
+</div>
+</div>
+</div>
+
+<div id="netwrolerPanel" class="w-full lg:w-1/3 h-auto lg:h-full glass-panel rounded-3xl p-5 lg:p-8 flex flex-col transition-all duration-500 overflow-y-visible lg:overflow-y-auto">
+<div class="flex justify-between items-center mb-4 lg:mb-6 border-b border-white/10 pb-3 lg:pb-4">
+<h3 class="text-lg lg:text-xl font-bold tracking-widest uppercase" data-i18n="vendorNetwork">VENDOR NETWORK</h3>
+<button onclick="exitDashboard()" class="text-2xl hover:text-red-400 transition hidden lg:block">✕</button>
+</div>
+<ul class="flex flex-col gap-2 lg:gap-3 text-sm pr-1 lg:pr-2 pb-4 uppercase text-[0.65rem] lg:text-xs font-bold">
+<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer">
+<span class="font-bold tracking-widest" data-i18n="architect">ARCHITECT</span><button onclick="openQuoteModal('ARCHITECT')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button>
+</li>
+<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer">
+<span class="font-bold tracking-widest" data-i18n="contractor">CONTRACTOR</span><button onclick="openQuoteModal('CONTRACTOR')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button>
+</li>
+<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer">
+<span class="font-bold tracking-widest" data-i18n="electrician">ELECTRICIAN</span><button onclick="openQuoteModal('ELECTRICIAN')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button>
+</li>
+<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer">
+<span class="font-bold tracking-widest" data-i18n="hvac">HVAC / MECHANICAL</span><button onclick="openQuoteModal('HVAC')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button>
+</li>
+<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer">
+<span class="font-bold tracking-widest" data-i18n="plumber">PLUMBER</span><button onclick="openQuoteModal('PLUMBER')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button>
+</li>
+<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer text-green-200">
+<span class="font-bold tracking-widest" data-i18n="metal">METAL WORKSHOP</span><button onclick="openQuoteModal('METAL WORKSHOP')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase text-white" data-i18n="getQuote">GET QUOTE</button>
+</li>
+<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer">
+<span class="font-bold tracking-widest" data-i18n="upholstery">UPHOLSTERY</span><button onclick="openQuoteModal('UPHOLSTERY')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button>
+</li>
+<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer">
+<span class="font-bold tracking-widest" data-i18n="painter">PAINTER</span><button onclick="openQuoteModal('PAINTER')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button>
+</li>
+<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer">
+<span class="font-bold tracking-widest" data-i18n="construction">CONSTRUCTION</span><button onclick="openQuoteModal('CONSTRUCTION')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button>
+</li>
+<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer">
+<span class="font-bold tracking-widest" data-i18n="carpenter">CARPENTER</span><button onclick="openQuoteModal('CARPENTER')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button>
+</li>
+<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer font-bold italic">
+<span class="font-bold tracking-widest" data-i18n="furniture">FURNITURE STORE</span><button onclick="openQuoteModal('FURNITURE STORE')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="renderOverlay" class="absolute inset-0 bg-[#0a0a0a] z-[150] hidden flex-col transition-opacity duration-500 opacity-0 flex items-center justify-center p-4">
+<div id="renderImgContainer" class="relative w-full max-w-5xl h-[60vh] lg:h-[80vh] bg-black/90 p-2 lg:p-4 render-img-container flex items-center justify-center border border-white/10 rounded-2xl shadow-2xl overflow-hidden" ondblclick="toggleFullscreen('renderImgContainer')">
+<button onclick="event.stopPropagation(); closeRender()" class="absolute top-2 right-2 lg:top-4 lg:right-4 text-xl lg:text-2xl text-white/80 hover:text-white transition z-[200] bg-black/60 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-md">✕</button>
+<img src="" class="max-w-full max-h-full object-contain rounded-sm">
+</div>
+<div class="mt-6 lg:mt-8 flex justify-center w-full">
+<button onclick="saveRender('renderImgContainer')" class="bg-white/10 hover:bg-white/20 text-white font-extrabold tracking-widest px-8 lg:px-12 py-3 lg:py-4 rounded-xl transition shadow-lg uppercase text-[0.7rem] lg:text-[0.8rem]" data-i18n="update">
+SAVE TO DEVICE
+</button>
+</div>
+</div>
+
+<div id="presentationOverlay" class="absolute inset-0 bg-black/90 backdrop-blur-xl z-50 hidden flex-col transition-opacity duration-500 opacity-0 flex items-center justify-center overflow-auto p-4 lg:py-10">
+<div class="w-full max-w-[1200px] flex justify-end mb-4 relative z-50">
+<button onclick="event.stopPropagation(); closePresentation()" class="text-3xl lg:text-4xl text-white/50 hover:text-white transition cursor-pointer bg-black/50 rounded-full w-10 h-10 flex items-center justify-center">✕</button>
+</div>
+
+<div class="w-full overflow-x-auto custom-scrollbar pb-4 flex justify-center lg:block">
+<div id="boardTemplate1" class="mood-board relative shrink-0 bg-[#fdfdfd] p-8 lg:p-14 flex flex-col shadow-2xl rounded-sm mx-auto my-auto w-[1200px] min-h-[850px] h-fit transform scale-[0.6] lg:scale-100 origin-top">
+<div class="flex justify-between items-end border-b border-gray-300 pb-5 mb-10">
+<div>
+<h1 id="board1MainTitle" contenteditable="true" class="text-4xl font-light tracking-[0.25em] uppercase text-gray-800 outline-none hover:bg-gray-100 transition rounded px-2 -ml-2 cursor-text">Material & Finish Board</h1>
+<p id="board1Project" contenteditable="true" class="text-sm tracking-widest text-gray-500 uppercase mt-3 font-bold outline-none hover:bg-gray-100 transition rounded px-2 -ml-2 cursor-text">PROJECT: LIVING ROOM</p>
+</div>
+<div class="text-xs font-bold tracking-[0.4em] text-gray-400">ADEUL AI STUDIO</div>
+</div>
+<div class="flex flex-row gap-12 flex-1">
+<div class="w-7/12 flex flex-col justify-center">
+<div class="w-full bg-white shadow-md p-3 border border-gray-100 rounded-sm">
+<img id="board1Img" src="" class="w-full h-auto object-contain max-h-[500px]">
+</div>
+</div>
+<div class="w-5/12 flex flex-col justify-between border-l border-gray-200 pl-10">
+<div class="flex flex-col gap-6">
+<h3 id="board1HeaderF" contenteditable="true" class="text-xs tracking-[0.3em] text-gray-400 font-bold uppercase mb-2 border-b border-gray-200 pb-2 outline-none hover:bg-gray-100 transition cursor-text px-1">Textures & Finishes</h3>
+<div class="flex items-center gap-5">
+<div class="mat-shape w-20 h-20 rounded-full overflow-hidden shadow-inner border border-gray-300 flex-shrink-0 bg-gray-100 flex items-center justify-center">
+<img id="mat1Img" src="" class="w-full h-full object-cover hidden">
+<span class="text-xs text-gray-400 animate-pulse">Wait...</span>
+</div>
+<div class="flex flex-col">
+<span id="mat1Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">MATERIAL 1</span>
+<span id="mat1Desc" contenteditable="true" class="text-[0.65rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">Analyzing Data...</span>
+</div>
+</div>
+<div class="flex items-center gap-5">
+<div class="mat-shape w-20 h-20 rounded-full overflow-hidden shadow-inner border border-gray-300 flex-shrink-0 bg-gray-100 flex items-center justify-center">
+<img id="mat2Img" src="" class="w-full h-full object-cover hidden">
+<span class="text-xs text-gray-400 animate-pulse">Wait...</span>
+</div>
+<div class="flex flex-col">
+<span id="mat2Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">MATERIAL 2</span>
+<span id="mat2Desc" contenteditable="true" class="text-[0.65rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">Analyzing Data...</span>
+</div>
+</div>
+<div class="flex items-center gap-5">
+<div class="mat-shape w-20 h-20 rounded-full overflow-hidden shadow-inner border border-gray-300 flex-shrink-0 bg-gray-100 flex items-center justify-center">
+<img id="mat3Img" src="" class="w-full h-full object-cover hidden">
+<span class="text-xs text-gray-400 animate-pulse">Wait...</span>
+</div>
+<div class="flex flex-col">
+<span id="mat3Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">MATERIAL 3</span>
+<span id="mat3Desc" contenteditable="true" class="text-[0.65rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">Analyzing Data...</span>
+</div>
+</div>
+</div>
+
+<div class="flex flex-col gap-4 mt-10">
+<h3 id="board1HeaderC" contenteditable="true" class="text-xs tracking-[0.3em] text-gray-400 font-bold uppercase mb-2 border-b border-gray-200 pb-2 outline-none hover:bg-gray-100 transition cursor-text px-1">Global Color Palette</h3>
+<div class="flex gap-3">
+<div class="flex-1 flex flex-col items-center gap-2">
+<div id="color1Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div>
+<span id="color1Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div id="color2Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div>
+<span id="color2Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div id="color3Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div>
+<span id="color3Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div id="color4Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div>
+<span id="color4Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="boardTemplate2" class="hidden mood-board relative shrink-0 bg-[#fdfdfd] p-8 lg:p-14 flex flex-col shadow-2xl rounded-sm mx-auto my-auto w-[1200px] min-h-[850px] h-fit transform scale-[0.6] lg:scale-100 origin-top">
+<div class="flex justify-between items-end border-b border-gray-300 pb-5 mb-10">
+<div>
+<h1 id="board2MainTitle" contenteditable="true" class="text-4xl font-light tracking-[0.25em] uppercase text-gray-800 outline-none hover:bg-gray-100 transition rounded px-2 -ml-2 cursor-text">Material & Finish Board</h1>
+<p id="board2Project" contenteditable="true" class="text-sm tracking-widest text-gray-500 uppercase mt-3 font-bold outline-none hover:bg-gray-100 transition rounded px-2 -ml-2 cursor-text">PROJECT: LIVING ROOM</p>
+</div>
+<div class="text-xs font-bold tracking-[0.4em] text-gray-400">ADEUL AI STUDIO</div>
+</div>
+<div class="flex flex-row gap-12 flex-1">
+<div class="w-7/12 flex flex-col justify-center">
+<div class="w-full bg-white shadow-md p-3 border border-gray-100 rounded-sm">
+<img id="board2Img" src="" class="w-full h-auto object-contain max-h-[500px]">
+</div>
+</div>
+<div class="w-5/12 flex flex-col justify-between border-l border-gray-200 pl-10">
+<div class="flex flex-col gap-6">
+<h3 id="board2HeaderF" contenteditable="true" class="text-xs tracking-[0.3em] text-gray-400 font-bold uppercase mb-2 border-b border-gray-200 pb-2 outline-none hover:bg-gray-100 transition cursor-text px-1">Textures & Finishes</h3>
+<div class="flex items-center gap-5">
+<div class="mat-shape w-20 h-20 rounded-xl overflow-hidden shadow-inner border border-gray-300 flex-shrink-0 bg-gray-100 flex items-center justify-center">
+<img id="mat2_1Img" src="" class="w-full h-full object-cover hidden">
+<span class="text-xs text-gray-400 animate-pulse">Wait...</span>
+</div>
+<div class="flex flex-col">
+<span id="mat2_1Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">MATERIAL 1</span>
+<span id="mat2_1Desc" contenteditable="true" class="text-[0.65rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">Analyzing Data...</span>
+</div>
+</div>
+<div class="flex items-center gap-5">
+<div class="mat-shape w-20 h-20 rounded-xl overflow-hidden shadow-inner border border-gray-300 flex-shrink-0 bg-gray-100 flex items-center justify-center">
+<img id="mat2_2Img" src="" class="w-full h-full object-cover hidden">
+<span class="text-xs text-gray-400 animate-pulse">Wait...</span>
+</div>
+<div class="flex flex-col">
+<span id="mat2_2Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">MATERIAL 2</span>
+<span id="mat2_2Desc" contenteditable="true" class="text-[0.65rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">Analyzing Data...</span>
+</div>
+</div>
+<div class="flex items-center gap-5">
+<div class="mat-shape w-20 h-20 rounded-xl overflow-hidden shadow-inner border border-gray-300 flex-shrink-0 bg-gray-100 flex items-center justify-center">
+<img id="mat2_3Img" src="" class="w-full h-full object-cover hidden">
+<span class="text-xs text-gray-400 animate-pulse">Wait...</span>
+</div>
+<div class="flex flex-col">
+<span id="mat2_3Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">MATERIAL 3</span>
+<span id="mat2_3Desc" contenteditable="true" class="text-[0.65rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">Analyzing Data...</span>
+</div>
+</div>
+</div>
+
+<div class="flex flex-col gap-4 mt-10">
+<h3 id="board2HeaderC" contenteditable="true" class="text-xs tracking-[0.3em] text-gray-400 font-bold uppercase mb-2 border-b border-gray-200 pb-2 outline-none hover:bg-gray-100 transition cursor-text px-1">Global Color Palette</h3>
+<div class="flex gap-3">
+<div class="flex-1 flex flex-col items-center gap-2">
+<div id="color2_1Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div>
+<span id="color2_1Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div id="color2_2Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div>
+<span id="color2_2Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div id="color2_3Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div>
+<span id="color2_3Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2">
+<div id="color2_4Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div>
+<span id="color2_4Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="boardTemplate3" class="hidden mood-board relative shrink-0 bg-[#f5f5f5] p-8 lg:p-14 flex flex-col shadow-2xl rounded-sm mx-auto my-auto w-[1200px] min-h-[850px] h-fit transform scale-[0.6] lg:scale-100 origin-top">
+<div class="flex flex-col items-center border-b border-gray-300 pb-5 mb-10 text-center">
+<h1 id="board3MainTitle" contenteditable="true" class="text-4xl font-bold tracking-[0.3em] uppercase text-gray-800 outline-none hover:bg-gray-200 transition rounded px-4 cursor-text">SCHEMATIC BOARD</h1>
+<p id="board3Project" contenteditable="true" class="text-sm tracking-[0.4em] text-gray-500 uppercase mt-3 font-bold outline-none hover:bg-gray-200 transition rounded px-4 cursor-text">PROJECT: LIVING ROOM</p>
+</div>
+<div class="relative flex-1 flex items-center justify-center py-10 min-h-[500px]">
+<div class="absolute left-0 top-1/4 flex items-center gap-4">
+<div class="text-right">
+<p id="mat3_1Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-200 cursor-text">MATERIAL 1</p>
+<p id="mat3_1Desc" contenteditable="true" class="text-[0.6rem] text-gray-500 tracking-wider uppercase mt-1 outline-none hover:bg-gray-200 cursor-text">Analyzing Data...</p>
+</div>
+<div class="w-24 h-24 rounded-full shadow-lg border-4 border-white bg-gray-200 flex items-center justify-center relative z-10 overflow-hidden"><span class="text-xs text-gray-400">Wait...</span></div>
+<div class="w-16 h-px bg-gray-400"></div>
+</div>
+
+<div class="absolute right-0 top-1/4 flex items-center gap-4 flex-row-reverse">
+<div class="text-left">
+<p id="mat3_2Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-200 cursor-text">MATERIAL 2</p>
+<p id="mat3_2Desc" contenteditable="true" class="text-[0.6rem] text-gray-500 tracking-wider uppercase mt-1 outline-none hover:bg-gray-200 cursor-text">Analyzing Data...</p>
+</div>
+<div class="w-24 h-24 rounded-full shadow-lg border-4 border-white bg-gray-200 flex items-center justify-center relative z-10 overflow-hidden"><span class="text-xs text-gray-400">Wait...</span></div>
+<div class="w-16 h-px bg-gray-400"></div>
+</div>
+
+<div class="absolute bottom-0 left-1/4 flex flex-col items-center gap-4">
+<div class="h-16 w-px bg-gray-400"></div>
+<div class="w-24 h-24 rounded-full shadow-lg border-4 border-white bg-gray-200 flex items-center justify-center relative z-10 overflow-hidden"><span class="text-xs text-gray-400">Wait...</span></div>
+<div class="text-center">
+<p id="mat3_3Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-200 cursor-text">MATERIAL 3</p>
+<p id="mat3_3Desc" contenteditable="true" class="text-[0.6rem] text-gray-500 tracking-wider uppercase mt-1 outline-none hover:bg-gray-200 cursor-text">Analyzing Data...</p>
+</div>
+</div>
+
+<div class="w-1/2 bg-white shadow-xl p-4 border border-gray-200 relative z-0">
+<img id="board3Img" src="" class="w-full h-auto object-contain max-h-[400px]">
+</div>
+
+</div>
+</div>
+</div> <div class="mt-4 lg:mt-8 flex justify-center w-full relative z-50">
+<button id="btnDownBoard" onclick="saveRender('presentationOverlay')" class="bg-white/10 hover:bg-white/20 text-white font-extrabold tracking-widest px-8 lg:px-12 py-3 lg:py-4 rounded-xl transition shadow-lg uppercase text-[0.65rem] lg:text-[0.8rem]" data-i18n="downloadBoard">
+DOWNLOAD BOARD
+</button>
+</div>
+</div>
+
+<div id="quoteModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[300] hidden flex-col items-center justify-center p-4">
+    <div class="w-full max-w-md bg-[#111] rounded-[2rem] p-8 border border-white/10 relative shadow-2xl">
+        <button onclick="closeQuoteModal()" class="absolute top-6 right-6 text-white/50 hover:text-white text-xl">✕</button>
+        <h3 class="text-xl font-extrabold text-white tracking-[0.2em] uppercase mb-6 border-b border-white/10 pb-4" id="quoteModalTitle">GET QUOTE</h3>
+        
+        <div id="quoteFormArea" class="flex flex-col gap-4">
+            <input type="text" id="quoteName" placeholder="FULL NAME" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-white/40 text-[0.65rem] tracking-widest uppercase">
+            <input type="tel" id="quotePhone" placeholder="PHONE NUMBER" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-white/40 text-[0.65rem] tracking-widest uppercase">
+            <input type="email" id="quoteEmail" placeholder="EMAIL ADDRESS" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-white/40 text-[0.65rem] tracking-widest uppercase">
+            <textarea id="quoteNote" placeholder="PROJECT DETAILS & REQUESTS..." class="w-full h-24 bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-white/40 text-[0.65rem] tracking-widest uppercase resize-none"></textarea>
+            <button onclick="saveQuoteInfo()" class="w-full bg-white text-black font-extrabold py-4 rounded-xl tracking-[0.2em] hover:bg-gray-200 transition mt-2 uppercase text-[0.65rem]">SAVE & CONTINUE</button>
+        </div>
+
+        <div id="quoteActionArea" class="hidden flex-col gap-4 mt-2">
+            <p class="text-green-300 text-[0.55rem] tracking-[0.2em] uppercase text-center mb-2 font-bold">INFO SAVED. SELECT COMMUNICATION METHOD:</p>
+            <button onclick="sendViaWhatsApp()" class="w-full bg-white/5 border border-green-500/30 text-green-300 font-bold py-4 rounded-xl tracking-widest hover:bg-green-500/20 transition uppercase text-[0.65rem] flex items-center justify-center gap-2">
+                📱 WHATSAPP
+            </button>
+            <button onclick="sendViaEmail()" class="w-full bg-white/5 border border-blue-500/30 text-blue-300 font-bold py-4 rounded-xl tracking-widest hover:bg-blue-500/20 transition uppercase text-[0.65rem] flex items-center justify-center gap-2">
+                ✉️ EMAIL
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="lang.js"></script>
+<script src="sunum.js"></script>
+<script src="main.js"></script>
+
+<script>
+// --- AUTH LOGIC (KULLANICI GİRİŞLERİ) ---
+const usersDB = {
+    "admin@adeul.com": { name: "Ahmet Taşkıran", plan: "PRO PLAN", credits: 1240 },
+    "user@gmail.com": { name: "Test User", plan: "FREE PLAN", credits: 50 }
+};
+
+function handleLoginAdvanced(event) {
+    event.preventDefault();
+    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+    
+    const email = document.getElementById('loginEmail').value;
+    let userData = usersDB[email];
+    
+    if (!userData) {
+        userData = { name: email.split('@')[0], plan: "FREE PLAN", credits: 100 };
+    }
+    
+    applyUserData(userData);
+}
+
+function quickLogin(provider) {
+    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+    const userData = { name: provider + " User", plan: "FREE PLAN", credits: 100 };
+    applyUserData(userData);
+}
+
+function applyUserData(userData) {
+    const panelName = document.getElementById('panelUserName');
+    const panelPlan = document.getElementById('panelUserPlan');
+    const panelCredits = document.getElementById('panelCreditDisplay');
+    const topCredits = document.getElementById('topCreditDisplay');
+
+    if(panelName) panelName.innerText = userData.name;
+    if(panelPlan) panelPlan.innerText = userData.plan;
+    if(panelCredits) panelCredits.innerText = userData.credits;
+    if(topCredits) topCredits.innerText = userData.credits;
+
+    document.getElementById('loginScreen').style.opacity = '0';
+    setTimeout(() => {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('appContent').classList.add('active');
+    }, 800);
+}
+
+function logOut() {
+    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+    document.getElementById('loginScreen').style.opacity = '1';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('userSidePanel').classList.remove('open');
+}
+
+// --- VENDOR NETWORK LOGIC (FİYAT ALMA) ---
+let currentVendorType = "";
+
+function openQuoteModal(vendor) {
+    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+    currentVendorType = vendor;
+    document.getElementById('quoteModalTitle').innerText = "GET QUOTE: " + vendor;
+    document.getElementById('quoteModal').style.display = 'flex';
+    
+    document.getElementById('quoteFormArea').style.display = 'flex';
+    document.getElementById('quoteActionArea').style.display = 'none';
+    document.getElementById('quoteName').value = '';
+    document.getElementById('quotePhone').value = '';
+    document.getElementById('quoteEmail').value = '';
+    document.getElementById('quoteNote').value = '';
+}
+
+function closeQuoteModal() {
+    document.getElementById('quoteModal').style.display = 'none';
+}
+
+function saveQuoteInfo() {
+    const name = document.getElementById('quoteName').value;
+    const phone = document.getElementById('quotePhone').value;
+    const email = document.getElementById('quoteEmail').value;
+
+    if(!name || !phone || !email) {
+        alert("PLEASE FILL ALL CONTACT FIELDS.");
+        return;
+    }
+    document.getElementById('quoteFormArea').style.display = 'none';
+    document.getElementById('quoteActionArea').style.display = 'flex';
+}
+
+function sendViaWhatsApp() {
+    const note = document.getElementById('quoteNote').value;
+    const message = encodeURIComponent(`Hello, I need a quote for ${currentVendorType} services via ADEUL AI.\n\nProject Details:\n${note}`);
+    window.open(`https://wa.me/?text=${message}`, '_blank');
+}
+
+function sendViaEmail() {
+    const note = document.getElementById('quoteNote').value;
+    const subject = encodeURIComponent(`ADEUL AI - Quote Request for ${currentVendorType}`);
+    const body = encodeURIComponent(`Hello,\n\nI need a quote for your services.\n\nProject Details:\n${note}`);
+    window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+}
+
+// --- PRESENTATION BOX AKILLI TIKLAMA ---
+function handlePresentationBoxClick() {
+    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+    
+    // Eğer boxRef'te veya boxPresentationRender'da görsel varsa → Sunum analizi başlat
+    if (window.uploadedBase64['boxPresentationRender'] || window.uploadedBase64['boxRef']) {
+        if (typeof analyzePresentation === 'function') {
+            analyzePresentation();
+        } else {
+            alert("sunum.js yüklenmemiş! Lütfen dosya yapısını kontrol edin.");
+        }
+    } else {
+        // Görsel yoksa → File upload aç
+        document.getElementById('filePresentationRender').click();
+    }
+}
+
+// --- DASHBOARD MENÜ SAKLAMA / GÖSTERME ---
+function enterDashboard(menuName) {
+if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+document.getElementById('dashboardTitle').setAttribute('data-raw-title', menuName);
+const activeLangCodeEl = document.getElementById('activeCode');
+const currentLang = activeLangCodeEl ? activeLangCodeEl.innerText : 'EN';
+const key = menuName.toLowerCase();
+let translatedTitle = menuName;
+if (window.dict && window.dict[currentLang] && window.dict[currentLang][key]) {
+translatedTitle = window.dict[currentLang][key];
+} else if (key === 'plan' || key === 'resize') {
+translatedTitle = window.dict && window.dict[currentLang] && window.dict[currentLang]['planResize'] ? window.dict[currentLang]['planResize'] : 'PLAN BOYUTLANDIRMA';
+}
+document.getElementById('dashboardTitle').innerText = translatedTitle;
+const mobileTitle = document.getElementById('dashboardTitleMobile');
+if(mobileTitle) mobileTitle.innerText = translatedTitle;
+
+document.getElementById('landing').classList.add('hidden');
+document.getElementById('dashboard').classList.add('active');
+document.getElementById('userSidePanel').classList.remove('open');
+const langDropdown = document.getElementById('langDropdown');
+if (langDropdown) {
+langDropdown.classList.add('hidden');
+langDropdown.classList.remove('flex');
+}
+
+// Seçilen resimlerin temizliği
+window.uploadedBase64 = {};
+['boxScene', 'boxItem', 'boxRef', 'boxPresentationRender', 'boxDesign', 'boxSketch', 'boxMax', 'boxPlan'].forEach(id => {
+const box = document.getElementById(id);
+if(box) {
+const preview = box.querySelector('.preview-container');
+if(preview) preview.remove();
+Array.from(box.children).forEach(child => child.style.display = '');
+}
+const fileInput = document.getElementById(id.replace('box', 'file'));
+if(fileInput) fileInput.value = "";
+});
+const promptArea = document.getElementById('promptArea');
+if(promptArea) promptArea.value = "";
+
+// GİZLEME VE GÖSTERME MANTIĞI
+const els = {
+dualUpload: document.getElementById('dualUpload'),
+singleUpload: document.getElementById('singleUpload'),
+designUpload: document.getElementById('designUpload'),
+sketchUpload: document.getElementById('sketchUpload'),
+maxUpload: document.getElementById('maxUpload'),
+planUpload: document.getElementById('planUpload'),
+boardSelectionArea: document.getElementById('boardSelectionArea'),
+netwrolerPanel: document.getElementById('netwrolerPanel')
+};
+
+// Önce istisnasız tüm yükleme kutularını kapatıyoruz
+for (const [key, el] of Object.entries(els)) {
+if(el) el.style.setProperty('display', 'none', 'important');
+}
+
+// Sonra SADECE menüye ait olanları açıyoruz
+if (menuName === 'PRESENTATION') {
+if(els.singleUpload) els.singleUpload.style.setProperty('display', 'flex', 'important');
+if(els.boardSelectionArea) els.boardSelectionArea.style.setProperty('display', 'flex', 'important');
+}
+else if (menuName === 'DESIGN') {
+if(els.designUpload) els.designUpload.style.setProperty('display', 'flex', 'important');
+if(els.sketchUpload) els.sketchUpload.style.setProperty('display', 'flex', 'important');
+if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display', 'flex', 'important');
+}
+else if (menuName === 'ARCHITECTURE') {
+if(els.dualUpload) els.dualUpload.style.setProperty('display', 'flex', 'important');
+if(els.maxUpload) els.maxUpload.style.setProperty('display', 'flex', 'important');
+if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display', 'flex', 'important');
+}
+else if (menuName === 'PLAN') {
+if(els.planUpload) els.planUpload.style.setProperty('display', 'flex', 'important');
+if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display', 'flex', 'important');
+}
+else {
+// INTERIOR VE EXTERIOR MENÜSÜ İÇİN
+if(els.dualUpload) els.dualUpload.style.setProperty('display', 'flex', 'important');
+if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display', 'flex', 'important');
+}
+}
+
+const observer = new MutationObserver(function(mutations) {
+document.getElementById('dashboardTitleMobile').innerText = document.getElementById('dashboardTitle').innerText;
+});
+observer.observe(document.getElementById('dashboardTitle'), { childList: true, characterData: true, subtree: true });
+</script>
+</body>
+</html>
