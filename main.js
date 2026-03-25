@@ -391,7 +391,7 @@ async function saveRender(mode = 'renderImgContainer') {
     playSound();
     if (mode === 'renderImgContainer') {
         const imgElement = document.querySelector('#renderImgContainer img');
-        if (!imgElement || !imgElement.src || imgElement.src.length < 500) { alert("Kaydedilecek bir görsel yok!"); return; }
+        if (!imgElement || !imgElement.src || imgElement.src.length < 10) { alert("Kaydedilecek bir görsel yok!"); return; }
 
         try {
             // Blob URL'leri (veya API linklerini) zorla indir
