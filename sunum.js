@@ -87,7 +87,7 @@ async function generateTextureRender(btnId) {
 }
 
 // =========================================================================
-// 2. SUNUM ANALİZİ (Doğrudan IDX / Gemini - ORİJİNAL RESME BAKAR)
+// 2. SUNUM ANALİZİ (GÜVENLİ N8N WEBHOOK BAĞLANTISI)
 // =========================================================================
 async function analyzePresentation() {
     if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
@@ -103,48 +103,49 @@ async function analyzePresentation() {
         return;
     }
 
-    // Yükleniyor durumunu simüle edelim (Gemini analiz ederken)
+    // Yükleniyor durumunu simüle edelim
     toggleUpscaleLoader(true);
     const loaderTitle = document.getElementById('loaderTitle');
     if(loaderTitle) loaderTitle.innerText = "ANALYZING PRESENTATION...";
 
     try {
-        const GEMINI_API_KEY = "AIzaSyCtyBpHWdH3m-qBz3V7i0b0bToccxEqiBg"; 
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${GEMINI_API_KEY}`;
+        // GÜVENLİK GÜNCELLEMESİ: API Key tamamen kaldırıldı. 
+        // İstek doğrudan güvenli N8N webhook'una yönlendirildi.
+        const n8nAnalyzeUrl = "https://adeul-ia.app.n8n.cloud/webhook/analyze-presentation";
         
         const promptText = `Analyze this ORIGINAL product image accurately. Give me a sophisticated concept name, up to 5 matching HEX colors from the actual pixels, and up to 5 distinct materials with titles and descriptions. IMPORTANT: Translate 'projectName', 'title', and 'desc' strictly to the language code: ${activeLangCode}. DO NOT USE MARKDOWN. Return ONLY a valid JSON like this: {"projectName": "...", "colors": ["#HEX1", "#HEX2", "#HEX3", "#HEX4", "#HEX5"], "materials": [{"title": "...", "desc": "...", "hexColor": "#HEX"}, {"title": "...", "desc": "...", "hexColor": "#HEX"}]}`;
 
-        // Gemini'ye yollamak için Base64 formatına çevirme garantisi
         let safeBase64ForGemini = renderImageToAnalyze;
         if(renderImageToAnalyze.startsWith('http')) {
-             // Eğer renderImage URL ise (Fal.ai), analiz için orijinal refImage'i kullan
              safeBase64ForGemini = refImage; 
         }
 
         const payload = {
-            contents: [{
-                parts: [
-                    { text: promptText },
-                    { inlineData: { mimeType: "image/jpeg", data: safeBase64ForGemini } } 
-                ]
-            }],
-            generationConfig: { responseMimeType: "application/json" }
+            action: "analyze_presentation",
+            prompt: promptText,
+            image: safeBase64ForGemini,
+            language: activeLangCode
         };
 
-        const response = await fetch(geminiUrl, {
+        const response = await fetch(n8nAnalyzeUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
-        if (!response.ok) throw new Error(`Gemini API Error: ${response.status}`);
+        if (!response.ok) throw new Error(`N8N Analysis Error: ${response.status}`);
         
         const data = await response.json();
         let analysis = {};
 
         try {
-            let rawText = data.candidates[0].content.parts[0].text;
-            analysis = JSON.parse(rawText.replace(/```json/g, '').replace(/```/g, '').trim());
+            // N8N'den dönen JSON verisini ayrıştırma
+            let rawText = data.output || data.text || JSON.stringify(data);
+            if (typeof rawText === 'string') {
+                analysis = JSON.parse(rawText.replace(/```json/g, '').replace(/```/g, '').trim());
+            } else {
+                analysis = rawText; // Zaten obje ise direkt al
+            }
         } catch(e) {
             console.error("JSON Parse Error:", e);
             analysis = {materials: [], colors: []};
@@ -165,7 +166,6 @@ async function analyzePresentation() {
         let bLang = boardDict[activeLangCode] || boardDict['EN'];
         let safeProjectName = analysis.projectName || "CONCEPT BOARD";
         
-        // Ekrana basılacak son resmin ayarı (URL ise direkt url, Base64 ise formatlı bas)
         let finalImageSrc = renderImageToAnalyze.startsWith('http') ? renderImageToAnalyze : "data:image/jpeg;base64," + renderImageToAnalyze;
 
         function buildDynamicMaterials(boardId, shapeClass) {
@@ -257,8 +257,8 @@ async function analyzePresentation() {
         if (typeof showPresentationScreen === 'function') showPresentationScreen();
 
     } catch (error) {
-        console.error("Gemini Analysis Error:", error);
-        alert("Sunum analizi başarısız oldu. API anahtarınızı kontrol edin.");
+        console.error("Analysis Error:", error);
+        alert("Sunum analizi başarısız oldu. Lütfen N8N bağlantısını kontrol edin.");
     } finally {
         toggleUpscaleLoader(false);
     }
