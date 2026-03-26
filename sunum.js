@@ -10,7 +10,7 @@ async function generateTextureRender(btnId) {
 
     const originalText = btn.innerHTML;
     btn.disabled = true;
-    btn.innerHTML = 'ADEUL AI WORKING...';
+    btn.innerHTML = 'ADEULL AI WORKING...';
     btn.classList.add('bg-blue-600', 'text-white', 'animate-pulse');
 
     const activeLangCodeElement = document.getElementById('activeCode');
@@ -160,7 +160,8 @@ async function analyzePresentation() {
             'PT': { mat: "MATERIAL", proj: "PROJETO", schem: "PLACA ESQUEMÁTICA", t: "Placa de Materiais", f: "Texturas e Acabamentos", c: "Paleta de Cores" },
             'ID': { mat: "MATERIAL", proj: "PROYEK", schem: "PAPAN SKEMA", t: "Papan Material", f: "Tekstur & Finis", c: "Palet Warna" },
             'HI': { mat: "सामग्री", proj: "परियोजना", schem: "योजनाबद्ध बोर्ड", t: "सामग्री बोर्ड", f: "बनावट और फिनिश", c: "रंग पैलेट" },
-            'AR': { mat: "مادة", proj: "مشروع", schem: "لوحة تخطيطية", t: "لوحة المواد", f: "القوام والتشطيبات", c: "لوحة الألوان" }
+            'AR': { mat: "مادة", proj: "مشروع", schem: "لوحة تخطيطية", t: "لوحة المواد", f: "القوام والتشطيبات", c: "لوحة الألوان" },
+            'IT': { mat: "MATERIALE", proj: "PROGETTO", schem: "TAVOLA SCHEMATICA", t: "Tavola Materiali e Finiture", f: "Texture e Finiture", c: "Palette Colori Globale" }
         };
         
         let bLang = boardDict[activeLangCode] || boardDict['EN'];
