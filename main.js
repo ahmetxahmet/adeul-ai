@@ -248,14 +248,26 @@ function b64toBlob(b64Data, contentType='', sliceSize=512) {
     return new Blob(byteArrays, {type: contentType});
 }
 
-// 🔥 8K UPSCALE MOTORU
+// 🔥 8K UPSCALE MOTORU — Blob URL'yi base64'e çevirir, n8n'e güvenli gönderir
 async function ADEULL_UPSCALE(imageUrl) {
     try {
+        // Blob URL ise önce base64'e çevir
+        let finalImage = imageUrl;
+        if (imageUrl.startsWith('blob:')) {
+            const blobResponse = await fetch(imageUrl);
+            const blob = await blobResponse.blob();
+            finalImage = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(blob);
+            });
+        }
+
         const n8nUpscaleURL = "https://adeul-ia.app.n8n.cloud/webhook/upscale"; 
         const response = await fetch(n8nUpscaleURL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ image: imageUrl })
+            body: JSON.stringify({ image: finalImage })
         });
         
         if (!response.ok) throw new Error("N8N Webhook yanıt vermedi!");
