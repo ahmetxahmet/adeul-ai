@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ADEULL AI</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 #comingSoonOverlay {
     position: fixed;
@@ -346,6 +348,26 @@ Start Free Trial
 <script src="lang.js"></script>
 <script src="sunum.js"></script>
 <script src="main.js"></script>
+<script>
+const SUPABASE_URL = 'https://wcqwkagktddvqjxzjxbj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
+window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+window.currentUserId = null;
+async function deductCredit(action, amount) {
+    const currentCredits = parseInt((document.getElementById('topCreditDisplay').innerText || '0').replace(/,/g,'')) || 0;
+    if(currentCredits <= 0) { alert("⚡ Krediniz tükendi! Lütfen kredi satın alın."); return false; }
+    const newCredits = currentCredits - amount;
+    document.getElementById('topCreditDisplay').innerText = newCredits.toLocaleString();
+    document.getElementById('panelCreditDisplay').innerText = newCredits.toLocaleString();
+    if(window.currentUserId && window.supabaseClient) {
+        await window.supabaseClient.from('users').update({ credits: newCredits }).eq('id', window.currentUserId);
+        await window.supabaseClient.from('transactions').insert({ user_id: window.currentUserId, action: action, credits_used: amount });
+    }
+    return true;
+}
+window.deductCredit = deductCredit;
+</script>
+
 
 <script>
 // ============================================================
@@ -418,6 +440,22 @@ function handleLoginAdvanced(event) {
     const password = document.getElementById('loginPassword').value;
     if(email === 'admin@adeull.com' && password === 'Adeul2026!') {
         applyUserData({ name: "Ahmet Taşkıran", plan: "PRO PLAN", credits: 1240 });
+        return;
+    }
+    if(window.supabaseClient) {
+        window.supabaseClient.auth.signInWithPassword({ email, password })
+        .then(({ data, error }) => {
+            if(error) { alert("❌ Hatalı giriş bilgileri!"); return; }
+            window.supabaseClient.from('users').select('*').eq('email', email).single()
+            .then(({ data: userData }) => {
+                if(userData) {
+                    applyUserData({ name: userData.email, plan: userData.plan || 'FREE', credits: userData.credits || 0 });
+                    window.currentUserId = userData.id;
+                } else {
+                    applyUserData({ name: email, plan: 'FREE', credits: 5 });
+                }
+            });
+        });
     } else {
         alert("❌ Hatalı giriş bilgileri!");
     }
