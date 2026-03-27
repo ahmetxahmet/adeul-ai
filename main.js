@@ -236,36 +236,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
     playSound();
     const btn = document.getElementById(btnId);
     if (!btn || btn.disabled) return;
-
-    // ─── GÖRSEL KONTROL: En az 1 görsel yüklenmeli ───
-    const currentMenuTitle = document.getElementById('dashboardTitle').getAttribute('data-raw-title');
-    const hasAnyImage = Object.keys(window.uploadedBase64).length > 0;
-    
-    if (!hasAnyImage) {
-        const activeLang = (document.getElementById('activeCode') || {}).innerText || 'EN';
-        const noImageMsg = {
-            'TR': 'Lütfen önce bir görsel yükleyin!',
-            'EN': 'Please upload an image first!',
-            'ES': 'Por favor suba una imagen primero!',
-            'DE': 'Bitte laden Sie zuerst ein Bild hoch!',
-            'FR': 'Veuillez charger une image!',
-            'PT': 'Carregue uma imagem primeiro!',
-            'ID': 'Silakan unggah gambar terlebih dahulu!',
-            'HI': 'कृपया पहले एक छवि अपलोड करें!',
-            'AR': 'يرجى تحميل صورة أولاً!',
-            'IT': 'Carica prima un\'immagine!'
-        };
-        alert(noImageMsg[activeLang] || noImageMsg['EN']);
-        return;
-    }
-
     btn.disabled = true;
-
-    // ─── RENDER SIRASINDA TÜM BUTONLARI KİLİTLE ───
-    const allGenerateButtons = document.querySelectorAll('#generateBtnNormal, #generateBtn8K, #btnSunumAnalyze');
-    const menuButtons = document.querySelectorAll('#landing .menu-item');
-    allGenerateButtons.forEach(b => b.disabled = true);
-    menuButtons.forEach(b => { b.style.pointerEvents = 'none'; b.style.opacity = '0.4'; });
 
     const originalText = btn.innerHTML;
     const promptInput = document.getElementById('promptArea');
@@ -306,18 +277,9 @@ async function simulateAPIConnection(btnId, is8K = false) {
         isSketchMode = "EVET";
     }
 
-    // Ratio'yu prompt'a ekle (Gemini config'de desteklemiyor)
-    const ratioMap = {
-        '16:9': 'wide landscape format (16:9 aspect ratio, 1920x1080)',
-        '9:16': 'tall portrait format (9:16 aspect ratio, 1080x1920, vertical/Instagram style)',
-        '1:1': 'square format (1:1 aspect ratio, 1080x1080)'
-    };
-    const ratioInstruction = ratioMap[window.currentRatio] || ratioMap['16:9'];
-    const finalPrompt = userPrompt + ' [OUTPUT FORMAT: ' + ratioInstruction + ']';
-
     const payload = {
         action: 'generate',  
-        prompt: finalPrompt,
+        prompt: userPrompt,
         isSketch: isSketchMode,
         sketchData: theSketchImage,
         images: window.uploadedBase64,
@@ -404,10 +366,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
         btn.innerHTML = originalText;
         btn.classList.remove('bg-blue-600', 'text-white', 'animate-pulse');
         btn.disabled = false;
-        toggleUpscaleLoader(false);
-        // ─── TÜM KİLİTLERİ AÇ ───
-        document.querySelectorAll('#generateBtnNormal, #generateBtn8K, #btnSunumAnalyze').forEach(b => b.disabled = false);
-        document.querySelectorAll('#landing .menu-item').forEach(b => { b.style.pointerEvents = ''; b.style.opacity = ''; });
+        toggleUpscaleLoader(false); 
     }
 }
 
