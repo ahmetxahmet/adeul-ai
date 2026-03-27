@@ -294,6 +294,14 @@ async function simulateAPIConnection(btnId, is8K = false) {
     const activeLangCodeElement = document.getElementById('activeCode');
     const activeLangCode = activeLangCodeElement ? activeLangCodeElement.innerText : 'EN';
 
+    if(window.deductCredit) {
+        const ok = await window.deductCredit(is8K ? '8K_RENDER' : 'NORMAL_RENDER', is8K ? 4 : 1);
+        if(!ok) { btn.disabled = false; return; }
+    }
+    if(window.deductCredit) {
+        const ok = await window.deductCredit(is8K ? '8K_RENDER' : 'NORMAL_RENDER', is8K ? 4 : 1);
+        if(!ok) { btn.disabled = false; return; }
+    }
     btn.innerHTML = is8K ? '8K RENDER ALINIYOR...' : 'ADEULL AI GENERATING...';
     btn.classList.add('bg-blue-600', 'text-white', 'animate-pulse');
 
@@ -389,7 +397,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
         }
     } catch (error) {
         console.error(error);
-        alert("🚨 HATA!\nn8n bağlantısı başarısız.");
+        alert("⚙️ ADEULL AI şu an güncelleniyor. Lütfen birkaç dakika sonra tekrar deneyin.");
         closeRender();
     } finally {
         btn.innerHTML = originalText;
