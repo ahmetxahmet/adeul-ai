@@ -204,7 +204,7 @@ Start Free Trial
 <div id="sunumUploadArea" class="hidden w-full mb-6 flex flex-col gap-4">
 <div id="boxSunumImage" onclick="sunumUploadImage()" class="w-full h-48 lg:h-56 border border-blue-300/40 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative bg-white/5">
 <span class="text-3xl lg:text-4xl mb-2 text-blue-200">📋</span>
-<span class="text-[0.65rem] lg:text-xs tracking-widest uppercase font-bold text-center px-4 text-blue-100" data-i18n="uploadProduct">UPLOAD PRODUCT / PROJECT IMAGE</span>
+<span class="text-[0.65rem] lg:text-xs tracking-widest uppercase font-bold text-center px-4 text-blue-100" data-i18n="putProduct">UPLOAD PRODUCT / PROJECT IMAGE</span>
 </div>
 <textarea id="sunumPromptArea" placeholder="Describe what to analyze..." class="w-full h-16 bg-white/5 border border-white/20 rounded-xl p-3 text-white outline-none focus:bg-white/20 resize-none text-[0.6rem] lg:text-[0.65rem]"></textarea>
 <button id="btnSunumAnalyze" onclick="startSunumAnalysis()" class="w-full bg-white/5 hover:bg-white/10 text-white font-extrabold tracking-widest py-4 rounded-xl transition shadow-lg uppercase text-[0.65rem] lg:text-sm border border-blue-300/20 flex items-center justify-center gap-2" data-i18n="createPresentation">
@@ -232,6 +232,7 @@ Start Free Trial
 <span class="text-3xl lg:text-4xl mb-2 lg:mb-3 opacity-50">📐</span><span class="text-[0.65rem] lg:text-xs tracking-widest font-bold uppercase text-center px-2 opacity-70" data-i18n="uploadPlan">PNG / JPG PLAN YÜKLE</span>
 </div>
 </div>
+<div id="promptAndGenerateArea" class="flex flex-col w-full">
 <div class="flex justify-between items-end mb-2 mt-2 w-full">
 <p class="text-[0.6rem] lg:text-[0.65rem] tracking-widest opacity-70 uppercase font-bold" data-i18n="writePrompt">WRITE PROMPT</p>
 <div class="flex gap-1" id="ratioSelector">
@@ -244,6 +245,7 @@ Start Free Trial
 <div class="flex flex-row gap-2 w-full mb-4 lg:mb-0">
 <button id="generateBtnNormal" onclick="simulateAPIConnection('generateBtnNormal', false)" class="flex-1 bg-white/5 border border-white/20 text-white font-extrabold tracking-widest py-4 lg:py-5 rounded-xl hover:bg-white/10 transition shadow-lg uppercase text-[0.65rem] lg:text-sm">GENERATE</button>
 <button id="generateBtn8K" onclick="simulateAPIConnection('generateBtn8K', true)" class="flex-1 bg-white/5 border border-white/20 text-white font-extrabold tracking-widest py-4 lg:py-5 rounded-xl hover:bg-white/10 transition shadow-lg uppercase text-[0.65rem] lg:text-sm flex items-center justify-center gap-2">GENERATE <span class="text-yellow-400">8K</span></button>
+</div>
 </div>
 </div>
 </div>
@@ -516,14 +518,22 @@ function enterDashboard(menuName) {
     const langDropdown = document.getElementById('langDropdown');
     if (langDropdown) { langDropdown.classList.add('hidden'); langDropdown.classList.remove('flex'); }
     window.uploadedBase64 = {};
+    window._sunumImageBase64 = null;
     ['boxScene','boxItem','boxRef','boxPresentationRender','boxDesign','boxSketch','boxMax','boxPlan'].forEach(id => {
         const box = document.getElementById(id);
         if(box) { const p = box.querySelector('.preview-container'); if(p) p.remove(); Array.from(box.children).forEach(c => c.style.display = ''); }
         const fi = document.getElementById(id.replace('box','file'));
         if(fi) fi.value = "";
     });
+    // Sunum görsel kutusunu da temizle
+    const sunumBox = document.getElementById('boxSunumImage');
+    if(sunumBox) { const sp = sunumBox.querySelector('.sunum-preview'); if(sp) sp.remove(); Array.from(sunumBox.children).forEach(c => c.style.display = ''); }
+    const fileSunum = document.getElementById('fileSunumImage');
+    if(fileSunum) { fileSunum.value = ''; }
     const promptArea = document.getElementById('promptArea');
     if(promptArea) promptArea.value = "";
+    const sunumPrompt = document.getElementById('sunumPromptArea');
+    if(sunumPrompt) sunumPrompt.value = "";
     const els = {
         dualUpload: document.getElementById('dualUpload'),
         sunumUploadArea: document.getElementById('sunumUploadArea'),
@@ -531,7 +541,8 @@ function enterDashboard(menuName) {
         sketchUpload: document.getElementById('sketchUpload'),
         maxUpload: document.getElementById('maxUpload'),
         planUpload: document.getElementById('planUpload'),
-        netwrolerPanel: document.getElementById('netwrolerPanel')
+        netwrolerPanel: document.getElementById('netwrolerPanel'),
+        promptAndGenerateArea: document.getElementById('promptAndGenerateArea')
     };
     for (const [k, el] of Object.entries(els)) { if(el) el.style.setProperty('display','none','important'); }
     if (menuName === 'PRESENTATION') {
@@ -540,16 +551,20 @@ function enterDashboard(menuName) {
         if(els.designUpload) els.designUpload.style.setProperty('display','flex','important');
         if(els.sketchUpload) els.sketchUpload.style.setProperty('display','flex','important');
         if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display','flex','important');
+        if(els.promptAndGenerateArea) els.promptAndGenerateArea.style.setProperty('display','flex','important');
     } else if (menuName === 'ARCHITECTURE') {
         if(els.dualUpload) els.dualUpload.style.setProperty('display','flex','important');
         if(els.maxUpload) els.maxUpload.style.setProperty('display','flex','important');
         if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display','flex','important');
+        if(els.promptAndGenerateArea) els.promptAndGenerateArea.style.setProperty('display','flex','important');
     } else if (menuName === 'PLAN') {
         if(els.planUpload) els.planUpload.style.setProperty('display','flex','important');
         if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display','flex','important');
+        if(els.promptAndGenerateArea) els.promptAndGenerateArea.style.setProperty('display','flex','important');
     } else {
         if(els.dualUpload) els.dualUpload.style.setProperty('display','flex','important');
         if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display','flex','important');
+        if(els.promptAndGenerateArea) els.promptAndGenerateArea.style.setProperty('display','flex','important');
     }
 }
 
