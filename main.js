@@ -1,5 +1,5 @@
 /* ==============================================================
-// GLOBAL TRANSLATION DICTIONARY (10 LANGUAGES)
+// GLOBAL TRANSLATION DICTIONARY (9 LANGUAGES)
 // ============================================================== */
 window.dict = {
     'EN': { subtitle: "Architectural Core Intelligence", login: "Login", email: "EMAIL ADDRESS", password: "PASSWORD", orLogin: "Or Login With", warning: "ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERIFY RESULTS.", credits: "REMAINING CREDITS", add: "+ ADD", workspace: "WORKSPACE", dashboard_menu: "DASHBOARD", projects: "PROJECTS", renders: "RENDERS", assets: "ASSETS", workflows: "WORKFLOWS", feed: "FEED", account: "ACCOUNT & SETTINGS", settings: "SETTINGS", billing: "BILLING", invite: "INVITE TEAM", myaccount: "MY ACCOUNT", support: "SUPPORT", interior: "INTERIOR", exterior: "EXTERIOR", architecture: "ARCHITECTURE", design: "DESIGN", planResize: "PLAN RESIZE", presentation: "PRESENTATION", freetrial: "Start Free Trial", uploadScene: "UPLOAD SCENE", uploadItem: "UPLOAD ITEM", uploadRef: "UPLOAD REFERENCE", uploadDesign: "PRODUCT PLACEMENT & REVISION", uploadSketch: "UPLOAD SKETCH", uploadMax: "UPLOAD MAX VIEWPORT", uploadPlan: "UPLOAD PNG / JPG PLAN", writePrompt: "WRITE PROMPT", promptPh: "Describe your architectural vision...", generateNormal: "NORMAL RENDER", generate8k: "8K RENDER", generate: "GENERATE RENDER", revisePh: "REVISION...", update: "SAVE TO DEVICE", vendorNetwork: "VENDOR NETWORK", architect: "ARCHITECT", contractor: "CONTRACTOR", electrician: "ELECTRICIAN", hvac: "HVAC / MECHANICAL", plumber: "PLUMBER", metal: "METAL WORKSHOP", upholstery: "UPHOLSTERY", painter: "PAINTER", construction: "CONSTRUCTION", carpenter: "CARPENTER", furniture: "FURNITURE STORE", getQuote: "GET QUOTE", board1: "BOARD 1", board2: "BOARD 2", board3: "BOARD 3", round: "ROUND", square: "SQUARE", schema: "SCHEMA", downloadBoard: "DOWNLOAD BOARD", putProduct: "UPLOAD PRODUCT", createTexture: "GENERATE MATERIAL BOARD", createPresentation: "CREATE PRESENTATION" },
@@ -147,18 +147,15 @@ function toggleUserMenu() {
     document.getElementById('userSidePanel').classList.toggle('open');
 }
 
-// 🔥 KUSURSUZ YÜKLEME: Sıkıştırmalı Base64 Aktarımı
+// 🔥 KUSURSUZ YÜKLEME: Canvas İptal, Saf Base64 Aktarımı
 function previewImage(input, boxId) {
     playSound();
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        reader.onload = async function(e) {
+        reader.onload = function(e) {
             const rawDataUrl = e.target.result;
             const rawBase64 = rawDataUrl.split(',')[1];
-            
-            // Görsel sıkıştır — max 1920px, %82 kalite
-            const compressedBase64 = await compressImageBase64(rawBase64);
-            window.uploadedBase64[boxId] = compressedBase64;
+            window.uploadedBase64[boxId] = rawBase64;
 
             const box = document.getElementById(boxId);
             Array.from(box.children).forEach(child => child.style.display = 'none');
