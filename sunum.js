@@ -1,60 +1,56 @@
 // ==============================================================
-// SUNUM.JS — ADEULL AI PRESENTATION MODULE (V3 — FINAL)
-// ==============================================================
+// SUNUM.JS — ADEULL AI PRESENTATION MODULE
 // Ana webhook: window.CLOUDFLARE_URL (adeul-ai-v2)
-// N8N routing: action === "presentation" → If2 SUNUM → SUNUM ressam
+// N8N routing: action === "presentation"
 // ==============================================================
 
 (function() {
     'use strict';
 
-    // ─── SUNUM DİL SÖZLÜĞÜ ───
-    const sunumDict = {
-        'EN': { title: 'MATERIAL & FINISH BOARD', project: 'PROJECT', materials: 'MATERIALS & TEXTURES', colorPalette: 'COLOR PALETTE (RAL)', analyze: 'CREATE PRESENTATION', analyzing: 'ANALYZING...', uploadProduct: 'UPLOAD PRODUCT / PROJECT IMAGE', promptPh: 'Describe what to analyze...', download: 'DOWNLOAD BOARD', noImage: 'Please upload an image first.', error: 'Analysis failed. Please check your connection and try again.', material: 'MATERIAL' },
-        'TR': { title: 'MALZEME & KAPLAMA PAFTASI', project: 'PROJE', materials: 'MALZEMELER & DOKULAR', colorPalette: 'RENK KARTELASİ (RAL)', analyze: 'SUNUM OLUŞTUR', analyzing: 'ANALİZ EDİLİYOR...', uploadProduct: 'ÜRÜN / PROJE GÖRSELİ YÜKLE', promptPh: 'Ne analiz edilsin tarif edin...', download: 'PAFTAYI İNDİR', noImage: 'Lütfen önce bir görsel yükleyin.', error: 'Analiz başarısız. Lütfen bağlantınızı kontrol edip tekrar deneyin.', material: 'MALZEME' },
-        'ES': { title: 'TABLERO DE MATERIALES', project: 'PROYECTO', materials: 'MATERIALES Y TEXTURAS', colorPalette: 'PALETA DE COLORES (RAL)', analyze: 'CREAR PRESENTACIÓN', analyzing: 'ANALIZANDO...', uploadProduct: 'SUBIR IMAGEN DE PRODUCTO', promptPh: 'Describe qué analizar...', download: 'DESCARGAR TABLERO', noImage: 'Suba una imagen primero.', error: 'Análisis fallido.', material: 'MATERIAL' },
-        'DE': { title: 'MATERIAL & FINISH BOARD', project: 'PROJEKT', materials: 'MATERIALIEN & TEXTUREN', colorPalette: 'FARBPALETTE (RAL)', analyze: 'PRÄSENTATION ERSTELLEN', analyzing: 'ANALYSE LÄUFT...', uploadProduct: 'PRODUKTBILD HOCHLADEN', promptPh: 'Beschreiben Sie die Analyse...', download: 'BOARD HERUNTERLADEN', noImage: 'Bitte laden Sie zuerst ein Bild hoch.', error: 'Analyse fehlgeschlagen.', material: 'MATERIAL' },
-        'FR': { title: 'PLANCHE DE MATÉRIAUX', project: 'PROJET', materials: 'MATÉRIAUX & TEXTURES', colorPalette: 'PALETTE COULEURS (RAL)', analyze: 'CRÉER PRÉSENTATION', analyzing: 'ANALYSE EN COURS...', uploadProduct: 'CHARGER IMAGE PRODUIT', promptPh: 'Décrivez l\'analyse souhaitée...', download: 'TÉLÉCHARGER PLANCHE', noImage: 'Veuillez charger une image.', error: 'Analyse échouée.', material: 'MATÉRIEL' },
-        'PT': { title: 'PLACA DE MATERIAIS', project: 'PROJETO', materials: 'MATERIAIS & TEXTURAS', colorPalette: 'PALETA DE CORES (RAL)', analyze: 'CRIAR APRESENTAÇÃO', analyzing: 'ANALISANDO...', uploadProduct: 'CARREGAR IMAGEM DO PRODUTO', promptPh: 'Descreva o que analisar...', download: 'BAIXAR PLACA', noImage: 'Carregue uma imagem primeiro.', error: 'Análise falhou.', material: 'MATERIAL' },
-        'ID': { title: 'PAPAN MATERIAL & FINISHING', project: 'PROYEK', materials: 'MATERIAL & TEKSTUR', colorPalette: 'PALET WARNA (RAL)', analyze: 'BUAT PRESENTASI', analyzing: 'MENGANALISIS...', uploadProduct: 'UNGGAH GAMBAR PRODUK', promptPh: 'Jelaskan apa yang akan dianalisis...', download: 'UNDUH PAPAN', noImage: 'Unggah gambar terlebih dahulu.', error: 'Analisis gagal.', material: 'MATERIAL' },
-        'HI': { title: 'सामग्री और फिनिश बोर्ड', project: 'परियोजना', materials: 'सामग्री और बनावट', colorPalette: 'रंग पैलेट (RAL)', analyze: 'प्रस्तुति बनाएं', analyzing: 'विश्लेषण हो रहा है...', uploadProduct: 'उत्पाद छवि अपलोड करें', promptPh: 'विश्लेषण का वर्णन करें...', download: 'बोर्ड डाउनलोड करें', noImage: 'कृपया पहले छवि अपलोड करें।', error: 'विश्लेषण विफल।', material: 'सामग्री' },
-        'AR': { title: 'لوحة المواد والتشطيبات', project: 'مشروع', materials: 'المواد والقوام', colorPalette: 'لوحة الألوان (RAL)', analyze: 'إنشاء عرض', analyzing: '...جاري التحليل', uploadProduct: 'تحميل صورة المنتج', promptPh: '...صف ما يجب تحليله', download: 'تحميل اللوحة', noImage: 'يرجى تحميل صورة أولاً.', error: 'فشل التحليل.', material: 'مادة' },
-        'IT': { title: 'TAVOLA MATERIALI E FINITURE', project: 'PROGETTO', materials: 'MATERIALI E TEXTURE', colorPalette: 'PALETTE COLORI (RAL)', analyze: 'CREA PRESENTAZIONE', analyzing: 'ANALISI IN CORSO...', uploadProduct: 'CARICA IMMAGINE PRODOTTO', promptPh: 'Descrivi cosa analizzare...', download: 'SCARICA TAVOLA', noImage: 'Carica prima un\'immagine.', error: 'Analisi fallita.', material: 'MATERIALE' }
+    var sunumDict = {
+        'EN': { title: 'MATERIAL & FINISH BOARD', project: 'PROJECT', materials: 'MATERIALS & TEXTURES', colorPalette: 'COLOR PALETTE (RAL)', analyzing: 'ANALYZING...', download: 'DOWNLOAD BOARD', noImage: 'Please upload an image first.', error: 'Analysis failed. Please check your connection and try again.', material: 'MATERIAL' },
+        'TR': { title: 'MALZEME & KAPLAMA PAFTASI', project: 'PROJE', materials: 'MALZEMELER & DOKULAR', colorPalette: 'RENK KARTELASİ (RAL)', analyzing: 'ANALİZ EDİLİYOR...', download: 'PAFTAYI İNDİR', noImage: 'Lütfen önce bir görsel yükleyin.', error: 'Analiz başarısız. Lütfen bağlantınızı kontrol edip tekrar deneyin.', material: 'MALZEME' },
+        'ES': { title: 'TABLERO DE MATERIALES', project: 'PROYECTO', materials: 'MATERIALES Y TEXTURAS', colorPalette: 'PALETA DE COLORES (RAL)', analyzing: 'ANALIZANDO...', download: 'DESCARGAR TABLERO', noImage: 'Suba una imagen primero.', error: 'Análisis fallido.', material: 'MATERIAL' },
+        'DE': { title: 'MATERIAL & FINISH BOARD', project: 'PROJEKT', materials: 'MATERIALIEN & TEXTUREN', colorPalette: 'FARBPALETTE (RAL)', analyzing: 'ANALYSE LÄUFT...', download: 'BOARD HERUNTERLADEN', noImage: 'Bitte laden Sie zuerst ein Bild hoch.', error: 'Analyse fehlgeschlagen.', material: 'MATERIAL' },
+        'FR': { title: 'PLANCHE DE MATÉRIAUX', project: 'PROJET', materials: 'MATÉRIAUX & TEXTURES', colorPalette: 'PALETTE COULEURS (RAL)', analyzing: 'ANALYSE EN COURS...', download: 'TÉLÉCHARGER PLANCHE', noImage: 'Veuillez charger une image.', error: 'Analyse échouée.', material: 'MATÉRIEL' },
+        'PT': { title: 'PLACA DE MATERIAIS', project: 'PROJETO', materials: 'MATERIAIS & TEXTURAS', colorPalette: 'PALETA DE CORES (RAL)', analyzing: 'ANALISANDO...', download: 'BAIXAR PLACA', noImage: 'Carregue uma imagem primeiro.', error: 'Análise falhou.', material: 'MATERIAL' },
+        'ID': { title: 'PAPAN MATERIAL & FINISHING', project: 'PROYEK', materials: 'MATERIAL & TEKSTUR', colorPalette: 'PALET WARNA (RAL)', analyzing: 'MENGANALISIS...', download: 'UNDUH PAPAN', noImage: 'Unggah gambar terlebih dahulu.', error: 'Analisis gagal.', material: 'MATERIAL' },
+        'HI': { title: 'सामग्री और फिनिश बोर्ड', project: 'परियोजना', materials: 'सामग्री और बनावट', colorPalette: 'रंग पैलेट (RAL)', analyzing: 'विश्लेषण हो रहा है...', download: 'बोर्ड डाउनलोड करें', noImage: 'कृपया पहले छवि अपलोड करें।', error: 'विश्लेषण विफल।', material: 'सामग्री' },
+        'AR': { title: 'لوحة المواد والتشطيبات', project: 'مشروع', materials: 'المواد والقوام', colorPalette: 'لوحة الألوان (RAL)', analyzing: '...جاري التحليل', download: 'تحميل اللوحة', noImage: 'يرجى تحميل صورة أولاً.', error: 'فشل التحليل.', material: 'مادة' },
+        'IT': { title: 'TAVOLA MATERIALI E FINITURE', project: 'PROGETTO', materials: 'MATERIALI E TEXTURE', colorPalette: 'PALETTE COLORI (RAL)', analyzing: 'ANALISI IN CORSO...', download: 'SCARICA TAVOLA', noImage: 'Carica prima un\'immagine.', error: 'Analisi fallita.', material: 'MATERIALE' }
     };
 
-    function getSunumLang() {
-        const code = document.getElementById('activeCode');
-        const lang = code ? code.innerText.trim() : 'EN';
-        return sunumDict[lang] || sunumDict['EN'];
+    function getLang() {
+        var el = document.getElementById('activeCode');
+        var code = el ? el.innerText.trim() : 'EN';
+        return sunumDict[code] || sunumDict['EN'];
     }
 
-    // ─── SUNUM GÖRSEL STATE ───
     window._sunumImageBase64 = null;
 
-    // ─── GÖRSEL YÜKLEME ───
     window.sunumUploadImage = function() {
-        if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+        if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
         document.getElementById('fileSunumImage').click();
     };
 
     window.sunumPreviewImage = function(input) {
         if (input.files && input.files[0]) {
-            const reader = new FileReader();
+            var reader = new FileReader();
             reader.onload = function(e) {
-                const dataUrl = e.target.result;
+                var dataUrl = e.target.result;
                 window._sunumImageBase64 = dataUrl.split(',')[1];
-                const box = document.getElementById('boxSunumImage');
-                const old = box.querySelector('.sunum-preview');
+                var box = document.getElementById('boxSunumImage');
+                var old = box.querySelector('.sunum-preview');
                 if (old) old.remove();
-                Array.from(box.children).forEach(c => { if (!c.classList.contains('sunum-preview')) c.style.display = 'none'; });
-                const prev = document.createElement('div');
+                var children = box.children;
+                for (var i = 0; i < children.length; i++) {
+                    if (!children[i].classList.contains('sunum-preview')) children[i].style.display = 'none';
+                }
+                var prev = document.createElement('div');
                 prev.className = 'sunum-preview absolute inset-0 w-full h-full';
-                prev.innerHTML = `
-                    <img src="${dataUrl}" class="absolute inset-0 w-full h-full object-contain opacity-90 rounded-2xl">
-                    <button onclick="event.stopPropagation(); sunumRemoveImage()" class="absolute top-2 right-2 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm hover:bg-red-500 z-50 shadow-lg border border-white/20">✕</button>
-                    <div class="absolute bottom-2 left-1/2 -translate-x-1/2 pointer-events-none">
-                        <span class="bg-black/70 px-4 py-1.5 rounded-lg text-[0.55rem] font-bold tracking-widest text-green-300 shadow-lg uppercase">LOADED</span>
-                    </div>`;
+                prev.innerHTML = '<img src="' + dataUrl + '" class="absolute inset-0 w-full h-full object-contain opacity-90 rounded-2xl">' +
+                    '<button onclick="event.stopPropagation(); sunumRemoveImage()" class="absolute top-2 right-2 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm hover:bg-red-500 z-50 shadow-lg border border-white/20">✕</button>' +
+                    '<div class="absolute bottom-2 left-1/2 -translate-x-1/2 pointer-events-none"><span class="bg-black/70 px-4 py-1.5 rounded-lg text-[0.55rem] font-bold tracking-widest text-green-300 shadow-lg uppercase">LOADED</span></div>';
                 box.appendChild(prev);
             };
             reader.readAsDataURL(input.files[0]);
@@ -62,44 +58,42 @@
     };
 
     window.sunumRemoveImage = function() {
-        if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+        if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
         window._sunumImageBase64 = null;
-        const box = document.getElementById('boxSunumImage');
-        const prev = box.querySelector('.sunum-preview');
+        var box = document.getElementById('boxSunumImage');
+        var prev = box.querySelector('.sunum-preview');
         if (prev) prev.remove();
-        Array.from(box.children).forEach(c => c.style.display = '');
-        const fi = document.getElementById('fileSunumImage');
+        var children = box.children;
+        for (var i = 0; i < children.length; i++) children[i].style.display = '';
+        var fi = document.getElementById('fileSunumImage');
         if (fi) { fi.value = ''; fi.type = 'text'; fi.type = 'file'; }
     };
 
-    // ─── ANA ANALİZ FONKSİYONU ───
     window.startSunumAnalysis = async function() {
-        if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+        if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
 
-        const lang = getSunumLang();
-        const langCode = (document.getElementById('activeCode') || {}).innerText || 'EN';
+        var lang = getLang();
+        var langCode = (document.getElementById('activeCode') || {}).innerText || 'EN';
 
         if (!window._sunumImageBase64) {
             alert(lang.noImage);
             return;
         }
 
-        // Kredi düş
         if (window.deductCredit) {
-            const ok = await window.deductCredit('PRESENTATION', 1);
+            var ok = await window.deductCredit('PRESENTATION', 1);
             if (!ok) return;
         }
 
-        const btn = document.getElementById('btnSunumAnalyze');
-        const originalText = btn.innerHTML;
+        var btn = document.getElementById('btnSunumAnalyze');
+        var originalText = btn.innerHTML;
         btn.disabled = true;
         btn.innerHTML = lang.analyzing;
         btn.classList.add('bg-blue-600', 'animate-pulse');
 
-        const userPrompt = (document.getElementById('sunumPromptArea') || {}).value || '';
+        var userPrompt = (document.getElementById('sunumPromptArea') || {}).value || '';
 
-        // ─── DOĞRU PAYLOAD: Ana webhook'a, action=presentation ───
-        const payload = {
+        var payload = {
             action: 'presentation',
             prompt: userPrompt || 'Analyze materials, textures, and color palette',
             images: {
@@ -109,34 +103,25 @@
         };
 
         try {
-            // Ana webhook URL'sine gönder (adeul-ai-v2)
-            const response = await fetch(window.CLOUDFLARE_URL, {
+            var response = await fetch(window.CLOUDFLARE_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (!response.ok) throw new Error('HTTP ' + response.status);
-            
-            const arrayBuffer = await response.arrayBuffer();
-            const decoder = new TextDecoder('utf-8');
-            const rawText = decoder.decode(arrayBuffer);
-            let data;
-            try {
-                data = JSON.parse(rawText);
-            } catch(e) {
-                throw new Error('JSON parse hatası');
-            }
 
-            // N8N'den gelen yanıtı ayrıştır
-            let result = Array.isArray(data) ? data[0] : data;
-            let analysisText = '';
-            
-            // Gemini text yanıtını bul
+            var arrayBuffer = await response.arrayBuffer();
+            var rawText = new TextDecoder('utf-8').decode(arrayBuffer);
+            var data = JSON.parse(rawText);
+
+            var result = Array.isArray(data) ? data[0] : data;
+            var analysisText = '';
+
             if (result.candidates && result.candidates[0] && result.candidates[0].content) {
-                const parts = result.candidates[0].content.parts;
-                for (const part of parts) {
-                    if (part.text) analysisText = part.text;
+                var parts = result.candidates[0].content.parts;
+                for (var i = 0; i < parts.length; i++) {
+                    if (parts[i].text) analysisText = parts[i].text;
                 }
             } else if (result.output) {
                 analysisText = result.output;
@@ -146,17 +131,15 @@
                 analysisText = JSON.stringify(result);
             }
 
-            // JSON'u parse et
-            let analysis = {};
+            var analysis = {};
             try {
-                const cleaned = analysisText.replace(/```json/g, '').replace(/```/g, '').trim();
-                analysis = JSON.parse(cleaned);
+                analysis = JSON.parse(analysisText.replace(/```json/g, '').replace(/```/g, '').trim());
             } catch (e) {
-                console.error('Analysis JSON parse error:', e, analysisText);
+                console.error('Analysis JSON parse error:', e);
                 analysis = { projectName: 'ANALYSIS', materials: [], colors: [] };
             }
 
-            renderSunumBoard(analysis, langCode);
+            renderBoard(analysis, langCode);
 
         } catch (error) {
             console.error('Sunum Error:', error);
@@ -168,85 +151,62 @@
         }
     };
 
-    // ─── PAFTA RENDER ───
-    function renderSunumBoard(analysis, langCode) {
-        const lang = getSunumLang();
-        const projectName = (analysis.projectName || 'CONCEPT BOARD').toUpperCase();
-        const materials = analysis.materials || [];
-        const colors = analysis.colors || [];
-        const imageSrc = 'data:image/jpeg;base64,' + window._sunumImageBase64;
+    function renderBoard(analysis, langCode) {
+        var lang = getLang();
+        var projectName = (analysis.projectName || 'CONCEPT BOARD').toUpperCase();
+        var materials = analysis.materials || [];
+        var colors = analysis.colors || [];
+        var imageSrc = 'data:image/jpeg;base64,' + window._sunumImageBase64;
 
-        // Malzeme satırları
-        let materialsHTML = '';
-        materials.forEach((m, i) => {
-            const hex = m.hex || m.hexColor || '#CCC';
-            materialsHTML += `
-            <div class="flex items-center gap-4 mb-5">
-                <div class="w-14 h-14 rounded-full shadow-md border-2 border-gray-200 flex-shrink-0" style="background-color: ${hex}"></div>
-                <div class="flex-1">
-                    <div contenteditable="true" class="text-[0.7rem] font-bold tracking-[0.2em] uppercase text-gray-800 outline-none hover:bg-gray-100 px-1 rounded cursor-text">${m.title || lang.material + ' ' + (i + 1)}</div>
-                    <div contenteditable="true" class="text-[0.55rem] tracking-wider text-gray-500 uppercase mt-0.5 outline-none hover:bg-gray-100 px-1 rounded cursor-text leading-relaxed">${m.desc || ''}</div>
-                </div>
-            </div>`;
-        });
+        var materialsHTML = '';
+        for (var i = 0; i < materials.length; i++) {
+            var m = materials[i];
+            var hex = m.hex || m.hexColor || '#CCC';
+            materialsHTML += '<div class="flex items-center gap-4 mb-5">' +
+                '<div class="w-14 h-14 rounded-full shadow-md border-2 border-gray-200 flex-shrink-0" style="background-color:' + hex + '"></div>' +
+                '<div class="flex-1">' +
+                '<div contenteditable="true" class="text-[0.7rem] font-bold tracking-[0.2em] uppercase text-gray-800 outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + (m.title || lang.material + ' ' + (i+1)) + '</div>' +
+                '<div contenteditable="true" class="text-[0.55rem] tracking-wider text-gray-500 uppercase mt-0.5 outline-none hover:bg-gray-100 px-1 rounded cursor-text leading-relaxed">' + (m.desc || '') + '</div>' +
+                '</div></div>';
+        }
 
-        // Renk kartelası
-        let colorsHTML = '';
-        colors.forEach((c) => {
-            const hex = typeof c === 'string' ? c : (c.hex || '#CCC');
-            const ral = typeof c === 'string' ? '' : (c.ral || '');
-            const name = typeof c === 'string' ? '' : (c.name || '');
-            colorsHTML += `
-            <div class="flex-1 flex flex-col items-center gap-1.5 min-w-[80px]">
-                <div class="w-full h-16 rounded shadow-inner border border-gray-200" style="background-color: ${hex}"></div>
-                <span contenteditable="true" class="text-[0.5rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 px-1 rounded cursor-text">${hex}</span>
-                ${ral ? '<span contenteditable="true" class="text-[0.45rem] tracking-wider text-gray-400 font-medium outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + ral + '</span>' : ''}
-                ${name ? '<span contenteditable="true" class="text-[0.4rem] tracking-wider text-gray-400 outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + name + '</span>' : ''}
-            </div>`;
-        });
+        var colorsHTML = '';
+        for (var j = 0; j < colors.length; j++) {
+            var c = colors[j];
+            var chex = typeof c === 'string' ? c : (c.hex || '#CCC');
+            var ral = typeof c === 'string' ? '' : (c.ral || '');
+            var name = typeof c === 'string' ? '' : (c.name || '');
+            colorsHTML += '<div class="flex-1 flex flex-col items-center gap-1.5 min-w-[80px]">' +
+                '<div class="w-full h-16 rounded shadow-inner border border-gray-200" style="background-color:' + chex + '"></div>' +
+                '<span contenteditable="true" class="text-[0.5rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + chex + '</span>' +
+                (ral ? '<span contenteditable="true" class="text-[0.45rem] tracking-wider text-gray-400 font-medium outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + ral + '</span>' : '') +
+                (name ? '<span contenteditable="true" class="text-[0.4rem] tracking-wider text-gray-400 outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + name + '</span>' : '') +
+                '</div>';
+        }
 
-        // Board HTML
-        const boardContainer = document.getElementById('sunumBoardContainer');
-        boardContainer.innerHTML = `
-        <div id="sunumBoardPrint" class="bg-white w-[1100px] min-h-[780px] p-12 shadow-2xl rounded-sm relative" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1a1a1a;">
-            <div class="flex justify-between items-end border-b-2 border-gray-200 pb-4 mb-8">
-                <div>
-                    <h1 contenteditable="true" class="text-2xl font-light tracking-[0.25em] uppercase text-gray-800 outline-none hover:bg-gray-50 rounded px-2 -ml-2 cursor-text">${lang.title}</h1>
-                    <p contenteditable="true" class="text-[0.65rem] tracking-[0.3em] text-gray-400 uppercase mt-2 font-bold outline-none hover:bg-gray-50 rounded px-2 -ml-2 cursor-text">${lang.project}: ${projectName}</p>
-                </div>
-                <div class="text-[0.55rem] font-bold tracking-[0.4em] text-gray-300 uppercase">ADEULL AI STUDIO</div>
-            </div>
-            <div class="flex gap-10">
-                <div class="w-[55%] flex flex-col justify-center">
-                    <div class="bg-gray-50 p-4 border border-gray-100 rounded shadow-sm">
-                        <img src="${imageSrc}" class="w-full h-auto object-contain max-h-[420px] mx-auto" style="mix-blend-mode: multiply;">
-                    </div>
-                </div>
-                <div class="w-[45%] flex flex-col justify-between pl-6 border-l border-gray-100">
-                    <div>
-                        <h3 contenteditable="true" class="text-[0.6rem] tracking-[0.3em] text-gray-400 font-bold uppercase mb-5 border-b border-gray-100 pb-2 outline-none hover:bg-gray-50 cursor-text px-1">${lang.materials}</h3>
-                        ${materialsHTML}
-                    </div>
-                    <div class="mt-6 pt-5 border-t border-gray-100">
-                        <h3 contenteditable="true" class="text-[0.6rem] tracking-[0.3em] text-gray-400 font-bold uppercase mb-4 outline-none hover:bg-gray-50 cursor-text px-1">${lang.colorPalette}</h3>
-                        <div class="flex gap-3">
-                            ${colorsHTML}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="absolute bottom-4 left-12 right-12 flex justify-between items-end opacity-30">
-                <span class="text-[0.4rem] tracking-[0.3em] uppercase">ADEULL AI</span>
-                <span class="text-[0.4rem] tracking-[0.2em]">${new Date().toLocaleDateString()}</span>
-            </div>
-        </div>`;
+        document.getElementById('sunumBoardContainer').innerHTML =
+            '<div id="sunumBoardPrint" class="bg-white w-[1100px] min-h-[780px] p-12 shadow-2xl rounded-sm relative" style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;">' +
+            '<div class="flex justify-between items-end border-b-2 border-gray-200 pb-4 mb-8"><div>' +
+            '<h1 contenteditable="true" class="text-2xl font-light tracking-[0.25em] uppercase text-gray-800 outline-none hover:bg-gray-50 rounded px-2 -ml-2 cursor-text">' + lang.title + '</h1>' +
+            '<p contenteditable="true" class="text-[0.65rem] tracking-[0.3em] text-gray-400 uppercase mt-2 font-bold outline-none hover:bg-gray-50 rounded px-2 -ml-2 cursor-text">' + lang.project + ': ' + projectName + '</p>' +
+            '</div><div class="text-[0.55rem] font-bold tracking-[0.4em] text-gray-300 uppercase">ADEULL AI STUDIO</div></div>' +
+            '<div class="flex gap-10">' +
+            '<div class="w-[55%] flex flex-col justify-center"><div class="bg-gray-50 p-4 border border-gray-100 rounded shadow-sm"><img src="' + imageSrc + '" class="w-full h-auto object-contain max-h-[420px] mx-auto" style="mix-blend-mode:multiply;"></div></div>' +
+            '<div class="w-[45%] flex flex-col justify-between pl-6 border-l border-gray-100"><div>' +
+            '<h3 contenteditable="true" class="text-[0.6rem] tracking-[0.3em] text-gray-400 font-bold uppercase mb-5 border-b border-gray-100 pb-2 outline-none hover:bg-gray-50 cursor-text px-1">' + lang.materials + '</h3>' +
+            materialsHTML + '</div>' +
+            '<div class="mt-6 pt-5 border-t border-gray-100">' +
+            '<h3 contenteditable="true" class="text-[0.6rem] tracking-[0.3em] text-gray-400 font-bold uppercase mb-4 outline-none hover:bg-gray-50 cursor-text px-1">' + lang.colorPalette + '</h3>' +
+            '<div class="flex gap-3">' + colorsHTML + '</div></div></div></div>' +
+            '<div class="absolute bottom-4 left-12 right-12 flex justify-between items-end opacity-30">' +
+            '<span class="text-[0.4rem] tracking-[0.3em] uppercase">ADEULL AI</span>' +
+            '<span class="text-[0.4rem] tracking-[0.2em]">' + new Date().toLocaleDateString() + '</span></div></div>';
 
         showSunumOverlay();
     }
 
-    // ─── OVERLAY KONTROL ───
     function showSunumOverlay() {
-        const overlay = document.getElementById('sunumOverlay');
+        var overlay = document.getElementById('sunumOverlay');
         if (overlay) {
             overlay.classList.remove('hidden');
             overlay.classList.add('flex');
@@ -255,7 +215,7 @@
     }
 
     window.closeSunumOverlay = function() {
-        const overlay = document.getElementById('sunumOverlay');
+        var overlay = document.getElementById('sunumOverlay');
         if (overlay) {
             overlay.style.opacity = '0';
             setTimeout(function() {
@@ -265,42 +225,18 @@
         }
     };
 
-    // ─── İNDİRME ───
     window.downloadSunumBoard = function() {
-        if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
-        const board = document.getElementById('sunumBoardPrint');
+        if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
+        var board = document.getElementById('sunumBoardPrint');
         if (!board) return;
-
-        const origTransform = board.style.transform;
-        board.style.transform = 'none';
-        board.style.transformOrigin = 'top left';
-
-        var doDownload = function() {
-            html2canvas(board, {
-                scale: 3,
-                useCORS: true,
-                backgroundColor: '#ffffff',
-                scrollY: 0
-            }).then(function(canvas) {
-                board.style.transform = origTransform;
-                var link = document.createElement('a');
-                link.download = 'ADEULL_BOARD_' + Date.now() + '.png';
-                link.href = canvas.toDataURL('image/png', 1.0);
-                link.click();
-            });
-        };
-
-        if (typeof html2canvas === 'undefined') {
-            var s = document.createElement('script');
-            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-            s.onload = doDownload;
-            document.head.appendChild(s);
-        } else {
-            doDownload();
-        }
+        html2canvas(board, { scale: 3, useCORS: true, backgroundColor: '#ffffff', scrollY: 0 }).then(function(canvas) {
+            var link = document.createElement('a');
+            link.download = 'ADEULL_BOARD_' + Date.now() + '.png';
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+        });
     };
 
-    // ─── ESKİ FONKSİYON UYUMLULUĞU ───
     window.analyzePresentation = window.startSunumAnalysis;
     window.generateTextureRender = function() { window.startSunumAnalysis(); };
     window.closePresentation = window.closeSunumOverlay;
