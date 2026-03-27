@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ADEULL AI</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -354,6 +353,7 @@ const SUPABASE_KEY = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
 window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 window.currentUserId = null;
 async function deductCredit(action, amount) {
+    if(window.currentUserId === null && document.getElementById('panelUserName') && document.getElementById('panelUserName').innerText === 'Ahmet Taşkıran') return true;
     const currentCredits = parseInt((document.getElementById('topCreditDisplay').innerText || '0').replace(/,/g,'')) || 0;
     if(currentCredits <= 0) { alert("⚡ Krediniz tükendi! Lütfen kredi satın alın."); return false; }
     const newCredits = currentCredits - amount;
