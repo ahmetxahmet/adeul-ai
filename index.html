@@ -187,8 +187,6 @@ Start Free Trial
 <div class="flex-1 flex flex-col w-full lg:ml-10 h-full">
 <input type="file" id="fileScene" hidden accept="image/*" onchange="previewImage(this, 'boxScene')">
 <input type="file" id="fileItem" hidden accept="image/*" onchange="previewImage(this, 'boxItem')">
-<input type="file" id="fileRef" hidden accept="image/*" onchange="previewImage(this, 'boxRef')">
-<input type="file" id="filePresentationRender" hidden accept="image/*" onchange="previewImage(this, 'boxPresentationRender')">
 <input type="file" id="fileDesign" hidden accept="image/*" onchange="previewImage(this, 'boxDesign')">
 <input type="file" id="fileSketch" hidden accept="image/*" onchange="previewImage(this, 'boxSketch')">
 <input type="file" id="fileMax" hidden accept="image/*" onchange="previewImage(this, 'boxMax')">
@@ -201,25 +199,19 @@ Start Free Trial
 <span class="text-2xl lg:text-3xl mb-2">↑</span><span class="text-[0.65rem] lg:text-xs tracking-widest uppercase font-bold text-center px-2" data-i18n="uploadItem">UPLOAD ITEM</span>
 </div>
 </div>
-<div id="singleUpload" class="hidden w-full mb-6 flex flex-col lg:flex-row gap-4 lg:gap-6 h-auto lg:h-64">
-<div class="flex-1 flex flex-col gap-3">
-<div id="boxRef" onclick="document.getElementById('fileRef').click()" class="flex-1 h-32 lg:h-auto border border-white/30 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative">
-<span class="text-[0.65rem] lg:text-xs tracking-widest uppercase font-bold text-center px-4 opacity-70" data-i18n="putProduct">ÜRÜN KOY</span>
+<!-- ═══ SUNUM MODÜLÜ (V2) ═══ -->
+<input type="file" id="fileSunumImage" hidden accept="image/*" onchange="sunumPreviewImage(this)">
+<div id="sunumUploadArea" class="hidden w-full mb-6 flex flex-col gap-4">
+<div id="boxSunumImage" onclick="sunumUploadImage()" class="w-full h-48 lg:h-56 border border-blue-300/40 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative bg-white/5">
+<span class="text-3xl lg:text-4xl mb-2 text-blue-200">📋</span>
+<span class="text-[0.65rem] lg:text-xs tracking-widest uppercase font-bold text-center px-4 text-blue-100" data-i18n="uploadProduct">UPLOAD PRODUCT / PROJECT IMAGE</span>
 </div>
-<input type="text" id="texturePrompt" placeholder="Texture & Sunum Promptu (Örn: Show wireframe...)" class="w-full bg-white/5 border border-white/20 rounded-xl p-3 text-white outline-none focus:bg-white/30 transition text-[0.65rem]">
-<button id="btnPresentationRender" onclick="generateTextureRender('btnPresentationRender')" class="w-full bg-white/5 hover:bg-white/10 text-white font-extrabold tracking-widest py-3 lg:py-4 rounded-xl transition shadow-lg uppercase text-[0.6rem] lg:text-[0.65rem] border border-white/10" data-i18n="createTexture">TEXTURE RENDER OLUŞTUR</button>
+<textarea id="sunumPromptArea" placeholder="Describe what to analyze..." class="w-full h-16 bg-white/5 border border-white/20 rounded-xl p-3 text-white outline-none focus:bg-white/20 resize-none text-[0.6rem] lg:text-[0.65rem]"></textarea>
+<button id="btnSunumAnalyze" onclick="startSunumAnalysis()" class="w-full bg-white/5 hover:bg-white/10 text-white font-extrabold tracking-widest py-4 rounded-xl transition shadow-lg uppercase text-[0.65rem] lg:text-sm border border-blue-300/20 flex items-center justify-center gap-2" data-i18n="createPresentation">
+<span class="text-blue-300">📊</span> SUNUM OLUŞTUR
+</button>
 </div>
-<div class="flex-1 flex flex-col gap-3">
-<div id="boxPresentationRender" onclick="handlePresentationBoxClick()" class="h-40 lg:h-full border border-white/30 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative bg-black/40">
-<span class="text-[0.65rem] lg:text-xs tracking-widest uppercase font-bold text-center px-4 opacity-70" data-i18n="createPresentation">SUNUM OLUŞTUR</span>
-</div>
-</div>
-</div>
-<div id="boardSelectionArea" class="hidden w-full flex flex-col lg:flex-row gap-2 lg:gap-3 mb-6">
-<button onclick="selectBoardType(1)" id="btnBord1" class="flex-1 bg-white border border-black/20 text-black py-3 rounded-xl text-[0.6rem] lg:text-[0.65rem] font-bold tracking-widest uppercase transition shadow-md"><span data-i18n="board1">BOARD 1</span><br><span class="font-normal text-[0.5rem] lg:text-[0.55rem]" data-i18n="round">ROUND</span></button>
-<button onclick="selectBoardType(2)" id="btnBord2" class="flex-1 bg-white/5 border border-white/10 text-white hover:bg-white/10 py-3 rounded-xl text-[0.6rem] lg:text-[0.65rem] font-bold tracking-widest uppercase transition"><span data-i18n="board2">BOARD 2</span><br><span class="font-normal opacity-70 text-[0.5rem] lg:text-[0.55rem]" data-i18n="square">SQUARE</span></button>
-<button onclick="selectBoardType(3)" id="btnBord3" class="flex-1 bg-white/5 border border-white/10 text-white hover:bg-white/10 py-3 rounded-xl text-[0.6rem] lg:text-[0.65rem] font-bold tracking-widest uppercase transition"><span data-i18n="board3">BOARD 3</span><br><span class="font-normal opacity-70 text-[0.5rem] lg:text-[0.55rem]" data-i18n="schema">SCHEMATIC</span></button>
-</div>
+<!-- ═══ /SUNUM MODÜLÜ ═══ -->
 <div id="designUpload" onclick="document.getElementById('fileDesign').click()" class="hidden w-full mb-6 h-32 lg:h-48 border border-green-300/40 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative">
 <div id="boxDesign" class="absolute inset-0 flex flex-col items-center justify-center">
 <span class="text-3xl lg:text-4xl mb-2 lg:mb-4 text-green-200">✨</span><span class="text-[0.65rem] lg:text-sm tracking-widest uppercase text-green-100 font-bold px-2 text-center" data-i18n="uploadDesign">PRODUCT PLACEMENT & REVISION</span>
@@ -287,43 +279,21 @@ Start Free Trial
 </div>
 </div>
 
-<div id="presentationOverlay" class="absolute inset-0 bg-black/90 backdrop-blur-xl z-50 hidden flex-col transition-opacity duration-500 opacity-0 flex items-center justify-center overflow-auto p-4 lg:py-10">
-<div class="w-full max-w-[1200px] flex justify-end mb-4 relative z-50">
-<button onclick="event.stopPropagation(); closePresentation()" class="text-3xl lg:text-4xl text-white/50 hover:text-white transition cursor-pointer bg-black/50 rounded-full w-10 h-10 flex items-center justify-center">✕</button>
+<!-- ═══ SUNUM OVERLAY (V2) ═══ -->
+<div id="sunumOverlay" class="absolute inset-0 bg-black/95 backdrop-blur-xl z-[160] hidden flex-col transition-opacity duration-500 opacity-0 items-center justify-start overflow-auto p-4 lg:py-8">
+<div class="w-full max-w-[1200px] flex justify-end mb-3 relative z-50">
+<button onclick="closeSunumOverlay()" class="text-3xl text-white/50 hover:text-white transition cursor-pointer bg-black/50 rounded-full w-10 h-10 flex items-center justify-center">✕</button>
 </div>
-<div class="w-full overflow-x-auto custom-scrollbar pb-4 flex justify-center lg:block">
-<div id="boardTemplate1" class="mood-board relative shrink-0 bg-[#fdfdfd] p-8 lg:p-14 flex flex-col shadow-2xl rounded-sm mx-auto my-auto w-[1200px] min-h-[850px] h-fit transform scale-[0.6] lg:scale-100 origin-top">
-<div class="flex justify-between items-end border-b border-gray-300 pb-5 mb-10"><div><h1 id="board1MainTitle" contenteditable="true" class="text-4xl font-light tracking-[0.25em] uppercase text-gray-800 outline-none hover:bg-gray-100 transition rounded px-2 -ml-2 cursor-text">Material & Finish Board</h1><p id="board1Project" contenteditable="true" class="text-sm tracking-widest text-gray-500 uppercase mt-3 font-bold outline-none hover:bg-gray-100 transition rounded px-2 -ml-2 cursor-text">PROJECT: LIVING ROOM</p></div><div class="text-xs font-bold tracking-[0.4em] text-gray-400">ADEULL AI STUDIO</div></div>
-<div class="flex flex-row gap-12 flex-1"><div class="w-7/12 flex flex-col justify-center"><div class="w-full bg-white shadow-md p-3 border border-gray-100 rounded-sm"><img id="board1Img" src="" class="w-full h-auto object-contain max-h-[500px]"></div></div>
-<div class="w-5/12 flex flex-col justify-between border-l border-gray-200 pl-10"><div class="flex flex-col gap-6"><h3 id="board1HeaderF" contenteditable="true" class="text-xs tracking-[0.3em] text-gray-400 font-bold uppercase mb-2 border-b border-gray-200 pb-2 outline-none hover:bg-gray-100 transition cursor-text px-1">Textures & Finishes</h3>
-<div class="flex items-center gap-5"><div class="mat-shape w-20 h-20 rounded-full overflow-hidden shadow-inner border border-gray-300 flex-shrink-0 bg-gray-100 flex items-center justify-center"><img id="mat1Img" src="" class="w-full h-full object-cover hidden"><span class="text-xs text-gray-400 animate-pulse">Wait...</span></div><div class="flex flex-col"><span id="mat1Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">MATERIAL 1</span><span id="mat1Desc" contenteditable="true" class="text-[0.65rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">Analyzing Data...</span></div></div>
-<div class="flex items-center gap-5"><div class="mat-shape w-20 h-20 rounded-full overflow-hidden shadow-inner border border-gray-300 flex-shrink-0 bg-gray-100 flex items-center justify-center"><img id="mat2Img" src="" class="w-full h-full object-cover hidden"><span class="text-xs text-gray-400 animate-pulse">Wait...</span></div><div class="flex flex-col"><span id="mat2Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">MATERIAL 2</span><span id="mat2Desc" contenteditable="true" class="text-[0.65rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">Analyzing Data...</span></div></div>
-<div class="flex items-center gap-5"><div class="mat-shape w-20 h-20 rounded-full overflow-hidden shadow-inner border border-gray-300 flex-shrink-0 bg-gray-100 flex items-center justify-center"><img id="mat3Img" src="" class="w-full h-full object-cover hidden"><span class="text-xs text-gray-400 animate-pulse">Wait...</span></div><div class="flex flex-col"><span id="mat3Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">MATERIAL 3</span><span id="mat3Desc" contenteditable="true" class="text-[0.65rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">Analyzing Data...</span></div></div></div>
-<div class="flex flex-col gap-4 mt-10"><h3 id="board1HeaderC" contenteditable="true" class="text-xs tracking-[0.3em] text-gray-400 font-bold uppercase mb-2 border-b border-gray-200 pb-2 outline-none hover:bg-gray-100 transition cursor-text px-1">Global Color Palette</h3>
-<div class="flex gap-3"><div class="flex-1 flex flex-col items-center gap-2"><div id="color1Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div><span id="color1Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span></div><div class="flex-1 flex flex-col items-center gap-2"><div id="color2Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div><span id="color2Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span></div><div class="flex-1 flex flex-col items-center gap-2"><div id="color3Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div><span id="color3Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span></div><div class="flex-1 flex flex-col items-center gap-2"><div id="color4Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div><span id="color4Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span></div></div></div></div></div></div>
-<div id="boardTemplate2" class="hidden mood-board relative shrink-0 bg-[#fdfdfd] p-8 lg:p-14 flex flex-col shadow-2xl rounded-sm mx-auto my-auto w-[1200px] min-h-[850px] h-fit transform scale-[0.6] lg:scale-100 origin-top">
-<div class="flex justify-between items-end border-b border-gray-300 pb-5 mb-10"><div><h1 id="board2MainTitle" contenteditable="true" class="text-4xl font-light tracking-[0.25em] uppercase text-gray-800 outline-none hover:bg-gray-100 transition rounded px-2 -ml-2 cursor-text">Material & Finish Board</h1><p id="board2Project" contenteditable="true" class="text-sm tracking-widest text-gray-500 uppercase mt-3 font-bold outline-none hover:bg-gray-100 transition rounded px-2 -ml-2 cursor-text">PROJECT: LIVING ROOM</p></div><div class="text-xs font-bold tracking-[0.4em] text-gray-400">ADEULL AI STUDIO</div></div>
-<div class="flex flex-row gap-12 flex-1"><div class="w-7/12 flex flex-col justify-center"><div class="w-full bg-white shadow-md p-3 border border-gray-100 rounded-sm"><img id="board2Img" src="" class="w-full h-auto object-contain max-h-[500px]"></div></div>
-<div class="w-5/12 flex flex-col justify-between border-l border-gray-200 pl-10"><div class="flex flex-col gap-6"><h3 id="board2HeaderF" contenteditable="true" class="text-xs tracking-[0.3em] text-gray-400 font-bold uppercase mb-2 border-b border-gray-200 pb-2 outline-none hover:bg-gray-100 transition cursor-text px-1">Textures & Finishes</h3>
-<div class="flex items-center gap-5"><div class="mat-shape w-20 h-20 rounded-xl overflow-hidden shadow-inner border border-gray-300 flex-shrink-0 bg-gray-100 flex items-center justify-center"><img id="mat2_1Img" src="" class="w-full h-full object-cover hidden"><span class="text-xs text-gray-400 animate-pulse">Wait...</span></div><div class="flex flex-col"><span id="mat2_1Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">MATERIAL 1</span><span id="mat2_1Desc" contenteditable="true" class="text-[0.65rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">Analyzing Data...</span></div></div>
-<div class="flex items-center gap-5"><div class="mat-shape w-20 h-20 rounded-xl overflow-hidden shadow-inner border border-gray-300 flex-shrink-0 bg-gray-100 flex items-center justify-center"><img id="mat2_2Img" src="" class="w-full h-full object-cover hidden"><span class="text-xs text-gray-400 animate-pulse">Wait...</span></div><div class="flex flex-col"><span id="mat2_2Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">MATERIAL 2</span><span id="mat2_2Desc" contenteditable="true" class="text-[0.65rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">Analyzing Data...</span></div></div>
-<div class="flex items-center gap-5"><div class="mat-shape w-20 h-20 rounded-xl overflow-hidden shadow-inner border border-gray-300 flex-shrink-0 bg-gray-100 flex items-center justify-center"><img id="mat2_3Img" src="" class="w-full h-full object-cover hidden"><span class="text-xs text-gray-400 animate-pulse">Wait...</span></div><div class="flex flex-col"><span id="mat2_3Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">MATERIAL 3</span><span id="mat2_3Desc" contenteditable="true" class="text-[0.65rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">Analyzing Data...</span></div></div></div>
-<div class="flex flex-col gap-4 mt-10"><h3 id="board2HeaderC" contenteditable="true" class="text-xs tracking-[0.3em] text-gray-400 font-bold uppercase mb-2 border-b border-gray-200 pb-2 outline-none hover:bg-gray-100 transition cursor-text px-1">Global Color Palette</h3>
-<div class="flex gap-3"><div class="flex-1 flex flex-col items-center gap-2"><div id="color2_1Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div><span id="color2_1Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span></div><div class="flex-1 flex flex-col items-center gap-2"><div id="color2_2Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div><span id="color2_2Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span></div><div class="flex-1 flex flex-col items-center gap-2"><div id="color2_3Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div><span id="color2_3Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span></div><div class="flex-1 flex flex-col items-center gap-2"><div id="color2_4Box" class="w-full h-14 shadow-inner rounded-sm border border-gray-300 bg-gray-200"></div><span id="color2_4Hex" contenteditable="true" class="text-[0.55rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 transition px-1 rounded cursor-text">#----</span></div></div></div></div></div></div>
-<div id="boardTemplate3" class="hidden mood-board relative shrink-0 bg-[#f5f5f5] p-8 lg:p-14 flex flex-col shadow-2xl rounded-sm mx-auto my-auto w-[1200px] min-h-[850px] h-fit transform scale-[0.6] lg:scale-100 origin-top">
-<div class="flex flex-col items-center border-b border-gray-300 pb-5 mb-10 text-center"><h1 id="board3MainTitle" contenteditable="true" class="text-4xl font-bold tracking-[0.3em] uppercase text-gray-800 outline-none hover:bg-gray-200 transition rounded px-4 cursor-text">SCHEMATIC BOARD</h1><p id="board3Project" contenteditable="true" class="text-sm tracking-[0.4em] text-gray-500 uppercase mt-3 font-bold outline-none hover:bg-gray-200 transition rounded px-4 cursor-text">PROJECT: LIVING ROOM</p></div>
-<div class="relative flex-1 flex items-center justify-center py-10 min-h-[500px]">
-<div class="absolute left-0 top-1/4 flex items-center gap-4"><div class="text-right"><p id="mat3_1Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-200 cursor-text">MATERIAL 1</p><p id="mat3_1Desc" contenteditable="true" class="text-[0.6rem] text-gray-500 tracking-wider uppercase mt-1 outline-none hover:bg-gray-200 cursor-text">Analyzing Data...</p></div><div class="w-24 h-24 rounded-full shadow-lg border-4 border-white bg-gray-200 flex items-center justify-center relative z-10 overflow-hidden"><span class="text-xs text-gray-400">Wait...</span></div><div class="w-16 h-px bg-gray-400"></div></div>
-<div class="absolute right-0 top-1/4 flex items-center gap-4 flex-row-reverse"><div class="text-left"><p id="mat3_2Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-200 cursor-text">MATERIAL 2</p><p id="mat3_2Desc" contenteditable="true" class="text-[0.6rem] text-gray-500 tracking-wider uppercase mt-1 outline-none hover:bg-gray-200 cursor-text">Analyzing Data...</p></div><div class="w-24 h-24 rounded-full shadow-lg border-4 border-white bg-gray-200 flex items-center justify-center relative z-10 overflow-hidden"><span class="text-xs text-gray-400">Wait...</span></div><div class="w-16 h-px bg-gray-400"></div></div>
-<div class="absolute bottom-0 left-1/4 flex flex-col items-center gap-4"><div class="h-16 w-px bg-gray-400"></div><div class="w-24 h-24 rounded-full shadow-lg border-4 border-white bg-gray-200 flex items-center justify-center relative z-10 overflow-hidden"><span class="text-xs text-gray-400">Wait...</span></div><div class="text-center"><p id="mat3_3Title" contenteditable="true" class="text-sm font-bold tracking-widest uppercase text-gray-800 outline-none hover:bg-gray-200 cursor-text">MATERIAL 3</p><p id="mat3_3Desc" contenteditable="true" class="text-[0.6rem] text-gray-500 tracking-wider uppercase mt-1 outline-none hover:bg-gray-200 cursor-text">Analyzing Data...</p></div></div>
-<div class="w-1/2 bg-white shadow-xl p-4 border border-gray-200 relative z-0"><img id="board3Img" src="" class="w-full h-auto object-contain max-h-[400px]"></div>
+<div class="w-full overflow-x-auto custom-scrollbar pb-4 flex justify-center">
+<div id="sunumBoardContainer" class="transform scale-[0.55] lg:scale-[0.85] origin-top">
+<!-- Board JS tarafından buraya render edilir -->
 </div>
 </div>
+<div class="mt-4 flex justify-center w-full relative z-50">
+<button onclick="downloadSunumBoard()" class="bg-white/10 hover:bg-white/20 text-white font-extrabold tracking-widest px-10 py-3 rounded-xl transition shadow-lg uppercase text-[0.7rem]" data-i18n="downloadBoard">DOWNLOAD BOARD</button>
 </div>
-<div class="mt-4 lg:mt-8 flex justify-center w-full relative z-50">
-<button id="btnDownBoard" onclick="saveRender('presentationOverlay')" class="bg-white/10 hover:bg-white/20 text-white font-extrabold tracking-widest px-8 lg:px-12 py-3 lg:py-4 rounded-xl transition shadow-lg uppercase text-[0.65rem] lg:text-[0.8rem]" data-i18n="downloadBoard">DOWNLOAD BOARD</button>
 </div>
-</div>
+<!-- ═══ /SUNUM OVERLAY ═══ -->
 
 <div id="quoteModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[300] hidden flex-col items-center justify-center p-4">
 <div class="w-full max-w-md bg-[#111] rounded-[2rem] p-8 border border-white/10 relative shadow-2xl">
@@ -352,16 +322,21 @@ const SUPABASE_URL = 'https://wcqwkagktddvqjxzjxbj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
 window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 window.currentUserId = null;
+window.isAdminUser = false;
 async function deductCredit(action, amount) {
-    if(window.currentUserId === null && document.getElementById('panelUserName') && document.getElementById('panelUserName').innerText === 'Ahmet Taşkıran') return true;
+    // Admin kullanıcı — kredi sistemi komple devre dışı
+    if(window.isAdminUser) return true;
+    
     const currentCredits = parseInt((document.getElementById('topCreditDisplay').innerText || '0').replace(/,/g,'')) || 0;
     if(currentCredits <= 0) { alert("⚡ Krediniz tükendi! Lütfen kredi satın alın."); return false; }
     const newCredits = currentCredits - amount;
     document.getElementById('topCreditDisplay').innerText = newCredits.toLocaleString();
     document.getElementById('panelCreditDisplay').innerText = newCredits.toLocaleString();
     if(window.currentUserId && window.supabaseClient) {
-        await window.supabaseClient.from('users').update({ credits: newCredits }).eq('id', window.currentUserId);
-        await window.supabaseClient.from('transactions').insert({ user_id: window.currentUserId, action: action, credits_used: amount });
+        try {
+            await window.supabaseClient.from('users').update({ credits: newCredits }).eq('id', window.currentUserId);
+            await window.supabaseClient.from('transactions').insert({ user_id: window.currentUserId, action: action, credits_used: amount });
+        } catch(e) { console.warn('Supabase kredi güncellenemedi:', e); }
     }
     return true;
 }
@@ -370,9 +345,6 @@ window.deductCredit = deductCredit;
 
 
 <script>
-// ============================================================
-// COMING SOON ANIMASYONU — direkt başlar
-// ============================================================
 const comingSoonPhrases = [
     "COMING SOON",
     "YAKINDA",
@@ -430,16 +402,14 @@ window.addEventListener('load', () => {
     startComingSoonAnimation();
 });
 
-// ============================================================
-// AUTH
-// ============================================================
 function handleLoginAdvanced(event) {
     event.preventDefault();
     if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
     if(email === 'admin@adeull.com' && password === 'Adeul2026!') {
-        applyUserData({ name: "Ahmet Taşkıran", plan: "PRO PLAN", credits: 1240 });
+        window.isAdminUser = true;
+        applyUserData({ name: "Ahmet Taşkıran", plan: "PRO PLAN", credits: 9999 });
         return;
     }
     if(window.supabaseClient) {
@@ -480,15 +450,14 @@ function applyUserData(userData) {
 
 function logOut() {
     if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+    window.isAdminUser = false;
+    window.currentUserId = null;
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('loginScreen').style.opacity = '1';
     document.getElementById('appContent').classList.remove('active');
     document.getElementById('userSidePanel').classList.remove('open');
 }
 
-// ============================================================
-// VENDOR NETWORK
-// ============================================================
 let currentVendorType = "";
 function openQuoteModal(vendor) {
     if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
@@ -517,21 +486,15 @@ function sendViaEmail() {
     window.open(`mailto:?subject=${encodeURIComponent(`ADEULL AI - Quote Request for ${currentVendorType}`)}&body=${encodeURIComponent(`Hello,\n\nI need a quote.\n\nDetails:\n${note}`)}`, '_blank');
 }
 
-// ============================================================
-// PRESENTATION BOX
-// ============================================================
 function handlePresentationBoxClick() {
     if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
-    if (window.uploadedBase64['boxPresentationRender'] || window.uploadedBase64['boxRef']) {
-        if (typeof analyzePresentation === 'function') analyzePresentation();
+    if (window._sunumImageBase64) {
+        if (typeof startSunumAnalysis === 'function') startSunumAnalysis();
     } else {
-        document.getElementById('filePresentationRender').click();
+        document.getElementById('fileSunumImage').click();
     }
 }
 
-// ============================================================
-// DASHBOARD
-// ============================================================
 function enterDashboard(menuName) {
     if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
     document.getElementById('dashboardTitle').setAttribute('data-raw-title', menuName);
@@ -563,18 +526,16 @@ function enterDashboard(menuName) {
     if(promptArea) promptArea.value = "";
     const els = {
         dualUpload: document.getElementById('dualUpload'),
-        singleUpload: document.getElementById('singleUpload'),
+        sunumUploadArea: document.getElementById('sunumUploadArea'),
         designUpload: document.getElementById('designUpload'),
         sketchUpload: document.getElementById('sketchUpload'),
         maxUpload: document.getElementById('maxUpload'),
         planUpload: document.getElementById('planUpload'),
-        boardSelectionArea: document.getElementById('boardSelectionArea'),
         netwrolerPanel: document.getElementById('netwrolerPanel')
     };
     for (const [k, el] of Object.entries(els)) { if(el) el.style.setProperty('display','none','important'); }
     if (menuName === 'PRESENTATION') {
-        if(els.singleUpload) els.singleUpload.style.setProperty('display','flex','important');
-        if(els.boardSelectionArea) els.boardSelectionArea.style.setProperty('display','flex','important');
+        if(els.sunumUploadArea) els.sunumUploadArea.style.setProperty('display','flex','important');
     } else if (menuName === 'DESIGN') {
         if(els.designUpload) els.designUpload.style.setProperty('display','flex','important');
         if(els.sketchUpload) els.sketchUpload.style.setProperty('display','flex','important');
