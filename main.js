@@ -147,15 +147,18 @@ function toggleUserMenu() {
     document.getElementById('userSidePanel').classList.toggle('open');
 }
 
-// 🔥 KUSURSUZ YÜKLEME: Canvas İptal, Saf Base64 Aktarımı
+// 🔥 KUSURSUZ YÜKLEME: Sıkıştırmalı Base64 Aktarımı
 function previewImage(input, boxId) {
     playSound();
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = async function(e) {
             const rawDataUrl = e.target.result;
             const rawBase64 = rawDataUrl.split(',')[1];
-            window.uploadedBase64[boxId] = rawBase64;
+            
+            // Görsel sıkıştır — max 1920px, %82 kalite
+            const compressedBase64 = await compressImageBase64(rawBase64);
+            window.uploadedBase64[boxId] = compressedBase64;
 
             const box = document.getElementById(boxId);
             Array.from(box.children).forEach(child => child.style.display = 'none');
@@ -233,6 +236,24 @@ function exitDashboard() {
     if (typeof closePresentation === 'function') closePresentation();
 }
 
+// 🔥 GÖRSEL SIKIŞTIRMA — Telefon fotoğraflarını Gemini için küçültür
+async function compressImageBase64(base64, maxPx = 1920, quality = 0.82) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = function() {
+            let w = img.width, h = img.height;
+            if (w <= maxPx && h <= maxPx) { resolve(base64); return; }
+            if (w > h) { h = Math.round(h * maxPx / w); w = maxPx; }
+            else { w = Math.round(w * maxPx / h); h = maxPx; }
+            const canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]);
+        };
+        img.src = 'data:image/jpeg;base64,' + base64;
+    });
+}
+
 function b64toBlob(b64Data, contentType='', sliceSize=512) {
     const byteCharacters = atob(b64Data);
     const byteArrays = [];
@@ -298,12 +319,19 @@ async function simulateAPIConnection(btnId, is8K = false) {
         const ok = await window.deductCredit(is8K ? '8K_RENDER' : 'NORMAL_RENDER', is8K ? 4 : 1);
         if(!ok) { btn.disabled = false; return; }
     }
-    if(window.deductCredit) {
-        const ok = await window.deductCredit(is8K ? '8K_RENDER' : 'NORMAL_RENDER', is8K ? 4 : 1);
-        if(!ok) { btn.disabled = false; return; }
-    }
     btn.innerHTML = is8K ? '8K RENDER ALINIYOR...' : 'ADEULL AI GENERATING...';
     btn.classList.add('bg-blue-600', 'text-white', 'animate-pulse');
+
+    // Telefon fotoğraflarını sıkıştır
+    if (window.uploadedBase64['boxScene']) {
+        window.uploadedBase64['boxScene'] = await compressImageBase64(window.uploadedBase64['boxScene']);
+    }
+    if (window.uploadedBase64['boxItem']) {
+        window.uploadedBase64['boxItem'] = await compressImageBase64(window.uploadedBase64['boxItem']);
+    }
+    if (window.uploadedBase64['boxDesign']) {
+        window.uploadedBase64['boxDesign'] = await compressImageBase64(window.uploadedBase64['boxDesign']);
+    }
 
     let refImage = window.uploadedBase64['boxRef'] || window.uploadedBase64['boxScene'] || window.uploadedBase64['boxItem'] || window.uploadedBase64['boxDesign'] || Object.values(window.uploadedBase64)[0] || "";
     if (refImage) { window.uploadedBase64['boxRef'] = refImage; }
