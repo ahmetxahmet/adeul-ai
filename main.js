@@ -368,7 +368,13 @@ async function simulateAPIConnection(btnId, is8K = false) {
         
         const arrayBuffer = await response.arrayBuffer();
         const decoder = new TextDecoder('utf-8');
-        const data = JSON.parse(decoder.decode(arrayBuffer));
+        const rawText = decoder.decode(arrayBuffer);
+        let data;
+        try {
+            data = JSON.parse(rawText);
+        } catch(parseError) {
+            throw new Error('Yanit bozuk - tekrar deneyin');
+        }
         
         let rawOutput = "";
         let result = Array.isArray(data) ? data[0] : data;
