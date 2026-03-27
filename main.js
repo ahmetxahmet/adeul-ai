@@ -236,7 +236,36 @@ async function simulateAPIConnection(btnId, is8K = false) {
     playSound();
     const btn = document.getElementById(btnId);
     if (!btn || btn.disabled) return;
+
+    // ─── GÖRSEL KONTROL: En az 1 görsel yüklenmeli ───
+    const currentMenuTitle = document.getElementById('dashboardTitle').getAttribute('data-raw-title');
+    const hasAnyImage = Object.keys(window.uploadedBase64).length > 0;
+    
+    if (!hasAnyImage) {
+        const activeLang = (document.getElementById('activeCode') || {}).innerText || 'EN';
+        const noImageMsg = {
+            'TR': 'Lütfen önce bir görsel yükleyin!',
+            'EN': 'Please upload an image first!',
+            'ES': 'Por favor suba una imagen primero!',
+            'DE': 'Bitte laden Sie zuerst ein Bild hoch!',
+            'FR': 'Veuillez charger une image!',
+            'PT': 'Carregue uma imagem primeiro!',
+            'ID': 'Silakan unggah gambar terlebih dahulu!',
+            'HI': 'कृपया पहले एक छवि अपलोड करें!',
+            'AR': 'يرجى تحميل صورة أولاً!',
+            'IT': 'Carica prima un\'immagine!'
+        };
+        alert(noImageMsg[activeLang] || noImageMsg['EN']);
+        return;
+    }
+
     btn.disabled = true;
+
+    // ─── RENDER SIRASINDA TÜM BUTONLARI KİLİTLE ───
+    const allGenerateButtons = document.querySelectorAll('#generateBtnNormal, #generateBtn8K, #btnSunumAnalyze');
+    const menuButtons = document.querySelectorAll('#landing .menu-item');
+    allGenerateButtons.forEach(b => b.disabled = true);
+    menuButtons.forEach(b => { b.style.pointerEvents = 'none'; b.style.opacity = '0.4'; });
 
     const originalText = btn.innerHTML;
     const promptInput = document.getElementById('promptArea');
@@ -277,9 +306,18 @@ async function simulateAPIConnection(btnId, is8K = false) {
         isSketchMode = "EVET";
     }
 
+    // Ratio'yu prompt'a ekle (Gemini config'de desteklemiyor)
+    const ratioMap = {
+        '16:9': 'wide landscape format (16:9 aspect ratio, 1920x1080)',
+        '9:16': 'tall portrait format (9:16 aspect ratio, 1080x1920, vertical/Instagram style)',
+        '1:1': 'square format (1:1 aspect ratio, 1080x1080)'
+    };
+    const ratioInstruction = ratioMap[window.currentRatio] || ratioMap['16:9'];
+    const finalPrompt = userPrompt + ' [OUTPUT FORMAT: ' + ratioInstruction + ']';
+
     const payload = {
         action: 'generate',  
-        prompt: userPrompt,
+        prompt: finalPrompt,
         isSketch: isSketchMode,
         sketchData: theSketchImage,
         images: window.uploadedBase64,
@@ -366,7 +404,10 @@ async function simulateAPIConnection(btnId, is8K = false) {
         btn.innerHTML = originalText;
         btn.classList.remove('bg-blue-600', 'text-white', 'animate-pulse');
         btn.disabled = false;
-        toggleUpscaleLoader(false); 
+        toggleUpscaleLoader(false);
+        // ─── TÜM KİLİTLERİ AÇ ───
+        document.querySelectorAll('#generateBtnNormal, #generateBtn8K, #btnSunumAnalyze').forEach(b => b.disabled = false);
+        document.querySelectorAll('#landing .menu-item').forEach(b => { b.style.pointerEvents = ''; b.style.opacity = ''; });
     }
 }
 
@@ -397,47 +438,6 @@ async function saveRender(mode = 'renderImgContainer') {
             link.click();
             document.body.removeChild(link);
         }
-    } 
-    else if (mode === 'presentationOverlay') {
-        const activeBoard = document.getElementById(`boardTemplate${window.currentBoardStyle}`);
-        if(!activeBoard) return;
-
-        const originalWidth = activeBoard.style.width;
-        const originalHeight = activeBoard.style.height;
-        const originalMaxWidth = activeBoard.style.maxWidth;
-        const originalTransform = activeBoard.style.transform;
-        
-        activeBoard.classList.remove('transform', 'scale-[0.6]', 'lg:scale-100');
-        const targetHeight = activeBoard.scrollHeight > 850 ? activeBoard.scrollHeight : 850;
-
-        activeBoard.style.width = "1200px";
-        activeBoard.style.height = targetHeight + "px"; 
-        activeBoard.style.maxWidth = "none";
-        activeBoard.style.transform = "none";
-        
-        const executeDownload = () => {
-            html2canvas(activeBoard, { scale: 4, useCORS: true, scrollY: 0, backgroundColor: '#fdfdfd' }).then(canvas => {
-                activeBoard.style.width = originalWidth;
-                activeBoard.style.height = originalHeight;
-                activeBoard.style.maxWidth = originalMaxWidth;
-                activeBoard.style.transform = originalTransform;
-                activeBoard.classList.add('transform', 'scale-[0.6]', 'lg:scale-100');
-                
-                const link = document.createElement('a');
-                link.download = `ADEULL_AI_Board_${window.currentBoardStyle}_HQ_${new Date().getTime()}.png`;
-                link.href = canvas.toDataURL('image/png', 1.0);
-                link.click();
-            });
-        };
-
-        if (typeof html2canvas === 'undefined') {
-            const script = document.createElement('script');
-            script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
-            script.onload = executeDownload;
-            document.head.appendChild(script);
-        } else {
-            executeDownload();
-        }
     }
 }
 
@@ -462,15 +462,7 @@ function closeRender() {
     }
 }
 
-function showPresentationScreen() {
-    const overlay = document.getElementById('presentationOverlay');
-    if(overlay) { overlay.classList.remove('hidden'); overlay.classList.add('flex'); setTimeout(() => overlay.style.opacity = '1', 50); }
-}
-
-function closePresentation() {
-    const overlay = document.getElementById('presentationOverlay');
-    if(overlay) { overlay.style.opacity = '0'; setTimeout(() => overlay.classList.add('hidden'), 500); }
-}
+// showPresentationScreen ve closePresentation → sunum.js tarafından override ediliyor
 
 function toggleFullscreen() {
     document.getElementById('renderImgContainer').classList.toggle('fullscreen');
@@ -479,13 +471,13 @@ function toggleFullscreen() {
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape' || event.keyCode === 27) {
         const renderOverlay = document.getElementById('renderOverlay');
-        const presentationOverlay = document.getElementById('presentationOverlay');
+        const sunumOverlay = document.getElementById('sunumOverlay');
         const userPanel = document.getElementById('userSidePanel');
         const langMenu = document.getElementById('langDropdown');
         const dashboard = document.getElementById('dashboard');
         
         if (renderOverlay && !renderOverlay.classList.contains('hidden')) { closeRender(); } 
-        else if (presentationOverlay && !presentationOverlay.classList.contains('hidden')) { if (typeof closePresentation === 'function') closePresentation(); } 
+        else if (sunumOverlay && !sunumOverlay.classList.contains('hidden')) { if (typeof closeSunumOverlay === 'function') closeSunumOverlay(); } 
         else if (langMenu && !langMenu.classList.contains('hidden')) { langMenu.classList.add('hidden'); langMenu.classList.remove('flex'); } 
         else if (userPanel && userPanel.classList.contains('open')) { userPanel.classList.remove('open'); } 
         else if (dashboard && dashboard.classList.contains('active')) { exitDashboard(); }
