@@ -202,12 +202,14 @@ Start Free Trial
 <!-- ═══ SUNUM MODÜLÜ (V2) ═══ -->
 <input type="file" id="fileSunumImage" hidden accept="image/*" onchange="sunumPreviewImage(this)">
 <div id="sunumUploadArea" class="hidden w-full mb-6 flex flex-col gap-4">
-<div id="boxSunumImage" onclick="sunumUploadImage()" class="w-full h-48 lg:h-56 border border-white/30 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative bg-white/5">
-<span class="text-2xl lg:text-3xl mb-2">↑</span>
-<span class="text-[0.65rem] lg:text-xs tracking-widest uppercase font-bold text-center px-4" data-i18n="putProduct">UPLOAD PRODUCT</span>
+<div id="boxSunumImage" onclick="sunumUploadImage()" class="w-full h-48 lg:h-56 border border-blue-300/40 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative bg-white/5">
+<span class="text-3xl lg:text-4xl mb-2 text-blue-200">📋</span>
+<span class="text-[0.65rem] lg:text-xs tracking-widest uppercase font-bold text-center px-4 text-blue-100" data-i18n="uploadProduct">UPLOAD PRODUCT / PROJECT IMAGE</span>
 </div>
-<textarea id="sunumPromptArea" data-i18n-ph="promptPh" placeholder="Describe your architectural vision..." class="w-full h-16 bg-white/5 border border-white/20 rounded-xl p-3 text-white outline-none focus:bg-white/20 resize-none text-[0.6rem] lg:text-[0.65rem]"></textarea>
-<button id="btnSunumAnalyze" onclick="startSunumAnalysis()" class="w-full bg-white/5 hover:bg-white/10 text-white font-extrabold tracking-widest py-4 rounded-xl transition shadow-lg uppercase text-[0.65rem] lg:text-sm border border-white/10" data-i18n="createPresentation">CREATE PRESENTATION</button>
+<textarea id="sunumPromptArea" placeholder="Describe what to analyze..." class="w-full h-16 bg-white/5 border border-white/20 rounded-xl p-3 text-white outline-none focus:bg-white/20 resize-none text-[0.6rem] lg:text-[0.65rem]"></textarea>
+<button id="btnSunumAnalyze" onclick="startSunumAnalysis()" class="w-full bg-white/5 hover:bg-white/10 text-white font-extrabold tracking-widest py-4 rounded-xl transition shadow-lg uppercase text-[0.65rem] lg:text-sm border border-blue-300/20 flex items-center justify-center gap-2" data-i18n="createPresentation">
+<span class="text-blue-300">📊</span> SUNUM OLUŞTUR
+</button>
 </div>
 <!-- ═══ /SUNUM MODÜLÜ ═══ -->
 <div id="designUpload" onclick="document.getElementById('fileDesign').click()" class="hidden w-full mb-6 h-32 lg:h-48 border border-green-300/40 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative">
@@ -230,7 +232,7 @@ Start Free Trial
 <span class="text-3xl lg:text-4xl mb-2 lg:mb-3 opacity-50">📐</span><span class="text-[0.65rem] lg:text-xs tracking-widest font-bold uppercase text-center px-2 opacity-70" data-i18n="uploadPlan">PNG / JPG PLAN YÜKLE</span>
 </div>
 </div>
-<div class="flex justify-between items-end mb-2 mt-2 w-full" id="promptSection">
+<div class="flex justify-between items-end mb-2 mt-2 w-full">
 <p class="text-[0.6rem] lg:text-[0.65rem] tracking-widest opacity-70 uppercase font-bold" data-i18n="writePrompt">WRITE PROMPT</p>
 <div class="flex gap-1" id="ratioSelector">
 <button type="button" onclick="setRatio('16:9', this)" class="ratio-btn active bg-white/20 text-white px-3 py-1 rounded-lg text-[0.55rem] font-bold tracking-wider transition border border-white/10">16:9</button>
@@ -239,7 +241,7 @@ Start Free Trial
 </div>
 </div>
 <textarea id="promptArea" data-i18n-ph="promptPh" placeholder="Describe your architectural vision..." class="w-full h-20 lg:h-24 bg-white/10 border border-white/20 rounded-xl p-3 lg:p-4 text-white outline-none focus:bg-white/20 resize-none mb-4 text-[0.6rem] lg:text-[0.65rem]"></textarea>
-<div class="flex flex-row gap-2 w-full mb-4 lg:mb-0" id="generateBtnRow">
+<div class="flex flex-row gap-2 w-full mb-4 lg:mb-0">
 <button id="generateBtnNormal" onclick="simulateAPIConnection('generateBtnNormal', false)" class="flex-1 bg-white/5 border border-white/20 text-white font-extrabold tracking-widest py-4 lg:py-5 rounded-xl hover:bg-white/10 transition shadow-lg uppercase text-[0.65rem] lg:text-sm">GENERATE</button>
 <button id="generateBtn8K" onclick="simulateAPIConnection('generateBtn8K', true)" class="flex-1 bg-white/5 border border-white/20 text-white font-extrabold tracking-widest py-4 lg:py-5 rounded-xl hover:bg-white/10 transition shadow-lg uppercase text-[0.65rem] lg:text-sm flex items-center justify-center gap-2">GENERATE <span class="text-yellow-400">8K</span></button>
 </div>
@@ -514,22 +516,14 @@ function enterDashboard(menuName) {
     const langDropdown = document.getElementById('langDropdown');
     if (langDropdown) { langDropdown.classList.add('hidden'); langDropdown.classList.remove('flex'); }
     window.uploadedBase64 = {};
-    window._sunumImageBase64 = null;
     ['boxScene','boxItem','boxRef','boxPresentationRender','boxDesign','boxSketch','boxMax','boxPlan'].forEach(id => {
         const box = document.getElementById(id);
         if(box) { const p = box.querySelector('.preview-container'); if(p) p.remove(); Array.from(box.children).forEach(c => c.style.display = ''); }
         const fi = document.getElementById(id.replace('box','file'));
         if(fi) fi.value = "";
     });
-    // Sunum görsel kutusunu da temizle
-    const sunumBox = document.getElementById('boxSunumImage');
-    if(sunumBox) { const sp = sunumBox.querySelector('.sunum-preview'); if(sp) sp.remove(); Array.from(sunumBox.children).forEach(c => c.style.display = ''); }
-    const fileSunum = document.getElementById('fileSunumImage');
-    if(fileSunum) { fileSunum.value = ''; }
     const promptArea = document.getElementById('promptArea');
     if(promptArea) promptArea.value = "";
-    const sunumPrompt = document.getElementById('sunumPromptArea');
-    if(sunumPrompt) sunumPrompt.value = "";
     const els = {
         dualUpload: document.getElementById('dualUpload'),
         sunumUploadArea: document.getElementById('sunumUploadArea'),
@@ -540,21 +534,9 @@ function enterDashboard(menuName) {
         netwrolerPanel: document.getElementById('netwrolerPanel')
     };
     for (const [k, el] of Object.entries(els)) { if(el) el.style.setProperty('display','none','important'); }
-    // Prompt ve generate butonları: PRESENTATION hariç her yerde göster
-    const promptSection = document.getElementById('promptSection');
-    const promptArea = document.getElementById('promptArea');
-    const generateBtnRow = document.getElementById('generateBtnRow');
     if (menuName === 'PRESENTATION') {
-        if(promptSection) promptSection.style.setProperty('display','none','important');
-        if(promptArea) promptArea.style.setProperty('display','none','important');
-        if(generateBtnRow) generateBtnRow.style.setProperty('display','none','important');
         if(els.sunumUploadArea) els.sunumUploadArea.style.setProperty('display','flex','important');
-    } else {
-        if(promptSection) promptSection.style.removeProperty('display');
-        if(promptArea) promptArea.style.removeProperty('display');
-        if(generateBtnRow) generateBtnRow.style.removeProperty('display');
-    }
-    if (menuName === 'DESIGN') {
+    } else if (menuName === 'DESIGN') {
         if(els.designUpload) els.designUpload.style.setProperty('display','flex','important');
         if(els.sketchUpload) els.sketchUpload.style.setProperty('display','flex','important');
         if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display','flex','important');
@@ -565,7 +547,7 @@ function enterDashboard(menuName) {
     } else if (menuName === 'PLAN') {
         if(els.planUpload) els.planUpload.style.setProperty('display','flex','important');
         if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display','flex','important');
-    } else if (menuName !== 'PRESENTATION') {
+    } else {
         if(els.dualUpload) els.dualUpload.style.setProperty('display','flex','important');
         if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display','flex','important');
     }
