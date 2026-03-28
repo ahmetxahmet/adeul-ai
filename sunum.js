@@ -3,8 +3,9 @@
 // Ana webhook: window.CLOUDFLARE_URL (adeul-ai-v2)
 // N8N routing: action === "presentation"
 // 2 AŞAMALI SİSTEM: TEXTURE RENDER + ANALİZ
-// BOARD 1: Yuvarlak malzeme daireleri
-// BOARD 2: Kare/dikdörtgen malzeme kartları
+// BOARD 1: Yuvarlak — premium klasik
+// BOARD 2: Kare — modern minimalist
+// Her iki board da YATAY A4 formatında (1100x780)
 // ==============================================================
 
 (function() {
@@ -30,7 +31,7 @@
     }
 
     // ============================================================
-    // CSS TEXTURE PATTERN GENERATOR — GENİŞLETİLMİŞ
+    // CSS TEXTURE PATTERN GENERATOR
     // ============================================================
     function getTextureCSS(title, hex) {
         var t = (title || '').toLowerCase();
@@ -43,7 +44,6 @@
         var D2 = 'rgba(' + Math.max(r-15,0) + ',' + Math.max(g-15,0) + ',' + Math.max(b-15,0) + ',0.4)';
         var base = 'background-color:' + hex + ';';
 
-        // LEATHER / DERİ / SUEDE / NUBUCK / HIDE
         if (t.match(/leather|deri|cuir|leder|pelle|cuero|couro|suede|nubuck|hide|aniline|nappa|faux\s?leather/i)) {
             return base + 'background-image:' +
                 'radial-gradient(ellipse at 20% 50%,' + D1 + ' 0%,transparent 50%),' +
@@ -52,7 +52,6 @@
                 'repeating-linear-gradient(45deg,transparent,' + D2 + ' 1px,transparent 2px,transparent 6px),' +
                 'repeating-linear-gradient(-30deg,transparent,' + D2 + ' 0.5px,transparent 1px,transparent 4px);';
         }
-        // CONCRETE / BETON / CEMENT / SCREED
         if (t.match(/concrete|beton|hormigón|béton|calcestruzzo|concreto|cement|çimento|screed|şap/i)) {
             return base + 'background-image:' +
                 'radial-gradient(circle at 30% 40%,' + D1 + ' 1px,transparent 2px),' +
@@ -63,7 +62,6 @@
                 'radial-gradient(circle at 55% 70%,' + D2 + ' 0.6px,transparent 1.5px);' +
                 'background-size:12px 12px,8px 8px,15px 15px,10px 10px,6px 6px,9px 9px;';
         }
-        // WOOD / AHŞAP / VENEER / PARQUET / LAMINATE
         if (t.match(/wood|ahşap|madera|bois|holz|legno|madeira|oak|walnut|teak|pine|cedar|birch|maple|cherry|ash|beech|mahogany|veneer|kaplama|parquet|parke|laminate|laminat|bamboo|bambu|plywood|kontrplak/i)) {
             return base + 'background-image:' +
                 'repeating-linear-gradient(90deg,transparent,' + D1 + ' 0.5px,transparent 1px,transparent 8px),' +
@@ -71,7 +69,6 @@
                 'repeating-linear-gradient(92deg,transparent,' + D2 + ' 0.4px,transparent 0.8px,transparent 5px),' +
                 'repeating-linear-gradient(88deg,transparent,' + L2 + ' 0.3px,transparent 0.5px,transparent 15px);';
         }
-        // STONE / TAŞ / MARBLE / MERMER / TRAVERTINE / GRANITE / ONYX
         if (t.match(/stone|taş|marble|mermer|travertine|granite|granit|piedra|pierre|stein|pietra|pedra|limestone|slate|onyx|quartzite|sandstone|basalt|dolomite|terrazzo/i)) {
             return base + 'background-image:' +
                 'linear-gradient(135deg,' + D1 + ' 0%,transparent 40%,transparent 60%,' + L1 + ' 100%),' +
@@ -80,27 +77,23 @@
                 'repeating-linear-gradient(160deg,transparent,' + D1 + ' 0.5px,transparent 1px,transparent 15px),' +
                 'repeating-linear-gradient(110deg,transparent,' + L2 + ' 0.3px,transparent 0.6px,transparent 20px);';
         }
-        // METAL / STEEL / ALUMINUM / BRASS / COPPER / CHROME / IRON
         if (t.match(/metal|aluminum|aluminium|steel|çelik|iron|demir|brass|pirinç|copper|bakır|bronze|bronz|chrome|krom|inox|stainless|zinc|çinko|titanium|titanyum|wrought|ferforje|powder.?coat|toz.?boya|matte.?black|matt/i)) {
             return base + 'background-image:' +
                 'repeating-linear-gradient(180deg,' + L1 + ' 0px,' + L1 + ' 1px,transparent 1px,transparent 3px),' +
                 'linear-gradient(180deg,' + D1 + ' 0%,' + L1 + ' 30%,' + D1 + ' 50%,' + L1 + ' 70%,' + D1 + ' 100%);';
         }
-        // FABRIC / KUMAŞ / TEXTILE / UPHOLSTERY
         if (t.match(/fabric|kumaş|textile|linen|keten|cotton|pamuk|velvet|kadife|silk|ipek|wool|yün|weave|örgü|tela|tissu|stoff|tessuto|tecido|chenille|şönil|boucle|bukle|tweed|canvas|upholster|döşeme|microfiber/i)) {
             return base + 'background-image:' +
                 'repeating-linear-gradient(0deg,transparent,' + D1 + ' 0.5px,transparent 1px,transparent 3px),' +
                 'repeating-linear-gradient(90deg,transparent,' + D2 + ' 0.5px,transparent 1px,transparent 3px);' +
                 'background-size:3px 3px;';
         }
-        // GLASS / CAM / MIRROR / AYNA
         if (t.match(/glass|cam|vidrio|verre|glas|vetro|vidro|mirror|ayna|crystal|kristal/i)) {
             return base + 'background-image:' +
                 'linear-gradient(135deg,rgba(255,255,255,0.35) 0%,transparent 50%,rgba(255,255,255,0.1) 100%),' +
                 'linear-gradient(225deg,rgba(255,255,255,0.2) 0%,transparent 40%),' +
                 'linear-gradient(315deg,rgba(255,255,255,0.1) 0%,transparent 30%);';
         }
-        // CERAMIC / PORCELAIN / TILE / SERAMİK / FAYANS
         if (t.match(/ceramic|seramik|porcelain|porselen|tile|fayans|kalebodur|karo|mosaic|mozaik|terracotta|majolica|zellige|encaustic/i)) {
             return base + 'background-image:' +
                 'linear-gradient(0deg,' + D2 + ' 1px,transparent 1px),' +
@@ -108,13 +101,11 @@
                 'radial-gradient(circle at 50% 50%,' + L1 + ' 0%,transparent 60%);' +
                 'background-size:20px 20px,20px 20px,20px 20px;';
         }
-        // PAINT / LACQUER / COATING / BOYA / LAK
         if (t.match(/paint|boya|lacquer|lak|coating|kaplama|enamel|emaye|varnish|vernik|finish|gloss|parlak|satin|matte|mat|semi.?gloss|powder/i)) {
             return base + 'background-image:' +
                 'radial-gradient(ellipse at 30% 30%,' + L1 + ' 0%,transparent 70%),' +
                 'radial-gradient(ellipse at 70% 70%,' + D2 + ' 0%,transparent 60%);';
         }
-        // PLASTER / STUCCO / SIVA / RENDER
         if (t.match(/plaster|sıva|stucco|render|alçı|gypsum|clay|kil|lime|kireç|adobe|rammed|earth|toprak/i)) {
             return base + 'background-image:' +
                 'radial-gradient(circle at 20% 30%,' + D1 + ' 0.5px,transparent 2px),' +
@@ -124,42 +115,36 @@
                 'radial-gradient(circle at 10% 90%,' + L1 + ' 0.6px,transparent 2px);' +
                 'background-size:8px 8px,6px 6px,10px 10px,7px 7px,9px 9px;';
         }
-        // BRICK / TUĞLA
         if (t.match(/brick|tuğla|ladrillo|brique|ziegel|mattone|tijolo/i)) {
             return base + 'background-image:' +
                 'linear-gradient(0deg,' + D1 + ' 2px,transparent 2px),' +
                 'linear-gradient(90deg,' + D2 + ' 1px,transparent 1px);' +
                 'background-size:30px 15px;';
         }
-        // RUBBER / PLASTIC / RESIN / SİLİKON / ACRYLIC
         if (t.match(/rubber|kauçuk|plastic|plastik|resin|reçine|silicone|silikon|acrylic|akrilik|polycarbonate|pvc|vinyl|vinil|nylon|naylon|fiberglass|epoxy|epoksi|polymer|polimer/i)) {
             return base + 'background-image:' +
                 'radial-gradient(circle at 50% 50%,' + L1 + ' 0%,transparent 80%),' +
                 'repeating-linear-gradient(135deg,transparent,' + D2 + ' 0.3px,transparent 0.6px,transparent 5px);';
         }
-        // WALLPAPER / DUVAR KAĞIDI
         if (t.match(/wallpaper|duvar.?kağıdı|papel|papier.?peint|tapete|carta.?da.?parati/i)) {
             return base + 'background-image:' +
                 'repeating-linear-gradient(45deg,transparent,' + D2 + ' 0.5px,transparent 1px,transparent 8px),' +
                 'repeating-linear-gradient(-45deg,transparent,' + L2 + ' 0.5px,transparent 1px,transparent 8px);' +
                 'background-size:8px 8px;';
         }
-        // CARPET / RUG / HALI / KİLİM
         if (t.match(/carpet|halı|rug|kilim|moquette|teppich|tappeto|alfombra|tapete/i)) {
             return base + 'background-image:' +
                 'repeating-linear-gradient(0deg,transparent,' + D1 + ' 0.8px,transparent 1.2px,transparent 2.5px),' +
                 'repeating-linear-gradient(90deg,transparent,' + D2 + ' 0.8px,transparent 1.2px,transparent 2.5px);' +
                 'background-size:2.5px 2.5px;';
         }
-        // ROPE / RATTAN / WICKER / HASIR / BAMBU ÖRGÜ
         if (t.match(/rope|halat|rattan|wicker|hasır|cane|jute|jüt|sisal|seagrass|raffia/i)) {
             return base + 'background-image:' +
                 'repeating-linear-gradient(60deg,transparent,' + D1 + ' 1px,transparent 1.5px,transparent 5px),' +
                 'repeating-linear-gradient(-60deg,transparent,' + D2 + ' 1px,transparent 1.5px,transparent 5px);' +
                 'background-size:5px 5px;';
         }
-
-        // ── DEFAULT: Güçlü cross-hatch + noise pattern ──
+        // DEFAULT
         return base + 'background-image:' +
             'radial-gradient(circle at 25% 25%,' + L1 + ' 0%,transparent 40%),' +
             'radial-gradient(circle at 75% 75%,' + D1 + ' 0%,transparent 40%),' +
@@ -227,10 +212,7 @@
         var lang = getLang();
         var langCode = (document.getElementById('activeCode') || {}).innerText || 'EN';
 
-        if (!window._sunumImageBase64) {
-            alert(lang.noImage);
-            return;
-        }
+        if (!window._sunumImageBase64) { alert(lang.noImage); return; }
 
         if (window.deductCredit) {
             var ok = await window.deductCredit('PRESENTATION', 1);
@@ -258,44 +240,31 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-
             if (!response.ok) throw new Error('HTTP ' + response.status);
 
             var arrayBuffer = await response.arrayBuffer();
             var rawText = new TextDecoder('utf-8').decode(arrayBuffer);
             var data = JSON.parse(rawText);
-
             var result = Array.isArray(data) ? data[0] : data;
 
             var textureBase64 = result.textureImage || '';
             var analysis = result.analysis || {};
 
-            // FALLBACK
             if (!result.analysis && !result.textureImage) {
                 var analysisText = '';
                 if (result.candidates && result.candidates[0] && result.candidates[0].content) {
                     var parts = result.candidates[0].content.parts;
-                    for (var i = 0; i < parts.length; i++) {
-                        if (parts[i].text) analysisText = parts[i].text;
-                    }
-                } else if (result.output) {
-                    analysisText = result.output;
-                } else if (result.text) {
-                    analysisText = result.text;
-                }
-                try {
-                    analysis = JSON.parse(analysisText.replace(/```json/g, '').replace(/```/g, '').trim());
-                } catch (e) {
-                    console.error('Analysis JSON parse error:', e);
-                    analysis = { projectName: 'ANALYSIS', materials: [], colors: [] };
-                }
+                    for (var i = 0; i < parts.length; i++) { if (parts[i].text) analysisText = parts[i].text; }
+                } else if (result.output) { analysisText = result.output; }
+                else if (result.text) { analysisText = result.text; }
+                try { analysis = JSON.parse(analysisText.replace(/```json/g, '').replace(/```/g, '').trim()); }
+                catch (e) { analysis = { projectName: 'ANALYSIS', materials: [], colors: [] }; }
             }
 
             window._sunumLastAnalysis = analysis;
             window._sunumLastLangCode = langCode;
             window._sunumLastTextureBase64 = textureBase64;
             window._sunumActiveBoardType = 1;
-
             renderBoard(analysis, langCode, textureBase64, 1);
 
         } catch (error) {
@@ -308,9 +277,6 @@
         }
     };
 
-    // ============================================================
-    // switchBoard
-    // ============================================================
     window.switchSunumBoard = function(boardType) {
         if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
         if (!window._sunumLastAnalysis) return;
@@ -319,7 +285,8 @@
     };
 
     // ============================================================
-    // renderBoard
+    // renderBoard — BOARD 1 (yuvarlak) & BOARD 2 (kare)
+    // Her iki board da YATAY A4: 1100x780px
     // ============================================================
     function renderBoard(analysis, langCode, textureBase64, boardType) {
         var lang = getLang();
@@ -327,99 +294,156 @@
         var materials = analysis.materials || [];
         var colors = analysis.colors || [];
         var textureSrc = textureBase64 ? ('data:image/png;base64,' + textureBase64) : ('data:image/jpeg;base64,' + window._sunumImageBase64);
-
         var isBoard2 = (boardType === 2);
 
-        // ── MALZEME KARTLARI ──
-        var materialsHTML = '';
-        for (var i = 0; i < materials.length; i++) {
-            var m = materials[i];
-            var hex = m.hex || m.hexColor || '#CCC';
-            var textureStyle = getTextureCSS(m.title || '', hex);
-
-            if (isBoard2) {
-                materialsHTML += '<div class="mb-5 border border-gray-200 rounded-lg overflow-hidden shadow-sm">' +
-                    '<div class="w-full h-20" style="' + textureStyle + '"></div>' +
-                    '<div class="p-3 bg-white">' +
-                    '<div contenteditable="true" class="text-[0.65rem] font-bold tracking-[0.2em] uppercase text-gray-800 outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + (m.title || lang.material + ' ' + (i+1)) + '</div>' +
-                    '<div contenteditable="true" class="text-[0.5rem] tracking-wider text-gray-500 uppercase mt-1 outline-none hover:bg-gray-100 px-1 rounded cursor-text leading-relaxed">' + (m.desc || '') + '</div>' +
-                    '<div class="text-[0.4rem] tracking-widest text-gray-400 mt-1 px-1">' + hex + '</div>' +
-                    '</div></div>';
-            } else {
-                materialsHTML += '<div class="flex items-center gap-4 mb-5">' +
-                    '<div class="w-14 h-14 rounded-full shadow-md border-2 border-gray-200 flex-shrink-0" style="' + textureStyle + '"></div>' +
-                    '<div class="flex-1">' +
-                    '<div contenteditable="true" class="text-[0.7rem] font-bold tracking-[0.2em] uppercase text-gray-800 outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + (m.title || lang.material + ' ' + (i+1)) + '</div>' +
-                    '<div contenteditable="true" class="text-[0.55rem] tracking-wider text-gray-500 uppercase mt-0.5 outline-none hover:bg-gray-100 px-1 rounded cursor-text leading-relaxed">' + (m.desc || '') + '</div>' +
-                    '</div></div>';
-            }
-        }
-
-        // ── RENK KARTELASİ ──
-        var colorsHTML = '';
-        for (var j = 0; j < colors.length; j++) {
-            var c = colors[j];
-            var chex = typeof c === 'string' ? c : (c.hex || '#CCC');
-            var ral = typeof c === 'string' ? '' : (c.ral || '');
-            var name = typeof c === 'string' ? '' : (c.name || '');
-
-            if (isBoard2) {
-                colorsHTML += '<div class="flex-1 flex flex-col items-center gap-1.5 min-w-[70px]">' +
-                    '<div class="w-full h-14 rounded-lg shadow-sm border border-gray-200" style="background-color:' + chex + '"></div>' +
-                    '<span contenteditable="true" class="text-[0.45rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + chex + '</span>' +
-                    (ral ? '<span contenteditable="true" class="text-[0.4rem] tracking-wider text-gray-400 font-medium outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + ral + '</span>' : '') +
-                    (name ? '<span contenteditable="true" class="text-[0.35rem] tracking-wider text-gray-400 outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + name + '</span>' : '') +
-                    '</div>';
-            } else {
-                colorsHTML += '<div class="flex-1 flex flex-col items-center gap-1.5 min-w-[80px]">' +
-                    '<div class="w-full h-16 rounded shadow-inner border border-gray-200" style="background-color:' + chex + '"></div>' +
-                    '<span contenteditable="true" class="text-[0.5rem] tracking-widest text-gray-600 font-bold outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + chex + '</span>' +
-                    (ral ? '<span contenteditable="true" class="text-[0.45rem] tracking-wider text-gray-400 font-medium outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + ral + '</span>' : '') +
-                    (name ? '<span contenteditable="true" class="text-[0.4rem] tracking-wider text-gray-400 outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + name + '</span>' : '') +
-                    '</div>';
-            }
-        }
-
         // ── BOARD SELECTOR ──
-        var b1Active = !isBoard2 ? 'bg-white text-gray-800 shadow-sm' : 'bg-transparent text-gray-400 hover:text-gray-600';
-        var b2Active = isBoard2 ? 'bg-white text-gray-800 shadow-sm' : 'bg-transparent text-gray-400 hover:text-gray-600';
-        var boardSelectorHTML = '<div class="flex gap-1 bg-gray-100 rounded-lg p-1">' +
-            '<button onclick="switchSunumBoard(1)" class="px-4 py-1.5 rounded-md text-[0.5rem] font-bold tracking-[0.2em] uppercase transition cursor-pointer ' + b1Active + '">' + lang.board1 + '</button>' +
-            '<button onclick="switchSunumBoard(2)" class="px-4 py-1.5 rounded-md text-[0.5rem] font-bold tracking-[0.2em] uppercase transition cursor-pointer ' + b2Active + '">' + lang.board2 + '</button>' +
+        var b1Active = !isBoard2 ? 'background:#1a1a1a;color:#fff;' : 'background:transparent;color:#999;';
+        var b2Active = isBoard2 ? 'background:#1a1a1a;color:#fff;' : 'background:transparent;color:#999;';
+        var boardSelectorHTML = '<div style="display:flex;gap:2px;background:#f0f0f0;border-radius:8px;padding:2px;">' +
+            '<button onclick="switchSunumBoard(1)" style="padding:5px 14px;border-radius:6px;font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.2s;' + b1Active + '">' + lang.board1 + '</button>' +
+            '<button onclick="switchSunumBoard(2)" style="padding:5px 14px;border-radius:6px;font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;border:none;cursor:pointer;transition:all 0.2s;' + b2Active + '">' + lang.board2 + '</button>' +
             '</div>';
 
-        // ── SOL PANEL (w-[60%]) ──
-        var leftPanelHTML = '<div class="w-[60%] flex flex-col justify-center">' +
-            '<div class="bg-gray-50 p-4 border border-gray-100 rounded shadow-sm">' +
-            '<img src="' + textureSrc + '" class="w-full h-auto object-contain max-h-[480px] mx-auto" style="mix-blend-mode:multiply;">' +
-            '</div>' +
-            '</div>';
+        var boardHTML = '';
 
-        // ── SAĞ PANEL (w-[40%]) ──
-        var rightPanelHTML = '<div class="w-[40%] flex flex-col justify-between pl-6 border-l border-gray-100"><div>' +
-            '<h3 contenteditable="true" class="text-[0.6rem] tracking-[0.3em] text-gray-400 font-bold uppercase mb-5 border-b border-gray-100 pb-2 outline-none hover:bg-gray-50 cursor-text px-1">' + lang.materials + '</h3>' +
-            materialsHTML + '</div>' +
-            '<div class="mt-6 pt-5 border-t border-gray-100">' +
-            '<h3 contenteditable="true" class="text-[0.6rem] tracking-[0.3em] text-gray-400 font-bold uppercase mb-4 outline-none hover:bg-gray-50 cursor-text px-1">' + lang.colorPalette + '</h3>' +
-            '<div class="flex gap-3">' + colorsHTML + '</div></div></div>';
+        if (isBoard2) {
+            // ══════════════════════════════════════════════════
+            // BOARD 2 — MODERN MİNİMALİST (YATAY A4)
+            // Sol: görsel, Sağ üst: kare malzeme grid, Sağ alt: renk barı
+            // ══════════════════════════════════════════════════
 
-        document.getElementById('sunumBoardContainer').innerHTML =
-            '<div id="sunumBoardPrint" class="bg-white w-[1100px] min-h-[780px] p-12 shadow-2xl rounded-sm relative" style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;">' +
-            '<div class="flex justify-between items-end border-b-2 border-gray-200 pb-4 mb-8"><div>' +
-            '<h1 contenteditable="true" class="text-2xl font-light tracking-[0.25em] uppercase text-gray-800 outline-none hover:bg-gray-50 rounded px-2 -ml-2 cursor-text">' + lang.title + '</h1>' +
-            '<p contenteditable="true" class="text-[0.65rem] tracking-[0.3em] text-gray-400 uppercase mt-2 font-bold outline-none hover:bg-gray-50 rounded px-2 -ml-2 cursor-text">' + lang.project + ': ' + projectName + '</p>' +
-            '</div><div class="flex flex-col items-end gap-2">' +
-            '<div class="text-[0.55rem] font-bold tracking-[0.4em] text-gray-300 uppercase">ADEULL AI STUDIO</div>' +
-            boardSelectorHTML +
-            '</div></div>' +
-            '<div class="flex gap-8">' +
-            leftPanelHTML +
-            rightPanelHTML +
-            '</div>' +
-            '<div class="absolute bottom-4 left-12 right-12 flex justify-between items-end opacity-30">' +
-            '<span class="text-[0.4rem] tracking-[0.3em] uppercase">ADEULL AI</span>' +
-            '<span class="text-[0.4rem] tracking-[0.2em]">' + new Date().toLocaleDateString() + '</span></div></div>';
+            // Kare malzeme kartları — yatay grid (2 veya 3 sütun)
+            var matGridHTML = '';
+            for (var i = 0; i < materials.length; i++) {
+                var m = materials[i];
+                var hex = m.hex || m.hexColor || '#CCC';
+                var textureStyle = getTextureCSS(m.title || '', hex);
+                matGridHTML += '<div style="flex:1;min-width:100px;max-width:160px;">' +
+                    '<div style="width:100%;height:60px;border-radius:4px;' + textureStyle + 'border:1px solid rgba(0,0,0,0.08);"></div>' +
+                    '<div contenteditable="true" style="font-size:8px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#333;margin-top:6px;outline:none;cursor:text;padding:1px 2px;">' + (m.title || lang.material + ' ' + (i+1)) + '</div>' +
+                    '<div contenteditable="true" style="font-size:7px;letter-spacing:0.08em;color:#888;margin-top:2px;outline:none;cursor:text;padding:1px 2px;line-height:1.4;text-transform:uppercase;">' + (m.desc || '') + '</div>' +
+                    '</div>';
+            }
 
+            // Renk barı — yatay
+            var colorBarHTML = '';
+            for (var j = 0; j < colors.length; j++) {
+                var c = colors[j];
+                var chex = typeof c === 'string' ? c : (c.hex || '#CCC');
+                var ral = typeof c === 'string' ? '' : (c.ral || '');
+                var cname = typeof c === 'string' ? '' : (c.name || '');
+                colorBarHTML += '<div style="flex:1;text-align:center;">' +
+                    '<div style="width:100%;height:40px;background-color:' + chex + ';border-radius:4px;border:1px solid rgba(0,0,0,0.06);"></div>' +
+                    '<div contenteditable="true" style="font-size:7px;font-weight:700;letter-spacing:0.1em;color:#555;margin-top:4px;outline:none;cursor:text;">' + chex + '</div>' +
+                    (ral ? '<div contenteditable="true" style="font-size:6px;letter-spacing:0.08em;color:#999;margin-top:1px;outline:none;cursor:text;">' + ral + '</div>' : '') +
+                    (cname ? '<div contenteditable="true" style="font-size:5.5px;letter-spacing:0.08em;color:#aaa;margin-top:1px;outline:none;cursor:text;">' + cname + '</div>' : '') +
+                    '</div>';
+            }
+
+            boardHTML = '<div id="sunumBoardPrint" style="width:1100px;height:780px;background:#fff;padding:40px 48px;position:relative;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;box-shadow:0 25px 50px rgba(0,0,0,0.15);overflow:hidden;">' +
+                // Header
+                '<div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #1a1a1a;padding-bottom:14px;margin-bottom:24px;">' +
+                '<div>' +
+                '<h1 contenteditable="true" style="font-size:22px;font-weight:300;letter-spacing:0.25em;text-transform:uppercase;color:#1a1a1a;margin:0;outline:none;cursor:text;">' + lang.title + '</h1>' +
+                '<p contenteditable="true" style="font-size:9px;letter-spacing:0.3em;color:#999;text-transform:uppercase;margin:6px 0 0;font-weight:700;outline:none;cursor:text;">' + lang.project + ': ' + projectName + '</p>' +
+                '</div>' +
+                '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">' +
+                '<div style="font-size:8px;font-weight:700;letter-spacing:0.4em;color:#ccc;text-transform:uppercase;">ADEULL AI STUDIO</div>' +
+                boardSelectorHTML +
+                '</div></div>' +
+                // Body — yatay layout
+                '<div style="display:flex;gap:28px;height:calc(100% - 120px);">' +
+                // Sol: Görsel
+                '<div style="width:58%;display:flex;align-items:center;justify-content:center;background:#fafafa;border:1px solid #eee;border-radius:6px;padding:12px;">' +
+                '<img src="' + textureSrc + '" style="max-width:100%;max-height:100%;object-fit:contain;">' +
+                '</div>' +
+                // Sağ: Malzemeler + Renkler
+                '<div style="width:42%;display:flex;flex-direction:column;justify-content:space-between;">' +
+                // Malzeme grid
+                '<div>' +
+                '<div contenteditable="true" style="font-size:8px;letter-spacing:0.3em;color:#999;font-weight:700;text-transform:uppercase;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #eee;outline:none;cursor:text;">' + lang.materials + '</div>' +
+                '<div style="display:flex;flex-wrap:wrap;gap:12px;">' + matGridHTML + '</div>' +
+                '</div>' +
+                // Renk barı
+                '<div style="margin-top:16px;padding-top:12px;border-top:1px solid #eee;">' +
+                '<div contenteditable="true" style="font-size:8px;letter-spacing:0.3em;color:#999;font-weight:700;text-transform:uppercase;margin-bottom:8px;outline:none;cursor:text;">' + lang.colorPalette + '</div>' +
+                '<div style="display:flex;gap:8px;">' + colorBarHTML + '</div>' +
+                '</div>' +
+                '</div></div>' +
+                // Footer
+                '<div style="position:absolute;bottom:14px;left:48px;right:48px;display:flex;justify-content:space-between;opacity:0.25;">' +
+                '<span style="font-size:7px;letter-spacing:0.3em;text-transform:uppercase;">ADEULL AI</span>' +
+                '<span style="font-size:7px;letter-spacing:0.2em;">' + new Date().toLocaleDateString() + '</span>' +
+                '</div></div>';
+
+        } else {
+            // ══════════════════════════════════════════════════
+            // BOARD 1 — PREMİUM KLASİK (YATAY A4)
+            // Sol: görsel, Sağ: yuvarlak malzeme + renk kartelası
+            // ══════════════════════════════════════════════════
+
+            var materialsHTML = '';
+            for (var i2 = 0; i2 < materials.length; i2++) {
+                var m2 = materials[i2];
+                var hex2 = m2.hex || m2.hexColor || '#CCC';
+                var ts2 = getTextureCSS(m2.title || '', hex2);
+                materialsHTML += '<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">' +
+                    '<div style="width:48px;height:48px;border-radius:50%;flex-shrink:0;border:2px solid #e5e5e5;box-shadow:0 2px 8px rgba(0,0,0,0.08);' + ts2 + '"></div>' +
+                    '<div style="flex:1;">' +
+                    '<div contenteditable="true" style="font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#333;outline:none;cursor:text;padding:1px 2px;">' + (m2.title || lang.material + ' ' + (i2+1)) + '</div>' +
+                    '<div contenteditable="true" style="font-size:7.5px;letter-spacing:0.06em;color:#888;margin-top:3px;outline:none;cursor:text;padding:1px 2px;line-height:1.4;text-transform:uppercase;">' + (m2.desc || '') + '</div>' +
+                    '</div></div>';
+            }
+
+            var colorsHTML = '';
+            for (var j2 = 0; j2 < colors.length; j2++) {
+                var c2 = colors[j2];
+                var chex2 = typeof c2 === 'string' ? c2 : (c2.hex || '#CCC');
+                var ral2 = typeof c2 === 'string' ? '' : (c2.ral || '');
+                var name2 = typeof c2 === 'string' ? '' : (c2.name || '');
+                colorsHTML += '<div style="flex:1;text-align:center;min-width:65px;">' +
+                    '<div style="width:100%;height:48px;border-radius:4px;background-color:' + chex2 + ';border:1px solid rgba(0,0,0,0.06);box-shadow:inset 0 2px 4px rgba(0,0,0,0.06);"></div>' +
+                    '<div contenteditable="true" style="font-size:7px;font-weight:700;letter-spacing:0.1em;color:#555;margin-top:5px;outline:none;cursor:text;">' + chex2 + '</div>' +
+                    (ral2 ? '<div contenteditable="true" style="font-size:6px;letter-spacing:0.08em;color:#999;font-weight:500;margin-top:1px;outline:none;cursor:text;">' + ral2 + '</div>' : '') +
+                    (name2 ? '<div contenteditable="true" style="font-size:5.5px;letter-spacing:0.08em;color:#aaa;margin-top:1px;outline:none;cursor:text;">' + name2 + '</div>' : '') +
+                    '</div>';
+            }
+
+            boardHTML = '<div id="sunumBoardPrint" style="width:1100px;height:780px;background:#fff;padding:40px 48px;position:relative;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;box-shadow:0 25px 50px rgba(0,0,0,0.15);overflow:hidden;">' +
+                // Header — ince gold accent çizgi
+                '<div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #e5e5e5;padding-bottom:14px;margin-bottom:24px;">' +
+                '<div>' +
+                '<h1 contenteditable="true" style="font-size:22px;font-weight:300;letter-spacing:0.25em;text-transform:uppercase;color:#1a1a1a;margin:0;outline:none;cursor:text;">' + lang.title + '</h1>' +
+                '<p contenteditable="true" style="font-size:9px;letter-spacing:0.3em;color:#999;text-transform:uppercase;margin:6px 0 0;font-weight:700;outline:none;cursor:text;">' + lang.project + ': ' + projectName + '</p>' +
+                '</div>' +
+                '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">' +
+                '<div style="font-size:8px;font-weight:700;letter-spacing:0.4em;color:#ccc;text-transform:uppercase;">ADEULL AI STUDIO</div>' +
+                boardSelectorHTML +
+                '</div></div>' +
+                // Body
+                '<div style="display:flex;gap:28px;height:calc(100% - 120px);">' +
+                // Sol: Görsel
+                '<div style="width:60%;display:flex;align-items:center;justify-content:center;background:#fafafa;border:1px solid #f0f0f0;border-radius:4px;padding:14px;">' +
+                '<img src="' + textureSrc + '" style="max-width:100%;max-height:100%;object-fit:contain;">' +
+                '</div>' +
+                // Sağ: malzeme + renk
+                '<div style="width:40%;display:flex;flex-direction:column;justify-content:space-between;padding-left:20px;border-left:1px solid #f0f0f0;">' +
+                '<div>' +
+                '<div contenteditable="true" style="font-size:8px;letter-spacing:0.3em;color:#999;font-weight:700;text-transform:uppercase;margin-bottom:14px;padding-bottom:6px;border-bottom:1px solid #f0f0f0;outline:none;cursor:text;">' + lang.materials + '</div>' +
+                materialsHTML +
+                '</div>' +
+                '<div style="margin-top:14px;padding-top:12px;border-top:1px solid #f0f0f0;">' +
+                '<div contenteditable="true" style="font-size:8px;letter-spacing:0.3em;color:#999;font-weight:700;text-transform:uppercase;margin-bottom:10px;outline:none;cursor:text;">' + lang.colorPalette + '</div>' +
+                '<div style="display:flex;gap:8px;">' + colorsHTML + '</div>' +
+                '</div></div></div>' +
+                // Footer
+                '<div style="position:absolute;bottom:14px;left:48px;right:48px;display:flex;justify-content:space-between;opacity:0.25;">' +
+                '<span style="font-size:7px;letter-spacing:0.3em;text-transform:uppercase;">ADEULL AI</span>' +
+                '<span style="font-size:7px;letter-spacing:0.2em;">' + new Date().toLocaleDateString() + '</span>' +
+                '</div></div>';
+        }
+
+        document.getElementById('sunumBoardContainer').innerHTML = boardHTML;
         showSunumOverlay();
     }
 
