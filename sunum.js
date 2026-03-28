@@ -2,6 +2,7 @@
 // SUNUM.JS — ADEULL AI PRESENTATION MODULE
 // Ana webhook: window.CLOUDFLARE_URL (adeul-ai-v2)
 // N8N routing: action === "presentation"
+// 2 AŞAMALI SİSTEM: TEXTURE RENDER + ANALİZ
 // ==============================================================
 
 (function() {
@@ -69,6 +70,11 @@
         if (fi) { fi.value = ''; fi.type = 'text'; fi.type = 'file'; }
     };
 
+    // ============================================================
+    // startSunumAnalysis — 2 AŞAMALI SİSTEM DESTEĞİ
+    // N8N'den gelen response: { textureImage: "base64...", analysis: {...} }
+    // Fallback: eski tek-JSON formatı da desteklenir
+    // ============================================================
     window.startSunumAnalysis = async function() {
         if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
 
@@ -116,30 +122,33 @@
             var data = JSON.parse(rawText);
 
             var result = Array.isArray(data) ? data[0] : data;
-            var analysisText = '';
 
-            if (result.candidates && result.candidates[0] && result.candidates[0].content) {
-                var parts = result.candidates[0].content.parts;
-                for (var i = 0; i < parts.length; i++) {
-                    if (parts[i].text) analysisText = parts[i].text;
+            // ── YENİ 2 AŞAMALI FORMAT: { textureImage, analysis } ──
+            var textureBase64 = result.textureImage || '';
+            var analysis = result.analysis || {};
+
+            // ── FALLBACK: eski format gelirse (geçiş dönemi) ──
+            if (!result.analysis && !result.textureImage) {
+                var analysisText = '';
+                if (result.candidates && result.candidates[0] && result.candidates[0].content) {
+                    var parts = result.candidates[0].content.parts;
+                    for (var i = 0; i < parts.length; i++) {
+                        if (parts[i].text) analysisText = parts[i].text;
+                    }
+                } else if (result.output) {
+                    analysisText = result.output;
+                } else if (result.text) {
+                    analysisText = result.text;
                 }
-            } else if (result.output) {
-                analysisText = result.output;
-            } else if (result.text) {
-                analysisText = result.text;
-            } else {
-                analysisText = JSON.stringify(result);
+                try {
+                    analysis = JSON.parse(analysisText.replace(/```json/g, '').replace(/```/g, '').trim());
+                } catch (e) {
+                    console.error('Analysis JSON parse error:', e);
+                    analysis = { projectName: 'ANALYSIS', materials: [], colors: [] };
+                }
             }
 
-            var analysis = {};
-            try {
-                analysis = JSON.parse(analysisText.replace(/```json/g, '').replace(/```/g, '').trim());
-            } catch (e) {
-                console.error('Analysis JSON parse error:', e);
-                analysis = { projectName: 'ANALYSIS', materials: [], colors: [] };
-            }
-
-            renderBoard(analysis, langCode);
+            renderBoard(analysis, langCode, textureBase64);
 
         } catch (error) {
             console.error('Sunum Error:', error);
@@ -151,12 +160,16 @@
         }
     };
 
-    function renderBoard(analysis, langCode) {
+    // ============================================================
+    // renderBoard — İKİLİ GÖRSEL LAYOUT (orijinal + texture render)
+    // ============================================================
+    function renderBoard(analysis, langCode, textureBase64) {
         var lang = getLang();
         var projectName = (analysis.projectName || 'CONCEPT BOARD').toUpperCase();
         var materials = analysis.materials || [];
         var colors = analysis.colors || [];
         var imageSrc = 'data:image/jpeg;base64,' + window._sunumImageBase64;
+        var textureSrc = textureBase64 ? ('data:image/png;base64,' + textureBase64) : '';
 
         var materialsHTML = '';
         for (var i = 0; i < materials.length; i++) {
@@ -184,6 +197,22 @@
                 '</div>';
         }
 
+        // ── SOL PANEL: Orijinal + Texture Render (ikili layout) ──
+        var leftPanelHTML = '<div class="w-[55%] flex flex-col gap-4 justify-center">' +
+            '<div class="bg-gray-50 p-3 border border-gray-100 rounded shadow-sm">' +
+            '<p class="text-[0.45rem] tracking-[0.3em] text-gray-400 uppercase font-bold mb-2">ORIGINAL</p>' +
+            '<img src="' + imageSrc + '" class="w-full h-auto object-contain max-h-[200px] mx-auto" style="mix-blend-mode:multiply;">' +
+            '</div>';
+
+        if (textureSrc) {
+            leftPanelHTML += '<div class="bg-gray-50 p-3 border border-gray-100 rounded shadow-sm">' +
+                '<p class="text-[0.45rem] tracking-[0.3em] text-gray-400 uppercase font-bold mb-2">MATERIAL ANALYSIS</p>' +
+                '<img src="' + textureSrc + '" class="w-full h-auto object-contain max-h-[200px] mx-auto" style="mix-blend-mode:multiply;">' +
+                '</div>';
+        }
+
+        leftPanelHTML += '</div>';
+
         document.getElementById('sunumBoardContainer').innerHTML =
             '<div id="sunumBoardPrint" class="bg-white w-[1100px] min-h-[780px] p-12 shadow-2xl rounded-sm relative" style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;">' +
             '<div class="flex justify-between items-end border-b-2 border-gray-200 pb-4 mb-8"><div>' +
@@ -191,7 +220,7 @@
             '<p contenteditable="true" class="text-[0.65rem] tracking-[0.3em] text-gray-400 uppercase mt-2 font-bold outline-none hover:bg-gray-50 rounded px-2 -ml-2 cursor-text">' + lang.project + ': ' + projectName + '</p>' +
             '</div><div class="text-[0.55rem] font-bold tracking-[0.4em] text-gray-300 uppercase">ADEULL AI STUDIO</div></div>' +
             '<div class="flex gap-10">' +
-            '<div class="w-[55%] flex flex-col justify-center"><div class="bg-gray-50 p-4 border border-gray-100 rounded shadow-sm"><img src="' + imageSrc + '" class="w-full h-auto object-contain max-h-[420px] mx-auto" style="mix-blend-mode:multiply;"></div></div>' +
+            leftPanelHTML +
             '<div class="w-[45%] flex flex-col justify-between pl-6 border-l border-gray-100"><div>' +
             '<h3 contenteditable="true" class="text-[0.6rem] tracking-[0.3em] text-gray-400 font-bold uppercase mb-5 border-b border-gray-100 pb-2 outline-none hover:bg-gray-50 cursor-text px-1">' + lang.materials + '</h3>' +
             materialsHTML + '</div>' +
