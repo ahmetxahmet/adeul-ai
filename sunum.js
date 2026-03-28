@@ -27,6 +27,78 @@
         return sunumDict[code] || sunumDict['EN'];
     }
 
+    // ============================================================
+    // CSS TEXTURE PATTERN GENERATOR
+    // Malzeme adına göre CSS background pattern üretir
+    // ============================================================
+    function getTextureCSS(title, hex) {
+        var t = (title || '').toLowerCase();
+        var r = parseInt(hex.slice(1,3),16);
+        var g = parseInt(hex.slice(3,5),16);
+        var b = parseInt(hex.slice(5,7),16);
+        var lighter = 'rgba(' + Math.min(r+30,255) + ',' + Math.min(g+30,255) + ',' + Math.min(b+30,255) + ',0.6)';
+        var darker = 'rgba(' + Math.max(r-25,0) + ',' + Math.max(g-25,0) + ',' + Math.max(b-25,0) + ',0.5)';
+        var base = 'background-color:' + hex + ';';
+
+        // LEATHER / DERİ
+        if (t.match(/leather|deri|cuir|leder|pelle|cuero|couro/i)) {
+            return base + 'background-image:' +
+                'radial-gradient(ellipse at 20% 50%,' + darker + ' 0%,transparent 50%),' +
+                'radial-gradient(ellipse at 80% 20%,' + darker + ' 0%,transparent 40%),' +
+                'radial-gradient(ellipse at 40% 80%,' + lighter + ' 0%,transparent 45%),' +
+                'repeating-linear-gradient(45deg,transparent,' + darker + ' 1px,transparent 2px,transparent 6px),' +
+                'repeating-linear-gradient(-30deg,transparent,' + darker + ' 0.5px,transparent 1px,transparent 4px);';
+        }
+        // CONCRETE / BETON
+        if (t.match(/concrete|beton|hormigón|béton|calcestruzzo|concreto/i)) {
+            return base + 'background-image:' +
+                'radial-gradient(circle at 30% 40%,' + darker + ' 1px,transparent 2px),' +
+                'radial-gradient(circle at 70% 60%,' + darker + ' 0.5px,transparent 1.5px),' +
+                'radial-gradient(circle at 50% 20%,' + lighter + ' 1px,transparent 3px),' +
+                'radial-gradient(circle at 15% 80%,' + darker + ' 0.8px,transparent 2px),' +
+                'radial-gradient(circle at 85% 30%,' + lighter + ' 0.5px,transparent 1px);' +
+                'background-size:12px 12px,8px 8px,15px 15px,10px 10px,6px 6px;';
+        }
+        // WOOD / AHŞAP
+        if (t.match(/wood|ahşap|madera|bois|holz|legno|madeira|oak|walnut|teak|pine|cedar|birch/i)) {
+            return base + 'background-image:' +
+                'repeating-linear-gradient(90deg,transparent,' + darker + ' 0.5px,transparent 1px,transparent 8px),' +
+                'repeating-linear-gradient(85deg,transparent,' + lighter + ' 0.3px,transparent 0.6px,transparent 12px),' +
+                'repeating-linear-gradient(92deg,transparent,' + darker + ' 0.4px,transparent 0.8px,transparent 5px);';
+        }
+        // STONE / TAŞ / MARBLE / MERMER / TRAVERTINE
+        if (t.match(/stone|taş|marble|mermer|travertine|granite|granit|piedra|pierre|stein|pietra|pedra|limestone|slate/i)) {
+            return base + 'background-image:' +
+                'linear-gradient(135deg,' + darker + ' 0%,transparent 40%,transparent 60%,' + lighter + ' 100%),' +
+                'radial-gradient(ellipse at 25% 75%,' + darker + ' 0%,transparent 50%),' +
+                'radial-gradient(ellipse at 75% 25%,' + lighter + ' 0%,transparent 45%),' +
+                'repeating-linear-gradient(160deg,transparent,' + darker + ' 0.5px,transparent 1px,transparent 15px);';
+        }
+        // METAL
+        if (t.match(/metal|aluminum|aluminium|steel|çelik|iron|demir|brass|copper|bronze|chrome|inox|stainless/i)) {
+            return base + 'background-image:' +
+                'repeating-linear-gradient(180deg,' + lighter + ' 0px,' + lighter + ' 1px,transparent 1px,transparent 3px),' +
+                'linear-gradient(180deg,' + darker + ' 0%,' + lighter + ' 30%,' + darker + ' 50%,' + lighter + ' 70%,' + darker + ' 100%);';
+        }
+        // FABRIC / KUMAŞ / TEXTILE
+        if (t.match(/fabric|kumaş|textile|linen|cotton|velvet|silk|wool|weave|tela|tissu|stoff|tessuto|tecido/i)) {
+            return base + 'background-image:' +
+                'repeating-linear-gradient(0deg,transparent,' + darker + ' 0.5px,transparent 1px,transparent 3px),' +
+                'repeating-linear-gradient(90deg,transparent,' + darker + ' 0.5px,transparent 1px,transparent 3px);' +
+                'background-size:3px 3px;';
+        }
+        // GLASS / CAM
+        if (t.match(/glass|cam|vidrio|verre|glas|vetro|vidro/i)) {
+            return base + 'background-image:' +
+                'linear-gradient(135deg,rgba(255,255,255,0.3) 0%,transparent 50%,rgba(255,255,255,0.1) 100%),' +
+                'linear-gradient(225deg,rgba(255,255,255,0.15) 0%,transparent 40%);';
+        }
+        // DEFAULT — subtle noise pattern
+        return base + 'background-image:' +
+            'radial-gradient(circle at 25% 25%,' + lighter + ' 0%,transparent 50%),' +
+            'radial-gradient(circle at 75% 75%,' + darker + ' 0%,transparent 50%);';
+    }
+
     window._sunumImageBase64 = null;
 
     window.sunumUploadImage = function() {
@@ -72,8 +144,6 @@
 
     // ============================================================
     // startSunumAnalysis — 2 AŞAMALI SİSTEM DESTEĞİ
-    // N8N'den gelen response: { textureImage: "base64...", analysis: {...} }
-    // Fallback: eski tek-JSON formatı da desteklenir
     // ============================================================
     window.startSunumAnalysis = async function() {
         if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
@@ -161,28 +231,30 @@
     };
 
     // ============================================================
-    // renderBoard — İKİLİ GÖRSEL LAYOUT (orijinal + texture render)
+    // renderBoard — SADECE MATERIAL ANALYSIS + CSS TEXTURE DAİRELER
     // ============================================================
     function renderBoard(analysis, langCode, textureBase64) {
         var lang = getLang();
         var projectName = (analysis.projectName || 'CONCEPT BOARD').toUpperCase();
         var materials = analysis.materials || [];
         var colors = analysis.colors || [];
-        var imageSrc = 'data:image/jpeg;base64,' + window._sunumImageBase64;
-        var textureSrc = textureBase64 ? ('data:image/png;base64,' + textureBase64) : '';
+        var textureSrc = textureBase64 ? ('data:image/png;base64,' + textureBase64) : ('data:image/jpeg;base64,' + window._sunumImageBase64);
 
+        // ── MALZEME KARTLARI (CSS texture dairelerle) ──
         var materialsHTML = '';
         for (var i = 0; i < materials.length; i++) {
             var m = materials[i];
             var hex = m.hex || m.hexColor || '#CCC';
+            var textureStyle = getTextureCSS(m.title || '', hex);
             materialsHTML += '<div class="flex items-center gap-4 mb-5">' +
-                '<div class="w-14 h-14 rounded-full shadow-md border-2 border-gray-200 flex-shrink-0" style="background-color:' + hex + '"></div>' +
+                '<div class="w-14 h-14 rounded-full shadow-md border-2 border-gray-200 flex-shrink-0" style="' + textureStyle + '"></div>' +
                 '<div class="flex-1">' +
                 '<div contenteditable="true" class="text-[0.7rem] font-bold tracking-[0.2em] uppercase text-gray-800 outline-none hover:bg-gray-100 px-1 rounded cursor-text">' + (m.title || lang.material + ' ' + (i+1)) + '</div>' +
                 '<div contenteditable="true" class="text-[0.55rem] tracking-wider text-gray-500 uppercase mt-0.5 outline-none hover:bg-gray-100 px-1 rounded cursor-text leading-relaxed">' + (m.desc || '') + '</div>' +
                 '</div></div>';
         }
 
+        // ── RENK KARTELASİ ──
         var colorsHTML = '';
         for (var j = 0; j < colors.length; j++) {
             var c = colors[j];
@@ -197,21 +269,12 @@
                 '</div>';
         }
 
-        // ── SOL PANEL: Orijinal + Texture Render (ikili layout) ──
-        var leftPanelHTML = '<div class="w-[55%] flex flex-col gap-4 justify-center">' +
-            '<div class="bg-gray-50 p-3 border border-gray-100 rounded shadow-sm">' +
-            '<p class="text-[0.45rem] tracking-[0.3em] text-gray-400 uppercase font-bold mb-2">ORIGINAL</p>' +
-            '<img src="' + imageSrc + '" class="w-full h-auto object-contain max-h-[200px] mx-auto" style="mix-blend-mode:multiply;">' +
+        // ── SOL PANEL: Sadece Material Analysis görseli ──
+        var leftPanelHTML = '<div class="w-[55%] flex flex-col justify-center">' +
+            '<div class="bg-gray-50 p-4 border border-gray-100 rounded shadow-sm">' +
+            '<img src="' + textureSrc + '" class="w-full h-auto object-contain max-h-[420px] mx-auto" style="mix-blend-mode:multiply;">' +
+            '</div>' +
             '</div>';
-
-        if (textureSrc) {
-            leftPanelHTML += '<div class="bg-gray-50 p-3 border border-gray-100 rounded shadow-sm">' +
-                '<p class="text-[0.45rem] tracking-[0.3em] text-gray-400 uppercase font-bold mb-2">MATERIAL ANALYSIS</p>' +
-                '<img src="' + textureSrc + '" class="w-full h-auto object-contain max-h-[200px] mx-auto" style="mix-blend-mode:multiply;">' +
-                '</div>';
-        }
-
-        leftPanelHTML += '</div>';
 
         document.getElementById('sunumBoardContainer').innerHTML =
             '<div id="sunumBoardPrint" class="bg-white w-[1100px] min-h-[780px] p-12 shadow-2xl rounded-sm relative" style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#1a1a1a;">' +
