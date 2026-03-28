@@ -9,125 +9,87 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-#splashOverlay {
+#comingSoonOverlay {
     position: fixed;
     inset: 0;
     z-index: 9998;
-    background: #000;
+    background: rgba(0,0,0,0.85);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    opacity: 1;
-    transition: opacity 0.8s ease;
+    opacity: 0;
+    transition: opacity 1s ease;
+    pointer-events: none;
 }
-#splashLogo {
-    font-size: clamp(2rem, 8vw, 5rem);
+#comingSoonText {
+    font-size: clamp(1.5rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.15);
+    transition: color 0.6s ease;
+    text-align: center;
+    padding: 0 2rem;
+}
+#comingSoonText.bright {
+    color: rgba(255,255,255,0.95);
+}
+#adeulLogo {
+    font-size: clamp(2rem, 8vw, 6rem);
     font-weight: 900;
     letter-spacing: 0.5em;
     color: white;
+    margin-bottom: 2rem;
     text-transform: uppercase;
-    opacity: 0;
-    transform: scale(0.95);
-    transition: opacity 0.6s ease, transform 0.6s ease;
 }
-#splashLogo.visible {
-    opacity: 1;
-    transform: scale(1);
-}
-#splashSubtitle {
-    font-size: clamp(0.5rem, 1.5vw, 0.7rem);
-    font-weight: 700;
-    letter-spacing: 0.4em;
-    color: rgba(255,255,255,0.2);
-    text-transform: uppercase;
-    margin-top: 0.75rem;
-    opacity: 0;
-    transition: opacity 0.6s ease 0.3s;
-}
-#splashSubtitle.visible {
-    opacity: 1;
-}
-.auth-tab { 
-    padding: 12px 0; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.3em; 
-    text-transform: uppercase; cursor: pointer; transition: all 0.2s; border: none; 
-    background: none; flex: 1; text-align: center; position: relative;
-}
-.auth-tab.active { color: #fff; }
-.auth-tab.active::after { 
-    content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; 
-    height: 1px; background: rgba(255,255,255,0.5); 
-}
-.auth-tab:not(.active) { color: rgba(255,255,255,0.25); }
-.auth-tab:not(.active):hover { color: rgba(255,255,255,0.5); }
 </style>
 </head>
 <body>
-
-<!-- ═══ SPLASH (2 saniye logo, sonra login) ═══ -->
-<div id="splashOverlay">
-    <div id="splashLogo">ADEULL</div>
-    <div id="splashSubtitle">ARCHITECTURAL CORE INTELLIGENCE</div>
+ 
+<!-- COMING SOON OVERLAY -->
+<div id="comingSoonOverlay">
+    <div id="adeulLogo" onclick="adminTap()">ADEULL</div>
+    <div id="comingSoonText">COMING SOON</div>
 </div>
-
+ 
 <audio id="hoverSound" src="https://actions.google.com/sounds/v1/ui/button_click.ogg" preload="auto"></audio>
-
-<!-- ═══ AUTH SCREEN (Login + Signup) ═══ -->
-<div id="loginScreen" class="absolute inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md px-4" style="display:none;opacity:0;">
+ 
+<div id="loginScreen" class="absolute inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md px-4" style="display:none!important;opacity:0;">
 <div class="w-full max-w-[28rem] glass-panel rounded-[2.5rem] p-8 lg:p-12 flex flex-col items-center shadow-2xl relative overflow-hidden">
 <h2 class="text-4xl lg:text-5xl font-extrabold tracking-[0.3em] text-white mb-2 uppercase relative z-10">ADEULL</h2>
-<p class="text-[0.5rem] lg:text-[0.6rem] tracking-[0.4em] text-white/40 uppercase mb-8 text-center relative z-10" data-i18n="subtitle">Architectural Core Intelligence</p>
-
-<!-- Auth Tabs -->
-<div class="w-full flex border-b border-white/10 mb-8 relative z-10">
-<button onclick="switchAuthTab('login')" id="tabLogin" class="auth-tab active">LOGIN</button>
-<button onclick="switchAuthTab('signup')" id="tabSignup" class="auth-tab">SIGN UP</button>
-</div>
-
-<!-- Login Form -->
-<form id="loginForm" class="w-full flex flex-col gap-5 relative z-10" onsubmit="handleLoginAdvanced(event)">
+<p class="text-[0.5rem] lg:text-[0.6rem] tracking-[0.4em] text-white/40 uppercase mb-10 text-center relative z-10" data-i18n="subtitle">Architectural Core Intelligence</p>
+<form class="w-full flex flex-col gap-5 relative z-10" onsubmit="handleLoginAdvanced(event)">
 <input type="email" id="loginEmail" name="email" autocomplete="username" placeholder="EMAIL ADDRESS" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
 <input type="password" id="loginPassword" name="password" autocomplete="current-password" placeholder="PASSWORD" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-<button type="submit" class="w-full bg-white text-black font-extrabold py-5 rounded-2xl tracking-[0.2em] hover:bg-gray-200 transition mt-2 uppercase">Login</button>
+<button type="submit" class="w-full bg-white text-black font-extrabold py-5 rounded-2xl tracking-[0.2em] hover:bg-gray-200 transition mt-4 uppercase">Login</button>
 </form>
-
-<!-- Signup Form -->
-<form id="signupForm" class="w-full flex flex-col gap-5 relative z-10 hidden" onsubmit="handleSignup(event)">
-<input type="text" id="signupName" placeholder="FULL NAME" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-<input type="email" id="signupEmail" placeholder="EMAIL ADDRESS" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-<input type="password" id="signupPassword" placeholder="PASSWORD" required minlength="6" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-<input type="password" id="signupPasswordConfirm" placeholder="CONFIRM PASSWORD" required minlength="6" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-<button type="submit" class="w-full bg-white text-black font-extrabold py-5 rounded-2xl tracking-[0.2em] hover:bg-gray-200 transition mt-2 uppercase">Create Account</button>
-<p class="text-[0.45rem] text-white/20 tracking-[0.15em] text-center uppercase mt-1">2 FREE RENDERS INCLUDED</p>
-</form>
-
-<!-- Divider -->
 <div class="w-full flex items-center gap-4 my-8 relative z-10">
 <div class="h-[1px] bg-white/10 flex-1"></div>
-<span class="text-[0.5rem] text-white/30 tracking-widest uppercase">Or Continue With</span>
+<span class="text-[0.5rem] text-white/30 tracking-widest uppercase">Or Login With</span>
 <div class="h-[1px] bg-white/10 flex-1"></div>
 </div>
-
-<!-- Social Login -->
 <div class="w-full flex flex-col lg:flex-row gap-3 relative z-10">
-<button onclick="socialLogin('google')" class="flex-1 bg-white/5 border border-white/10 py-4 rounded-2xl hover:bg-white/10 transition flex items-center justify-center gap-2">
+<button onclick="quickLogin('Google')" class="flex-1 bg-white/5 border border-white/10 py-4 rounded-2xl hover:bg-white/10 transition flex items-center justify-center gap-2">
 <span class="text-lg">G</span> <span class="text-[0.65rem] font-bold tracking-widest uppercase">Google</span>
 </button>
-<button onclick="socialLogin('apple')" class="flex-1 bg-white/5 border border-white/10 py-4 rounded-2xl hover:bg-white/10 transition flex items-center justify-center gap-2">
+<button onclick="quickLogin('Apple')" class="flex-1 bg-white/5 border border-white/10 py-4 rounded-2xl hover:bg-white/10 transition flex items-center justify-center gap-2">
 <span class="text-lg"></span> <span class="text-[0.65rem] font-bold tracking-widest uppercase">Apple</span>
+</button>
+<button onclick="quickLogin('Office')" class="flex-1 bg-white/5 border border-white/10 py-4 rounded-2xl hover:bg-white/10 transition flex items-center justify-center gap-2">
+<span class="text-lg">⊞</span> <span class="text-[0.65rem] font-bold tracking-widest uppercase">Office</span>
 </button>
 </div>
 </div>
 </div>
-
-<!-- ═══ APP CONTENT (değişmedi) ═══ -->
+ 
 <div id="appContent">
 <div class="fixed bottom-4 left-0 right-0 text-center z-[60] pointer-events-none px-4">
 <p class="text-[0.45rem] lg:text-[0.55rem] text-white/30 tracking-[0.25em] uppercase font-bold drop-shadow-md" data-i18n="warning">
 ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERIFY RESULTS.
 </p>
 </div>
-
+ 
 <div class="absolute top-4 lg:top-8 right-4 lg:right-10 z-[80] flex items-center gap-3 lg:gap-6 text-xs lg:text-sm font-bold tracking-wider text-white">
 <div class="relative">
 <button id="langBtn" onclick="toggleLangMenu()" class="flex items-center gap-2 lg:gap-3 hover:bg-white/10 px-2 lg:px-3 py-2 rounded-xl transition bg-black/40 border border-white/10 backdrop-blur-md">
@@ -148,35 +110,35 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 </div>
 <div class="flex items-center gap-2 lg:gap-4 border-l border-white/20 pl-3 lg:pl-6">
 <div class="bg-black/40 px-3 lg:px-4 py-2 rounded-full text-[0.55rem] lg:text-[0.65rem] border border-white/10 flex items-center gap-2 cursor-pointer hover:bg-white/20 transition backdrop-blur-md" onclick="toggleUserMenu()">
-<span class="text-yellow-400">⚡</span> <span id="topCreditDisplay">0</span>
+<span class="text-yellow-400">⚡</span> <span id="topCreditDisplay">1,240</span>
 </div>
 <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-black/40 border border-white/20 flex items-center justify-center cursor-pointer hover:bg-white/30 transition shadow-lg backdrop-blur-md" onclick="toggleUserMenu()">
 <span class="text-xs lg:text-sm">👤</span>
 </div>
 </div>
 </div>
-
+ 
 <div id="userSidePanel" class="fixed top-0 right-0 w-full lg:w-[24rem] h-full glass-panel z-[100] transform translate-x-full p-6 lg:p-10 flex flex-col border-l border-white/10 shadow-2xl bg-black/80">
 <div class="flex justify-between items-start mb-10">
 <div class="flex items-center gap-4">
 <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center text-3xl">👤</div>
 <div>
-<div class="text-lg font-bold tracking-widest text-white uppercase" id="panelUserName"></div>
-<div class="text-[0.65rem] opacity-70 tracking-[0.3em] text-green-300 mt-1 uppercase" id="panelUserPlan">FREE</div>
+<div class="text-lg font-bold tracking-widest text-white uppercase" id="panelUserName">Ahmet Taşkıran</div>
+<div class="text-[0.65rem] opacity-70 tracking-[0.3em] text-green-300 mt-1 uppercase" id="panelUserPlan">PRO PLAN</div>
 </div>
 </div>
 <button onclick="toggleUserMenu()" class="text-3xl text-white/50 hover:text-white transition">✕</button>
 </div>
-<div class="bg-white/5 border border-white/10 rounded-2xl p-5 mb-10 flex flex-col justify-center relative overflow-hidden group hover:bg-white/10 transition cursor-pointer" onclick="if(typeof showBillingPage==='function')showBillingPage()">
+<div class="bg-white/5 border border-white/10 rounded-2xl p-5 mb-10 flex flex-col justify-center relative overflow-hidden group hover:bg-white/10 transition cursor-pointer">
 <div class="text-[0.55rem] text-white/50 tracking-[0.2em] uppercase mb-2" data-i18n="credits">REMAINING CREDITS</div>
-<div class="text-2xl font-bold text-white tracking-widest"><span id="panelCreditDisplay">0</span> <span class="text-yellow-400 text-lg">⚡</span></div>
+<div class="text-2xl font-bold text-white tracking-widest"><span id="panelCreditDisplay">1,240</span> <span class="text-yellow-400 text-lg">⚡</span></div>
 <div class="absolute right-6 bottom-5 text-xs font-bold bg-white text-black px-3 py-1.5 rounded-lg opacity-80 group-hover:opacity-100 transition tracking-widest" data-i18n="add">+ ADD</div>
 </div>
 <div class="flex-1 overflow-y-auto pr-4 custom-scrollbar text-white">
 <div class="text-[0.55rem] opacity-40 tracking-[0.3em] uppercase mb-4 mt-2 ml-2" data-i18n="workspace">WORKSPACE</div>
 <nav class="flex flex-col gap-2 mb-8 uppercase">
 <button class="side-menu-item focus:outline-none" data-i18n="dashboard_menu">DASHBOARD</button>
-<button class="side-menu-item focus:outline-none"><span data-i18n="projects">PROJECTS</span> <span class="bg-white/20 text-white px-2 py-1 rounded-md text-[0.6rem]">0</span></button>
+<button class="side-menu-item focus:outline-none"><span data-i18n="projects">PROJECTS</span> <span class="bg-white/20 text-white px-2 py-1 rounded-md text-[0.6rem]">12</span></button>
 <button class="side-menu-item focus:outline-none" data-i18n="renders">RENDERS</button>
 <button class="side-menu-item focus:outline-none" data-i18n="assets">ASSETS</button>
 <button class="side-menu-item focus:outline-none" data-i18n="workflows">WORKFLOWS</button>
@@ -192,7 +154,7 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 </nav>
 </div>
 </div>
-
+ 
 <div id="landing" class="absolute inset-0 flex flex-col justify-center items-center text-white z-20">
 <div class="bg-overlay"></div>
 <div class="flex items-stretch mt-[2vh] relative z-10">
@@ -206,9 +168,11 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 <button onclick="enterDashboard('PRESENTATION')" data-i18n="presentation" class="menu-item text-left focus:outline-none !text-blue-200 hover:!">PRESENTATION</button>
 </nav>
 </div>
+<button onclick="activateFreeTrial();" class="mt-16 px-8 lg:px-12 py-4 glass-panel rounded-full text-[0.6rem] lg:text-[0.7rem] font-bold tracking-[0.5em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer relative z-10" data-i18n="freetrial">
+Start Free Trial
+</button>
 </div>
-
-<!-- ═══ DASHBOARD (değişmedi) ═══ -->
+ 
 <div id="dashboard" class="absolute inset-0 flex flex-col lg:flex-row p-4 lg:p-8 gap-4 lg:gap-8 text-white z-10 bg-black/80 pt-20 lg:pt-24 overflow-y-auto lg:overflow-hidden">
 <div class="absolute top-4 lg:top-8 left-4 lg:left-8 text-2xl lg:text-4xl font-extrabold tracking-widest cursor-pointer hidden lg:block" onclick="exitDashboard()">ADEULL</div>
 <div class="w-full lg:flex-1 glass-panel rounded-3xl p-5 lg:p-10 flex flex-col relative transition-all duration-500 overflow-y-visible lg:overflow-hidden h-auto lg:h-full">
@@ -302,7 +266,7 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 </ul>
 </div>
 </div>
-
+ 
 <div id="renderOverlay" class="absolute inset-0 bg-[#0a0a0a] z-[150] hidden flex-col transition-opacity duration-500 opacity-0 flex items-center justify-center p-4">
 <div id="renderImgContainer" class="relative w-full max-w-5xl h-[60vh] lg:h-[80vh] bg-black/90 p-2 lg:p-4 render-img-container flex items-center justify-center border border-white/10 rounded-2xl shadow-2xl overflow-hidden" ondblclick="toggleFullscreen('renderImgContainer')">
 <button onclick="event.stopPropagation(); closeRender()" class="absolute top-2 right-2 lg:top-4 lg:right-4 text-xl lg:text-2xl text-white/80 hover:text-white transition z-[200] bg-black/60 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-md">✕</button>
@@ -312,21 +276,23 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 <button onclick="saveRender('renderImgContainer')" class="bg-white/10 hover:bg-white/20 text-white font-extrabold tracking-widest px-8 lg:px-12 py-3 lg:py-4 rounded-xl transition shadow-lg uppercase text-[0.7rem] lg:text-[0.8rem]" data-i18n="update">SAVE TO DEVICE</button>
 </div>
 </div>
-
+ 
 <!-- ═══ SUNUM OVERLAY (V2) ═══ -->
 <div id="sunumOverlay" class="absolute inset-0 bg-black/95 backdrop-blur-xl z-[160] hidden flex-col transition-opacity duration-500 opacity-0 items-center justify-start overflow-auto p-4 lg:py-8">
 <div class="w-full max-w-[1200px] flex justify-end mb-3 relative z-50">
 <button onclick="closeSunumOverlay()" class="text-3xl text-white/50 hover:text-white transition cursor-pointer bg-black/50 rounded-full w-10 h-10 flex items-center justify-center">✕</button>
 </div>
 <div class="w-full overflow-x-auto custom-scrollbar pb-4 flex justify-center">
-<div id="sunumBoardContainer" class="transform scale-[0.55] lg:scale-[0.85] origin-top"></div>
+<div id="sunumBoardContainer" class="transform scale-[0.55] lg:scale-[0.85] origin-top">
+<!-- Board JS tarafından buraya render edilir -->
+</div>
 </div>
 <div class="mt-4 flex justify-center w-full relative z-50">
 <button onclick="downloadSunumBoard()" class="bg-white/10 hover:bg-white/20 text-white font-extrabold tracking-widest px-10 py-3 rounded-xl transition shadow-lg uppercase text-[0.7rem]" data-i18n="downloadBoard">DOWNLOAD BOARD</button>
 </div>
 </div>
 <!-- ═══ /SUNUM OVERLAY ═══ -->
-
+ 
 <div id="quoteModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[300] hidden flex-col items-center justify-center p-4">
 <div class="w-full max-w-md bg-[#111] rounded-[2rem] p-8 border border-white/10 relative shadow-2xl">
 <button onclick="closeQuoteModal()" class="absolute top-6 right-6 text-white/50 hover:text-white text-xl">✕</button>
@@ -345,24 +311,20 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 </div>
 </div>
 </div>
-
-</div><!-- /appContent -->
-
-<!-- ═══ SCRIPTS ═══ -->
+ 
 <script src="lang.js"></script>
 <script src="sunum.js"></script>
 <script src="main.js"></script>
 <script>
-// ═══ SUPABASE ═══
 const SUPABASE_URL = 'https://wcqwkagktddvqjxzjxbj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
 window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 window.currentUserId = null;
 window.isAdminUser = false;
-
-// ═══ KREDİ SİSTEMİ ═══
 async function deductCredit(action, amount) {
+    // Admin kullanıcı — kredi sistemi komple devre dışı
     if(window.isAdminUser) return true;
+    
     const currentCredits = parseInt((document.getElementById('topCreditDisplay').innerText || '0').replace(/,/g,'')) || 0;
     if(currentCredits <= 0) { alert("⚡ Krediniz tükendi! Lütfen kredi satın alın."); return false; }
     const newCredits = currentCredits - amount;
@@ -377,222 +339,206 @@ async function deductCredit(action, amount) {
     return true;
 }
 window.deductCredit = deductCredit;
-
-// ═══ SPLASH SCREEN (2 saniye) ═══
-function startSplash() {
-    var logo = document.getElementById('splashLogo');
-    var sub = document.getElementById('splashSubtitle');
-    var overlay = document.getElementById('splashOverlay');
-    setTimeout(function() { logo.classList.add('visible'); }, 100);
-    setTimeout(function() { sub.classList.add('visible'); }, 400);
-    setTimeout(function() {
-        overlay.style.opacity = '0';
-        setTimeout(function() {
-            overlay.style.display = 'none';
-            showLogin();
-        }, 800);
-    }, 2000);
+</script>
+ 
+ 
+<script>
+const comingSoonPhrases = [
+    "COMING SOON",
+    "YAKINDA",
+    "MUY PRONTO",
+    "BALD VERFÜGBAR",
+    "BIENTÔT DISPONIBLE",
+    "EM BREVE",
+    "SEGERA HADIR",
+    "जल्द आ रहा है",
+    "قريباً",
+    "PROSSIMAMENTE"
+];
+ 
+let phraseIndex = 0;
+let comingSoonInterval = null;
+ 
+function startComingSoonAnimation() {
+    const overlay = document.getElementById('comingSoonOverlay');
+    const text = document.getElementById('comingSoonText');
+    overlay.style.opacity = '1';
+    overlay.style.pointerEvents = 'auto';
+ 
+    comingSoonInterval = setInterval(() => {
+        text.classList.remove('bright');
+        text.style.opacity = '0';
+        setTimeout(() => {
+            phraseIndex = (phraseIndex + 1) % comingSoonPhrases.length;
+            text.innerText = comingSoonPhrases[phraseIndex];
+            text.style.opacity = '1';
+            text.classList.add('bright');
+            setTimeout(() => text.classList.remove('bright'), 400);
+        }, 600);
+    }, 1800);
+ 
+    // Coming soon KALIR — otomatik login'e geçmez
+    // Admin girişi: logoya 3 kez tıkla
 }
-
+ 
 function showLogin() {
-    var ls = document.getElementById('loginScreen');
-    ls.style.display = 'flex';
-    ls.style.opacity = '0';
-    setTimeout(function() { ls.style.opacity = '1'; }, 50);
+    const loginScreen = document.getElementById('loginScreen');
+    loginScreen.style.removeProperty('display');
+    loginScreen.style.display = 'flex';
+    loginScreen.style.opacity = '0';
+    setTimeout(() => { loginScreen.style.opacity = '1'; }, 50);
 }
-
-window.addEventListener('load', startSplash);
-
-// ═══ AUTH TAB GEÇİŞİ ═══
-window.switchAuthTab = function(tab) {
-    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
-    var loginForm = document.getElementById('loginForm');
-    var signupForm = document.getElementById('signupForm');
-    var tabLogin = document.getElementById('tabLogin');
-    var tabSignup = document.getElementById('tabSignup');
-    if (tab === 'signup') {
-        loginForm.classList.add('hidden');
-        signupForm.classList.remove('hidden');
-        tabLogin.classList.remove('active');
-        tabSignup.classList.add('active');
-    } else {
-        signupForm.classList.add('hidden');
-        loginForm.classList.remove('hidden');
-        tabSignup.classList.remove('active');
-        tabLogin.classList.add('active');
+ 
+// ═══ ADMIN GİZLİ GİRİŞ: LOGOYA 3 KEZ TIKLA ═══
+var _adminTapCount = 0;
+var _adminTapTimer = null;
+function adminTap() {
+    _adminTapCount++;
+    clearTimeout(_adminTapTimer);
+    _adminTapTimer = setTimeout(function() { _adminTapCount = 0; }, 2000);
+    if (_adminTapCount >= 3) {
+        _adminTapCount = 0;
+        var overlay = document.getElementById('comingSoonOverlay');
+        overlay.style.opacity = '0';
+        overlay.style.pointerEvents = 'none';
+        setTimeout(function() { overlay.style.display = 'none'; showLogin(); }, 1000);
     }
-};
-
-// ═══ LOGIN ═══
+}
+ 
+window.addEventListener('load', () => {
+    startComingSoonAnimation();
+});
+ 
 function handleLoginAdvanced(event) {
     event.preventDefault();
-    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
-    var email = document.getElementById('loginEmail').value.trim();
-    var password = document.getElementById('loginPassword').value;
-    // Admin bypass
+    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
     if(email === 'admin@adeull.com' && password === 'Adeul2026!') {
         window.isAdminUser = true;
-        applyUserData({ name: "Ahmet Taşkıran", plan: "ADMIN", credits: 9999 });
+        applyUserData({ name: "Ahmet Taşkıran", plan: "PRO PLAN", credits: 9999 });
         return;
     }
     if(window.supabaseClient) {
-        window.supabaseClient.auth.signInWithPassword({ email: email, password: password })
-        .then(function(res) {
-            if(res.error) { alert("❌ Invalid credentials."); return; }
+        window.supabaseClient.auth.signInWithPassword({ email, password })
+        .then(({ data, error }) => {
+            if(error) { alert("❌ Hatalı giriş bilgileri!"); return; }
             window.supabaseClient.from('users').select('*').eq('email', email).single()
-            .then(function(r) {
-                if(r.data) {
-                    applyUserData({ name: r.data.name || r.data.email, plan: r.data.plan || 'FREE', credits: r.data.credits || 0 });
-                    window.currentUserId = r.data.id;
+            .then(({ data: userData }) => {
+                if(userData) {
+                    applyUserData({ name: userData.email, plan: userData.plan || 'FREE', credits: userData.credits || 0 });
+                    window.currentUserId = userData.id;
                 } else {
-                    applyUserData({ name: email, plan: 'FREE', credits: 2 });
+                    applyUserData({ name: email, plan: 'FREE', credits: 5 });
                 }
             });
         });
     } else {
-        alert("❌ Connection error.");
+        alert("❌ Hatalı giriş bilgileri!");
     }
 }
-
-// ═══ SIGNUP ═══
-window.handleSignup = async function(event) {
-    event.preventDefault();
-    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
-    var name = document.getElementById('signupName').value.trim();
-    var email = document.getElementById('signupEmail').value.trim();
-    var password = document.getElementById('signupPassword').value;
-    var confirm = document.getElementById('signupPasswordConfirm').value;
-
-    if (password !== confirm) { alert('Passwords do not match.'); return; }
-    if (password.length < 6) { alert('Password must be at least 6 characters.'); return; }
-
-    try {
-        // Supabase Auth kayıt
-        var res = await window.supabaseClient.auth.signUp({ email: email, password: password });
-        if (res.error) { alert('❌ ' + res.error.message); return; }
-
-        // Users tablosuna ekle (FREE plan, 2 kredi)
-        await window.supabaseClient.from('users').insert({
-            email: email,
-            name: name,
-            plan: 'FREE',
-            credits: 2
-        });
-
-        // Direkt giriş yap
-        window.currentUserId = res.data.user ? res.data.user.id : null;
-        applyUserData({ name: name, plan: 'FREE', credits: 2 });
-
-    } catch(e) {
-        console.error('Signup error:', e);
-        alert('❌ Registration failed. Please try again.');
-    }
-};
-
-// ═══ SOCIAL LOGIN ═══
-window.socialLogin = async function(provider) {
-    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
-    if (provider === 'google') {
-        var res = await window.supabaseClient.auth.signInWithOAuth({ provider: 'google' });
-        if (res.error) alert('❌ Google login failed.');
-    } else {
-        alert('❌ ' + provider.toUpperCase() + ' login coming soon.');
-    }
-};
-
-// ═══ APPLY USER DATA ═══
+ 
+function quickLogin(provider) {
+    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+    alert("❌ Bu giriş yöntemi henüz aktif değil.");
+}
+ 
 function applyUserData(userData) {
     if(document.getElementById('panelUserName')) document.getElementById('panelUserName').innerText = userData.name;
     if(document.getElementById('panelUserPlan')) document.getElementById('panelUserPlan').innerText = userData.plan;
     if(document.getElementById('panelCreditDisplay')) document.getElementById('panelCreditDisplay').innerText = userData.credits;
     if(document.getElementById('topCreditDisplay')) document.getElementById('topCreditDisplay').innerText = userData.credits;
     document.getElementById('loginScreen').style.opacity = '0';
-    setTimeout(function() {
+    setTimeout(() => {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('appContent').classList.add('active');
     }, 800);
 }
-
-// ═══ LOGOUT ═══
+ 
 function logOut() {
-    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
+    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
     window.isAdminUser = false;
     window.currentUserId = null;
-    if(window.supabaseClient) window.supabaseClient.auth.signOut();
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('loginScreen').style.opacity = '1';
     document.getElementById('appContent').classList.remove('active');
     document.getElementById('userSidePanel').classList.remove('open');
-    switchAuthTab('login');
 }
-
-// ═══ QUOTE MODAL ═══
+ 
 let currentVendorType = "";
 function openQuoteModal(vendor) {
-    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
+    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
     currentVendorType = vendor;
     document.getElementById('quoteModalTitle').innerText = "GET QUOTE: " + vendor;
     document.getElementById('quoteModal').style.display = 'flex';
     document.getElementById('quoteFormArea').style.display = 'flex';
     document.getElementById('quoteActionArea').style.display = 'none';
-    ['quoteName','quotePhone','quoteEmail','quoteNote'].forEach(function(id) { document.getElementById(id).value = ''; });
+    ['quoteName','quotePhone','quoteEmail','quoteNote'].forEach(id => document.getElementById(id).value = '');
 }
 function closeQuoteModal() { document.getElementById('quoteModal').style.display = 'none'; }
 function saveQuoteInfo() {
-    var name = document.getElementById('quoteName').value;
-    var phone = document.getElementById('quotePhone').value;
-    var email = document.getElementById('quoteEmail').value;
+    const name = document.getElementById('quoteName').value;
+    const phone = document.getElementById('quotePhone').value;
+    const email = document.getElementById('quoteEmail').value;
     if(!name||!phone||!email) { alert("PLEASE FILL ALL CONTACT FIELDS."); return; }
     document.getElementById('quoteFormArea').style.display = 'none';
     document.getElementById('quoteActionArea').style.display = 'flex';
 }
 function sendViaWhatsApp() {
-    var note = document.getElementById('quoteNote').value;
-    window.open('https://wa.me/?text=' + encodeURIComponent('Hello, I need a quote for ' + currentVendorType + ' services via ADEULL AI.\n\nProject Details:\n' + note), '_blank');
+    const note = document.getElementById('quoteNote').value;
+    window.open(`https://wa.me/?text=${encodeURIComponent(`Hello, I need a quote for ${currentVendorType} services via ADEULL AI.\n\nProject Details:\n${note}`)}`, '_blank');
 }
 function sendViaEmail() {
-    var note = document.getElementById('quoteNote').value;
-    window.open('mailto:?subject=' + encodeURIComponent('ADEULL AI - Quote Request for ' + currentVendorType) + '&body=' + encodeURIComponent('Hello,\n\nI need a quote.\n\nDetails:\n' + note), '_blank');
+    const note = document.getElementById('quoteNote').value;
+    window.open(`mailto:?subject=${encodeURIComponent(`ADEULL AI - Quote Request for ${currentVendorType}`)}&body=${encodeURIComponent(`Hello,\n\nI need a quote.\n\nDetails:\n${note}`)}`, '_blank');
 }
-
-// ═══ ENTER DASHBOARD ═══
+ 
+function handlePresentationBoxClick() {
+    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
+    if (window._sunumImageBase64) {
+        if (typeof startSunumAnalysis === 'function') startSunumAnalysis();
+    } else {
+        document.getElementById('fileSunumImage').click();
+    }
+}
+ 
 function enterDashboard(menuName) {
-    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
+    if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
     document.getElementById('dashboardTitle').setAttribute('data-raw-title', menuName);
-    var activeLangCodeEl = document.getElementById('activeCode');
-    var currentLang = activeLangCodeEl ? activeLangCodeEl.innerText : 'EN';
-    var key = menuName.toLowerCase();
-    var translatedTitle = menuName;
+    const activeLangCodeEl = document.getElementById('activeCode');
+    const currentLang = activeLangCodeEl ? activeLangCodeEl.innerText : 'EN';
+    const key = menuName.toLowerCase();
+    let translatedTitle = menuName;
     if (window.dict && window.dict[currentLang] && window.dict[currentLang][key]) {
         translatedTitle = window.dict[currentLang][key];
     } else if (key === 'plan' || key === 'resize') {
         translatedTitle = window.dict && window.dict[currentLang] && window.dict[currentLang]['planResize'] ? window.dict[currentLang]['planResize'] : 'PLAN BOYUTLANDIRMA';
     }
     document.getElementById('dashboardTitle').innerText = translatedTitle;
-    var mobileTitle = document.getElementById('dashboardTitleMobile');
+    const mobileTitle = document.getElementById('dashboardTitleMobile');
     if(mobileTitle) mobileTitle.innerText = translatedTitle;
     document.getElementById('landing').classList.add('hidden');
     document.getElementById('dashboard').classList.add('active');
     document.getElementById('userSidePanel').classList.remove('open');
-    var langDropdown = document.getElementById('langDropdown');
+    const langDropdown = document.getElementById('langDropdown');
     if (langDropdown) { langDropdown.classList.add('hidden'); langDropdown.classList.remove('flex'); }
     window.uploadedBase64 = {};
     window._sunumImageBase64 = null;
-    ['boxScene','boxItem','boxRef','boxPresentationRender','boxDesign','boxSketch','boxMax','boxPlan'].forEach(function(id) {
-        var box = document.getElementById(id);
-        if(box) { var p = box.querySelector('.preview-container'); if(p) p.remove(); Array.from(box.children).forEach(function(c) { c.style.display = ''; }); }
-        var fi = document.getElementById(id.replace('box','file'));
+    ['boxScene','boxItem','boxRef','boxPresentationRender','boxDesign','boxSketch','boxMax','boxPlan'].forEach(id => {
+        const box = document.getElementById(id);
+        if(box) { const p = box.querySelector('.preview-container'); if(p) p.remove(); Array.from(box.children).forEach(c => c.style.display = ''); }
+        const fi = document.getElementById(id.replace('box','file'));
         if(fi) fi.value = "";
     });
-    var sunumBox = document.getElementById('boxSunumImage');
-    if(sunumBox) { var sp = sunumBox.querySelector('.sunum-preview'); if(sp) sp.remove(); Array.from(sunumBox.children).forEach(function(c) { c.style.display = ''; }); }
-    var fileSunum = document.getElementById('fileSunumImage');
-    if(fileSunum) fileSunum.value = '';
-    var promptArea = document.getElementById('promptArea');
+    const sunumBox = document.getElementById('boxSunumImage');
+    if(sunumBox) { const sp = sunumBox.querySelector('.sunum-preview'); if(sp) sp.remove(); Array.from(sunumBox.children).forEach(c => c.style.display = ''); }
+    const fileSunum = document.getElementById('fileSunumImage');
+    if(fileSunum) { fileSunum.value = ''; }
+    const promptArea = document.getElementById('promptArea');
     if(promptArea) promptArea.value = "";
-    var sunumPrompt = document.getElementById('sunumPromptArea');
+    const sunumPrompt = document.getElementById('sunumPromptArea');
     if(sunumPrompt) sunumPrompt.value = "";
-    var els = {
+    const els = {
         dualUpload: document.getElementById('dualUpload'),
         sunumUploadArea: document.getElementById('sunumUploadArea'),
         designUpload: document.getElementById('designUpload'),
@@ -601,7 +547,7 @@ function enterDashboard(menuName) {
         planUpload: document.getElementById('planUpload'),
         netwrolerPanel: document.getElementById('netwrolerPanel')
     };
-    for (var k in els) { if(els[k]) els[k].style.setProperty('display','none','important'); }
+    for (const [k, el] of Object.entries(els)) { if(el) el.style.setProperty('display','none','important'); }
     if (menuName === 'PRESENTATION') {
         if(els.sunumUploadArea) els.sunumUploadArea.style.setProperty('display','flex','important');
         if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display','flex','important');
@@ -629,14 +575,13 @@ function enterDashboard(menuName) {
         if(els.netwrolerPanel) els.netwrolerPanel.style.setProperty('display','flex','important');
     }
 }
-
-// ═══ DASHBOARD TITLE OBSERVER ═══
-var observer = new MutationObserver(function() {
-    var mob = document.getElementById('dashboardTitleMobile');
-    var desk = document.getElementById('dashboardTitle');
+ 
+const observer = new MutationObserver(function() {
+    const mob = document.getElementById('dashboardTitleMobile');
+    const desk = document.getElementById('dashboardTitle');
     if(mob && desk) mob.innerText = desk.innerText;
 });
-var dashTitle = document.getElementById('dashboardTitle');
+const dashTitle = document.getElementById('dashboardTitle');
 if(dashTitle) observer.observe(dashTitle, {childList: true, characterData: true, subtree: true});
 </script>
 <script src="bugtracker.js"></script>
