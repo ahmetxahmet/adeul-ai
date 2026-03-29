@@ -413,7 +413,7 @@ function handleLoginAdvanced(event) {
     if(window.supabaseClient) {
         window.supabaseClient.auth.signInWithPassword({ email, password })
         .then(({ data, error }) => {
-            if(error) { alert("❌ Hatalı giriş bilgileri!"); return; }
+            if(error) { alert("❌ Invalid login credentials!"); return; }
             if(email === 'admin@adeull.com') window.isAdminUser = true; // Şifre Supabase'den onaylandıktan sonra admin yetkisi ver
             window.supabaseClient.from('users').select('*').eq('email', email).single()
             .then(({ data: userData }) => {
@@ -426,13 +426,13 @@ function handleLoginAdvanced(event) {
             });
         });
     } else {
-        alert("❌ Hatalı giriş bilgileri!");
+        alert("❌ Invalid login credentials!");
     }
 }
  
 function quickLogin(provider) {
     if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
-    alert("❌ Bu giriş yöntemi henüz aktif değil.");
+    alert("❌ This login method is not active yet.");
 }
  
 function applyUserData(userData) {

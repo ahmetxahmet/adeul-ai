@@ -24,7 +24,7 @@ function initializeSecurityChecks() {
         
         setInterval(function() {
             if (_originalSimulateFunc && simulateAPIConnection.toString() !== _originalSimulateFunc) {
-                console.error("!!! SİSTEME MÜDAHALE TESPİT EDİLDİ !!!");
+                console.error("!!! SYSTEM TAMPERING DETECTED !!!");
                 // Orijinal fonksiyonu geri yükle ve saldırıyı logla
                 simulateAPIConnection = new Function('return ' + _originalSimulateFunc).apply(this);
                 
@@ -61,8 +61,8 @@ function toggleUpscaleLoader(show) {
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
-            <div class="text-lg font-bold tracking-widest uppercase">8K RENDER ALINIYOR</div>
-            <div class="text-sm font-light text-gray-300 mt-2">Lütfen bekleyiniz...</div>
+            <div class="text-lg font-bold tracking-widest uppercase">8K RENDER IN PROGRESS</div>
+            <div class="text-sm font-light text-gray-300 mt-2">Please wait...</div>
         `;
         container.appendChild(loader);
     }
@@ -274,7 +274,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
         const ok = await window.deductCredit(is8K ? '8K_RENDER' : 'NORMAL_RENDER', is8K ? 4 : 1);
         if(!ok) { btn.disabled = false; return; }
     }
-    btn.innerHTML = is8K ? '8K RENDER ALINIYOR...' : 'ADEULL AI GENERATING...';
+    btn.innerHTML = is8K ? '8K RENDER IN PROGRESS...' : 'ADEULL AI GENERATING...';
     btn.classList.add('bg-blue-600', 'text-white', 'animate-pulse');
 
     if (window.uploadedBase64['boxScene']) {
@@ -336,7 +336,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
         try {
             data = JSON.parse(rawText);
         } catch(parseError) {
-            throw new Error('Yanit bozuk - tekrar deneyin');
+            throw new Error('Invalid response - please try again');
         }
         
         let rawOutput = "";
@@ -382,7 +382,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
                             imgElement.src = upscaledUrl;
                         }
                     } catch (upscaleError) {
-                        console.log("8K Upscale yapılamadı, orijinal render ekranda kaldı.", upscaleError);
+                        console.log("8K Upscale failed, keeping original render.", upscaleError);
                     } finally {
                         toggleUpscaleLoader(false); 
                     }
@@ -391,7 +391,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
         }
     } catch (error) {
         console.error(error);
-        alert("⚙️ ADEULL AI şu an güncelleniyor. Lütfen birkaç dakika sonra tekrar deneyin.");
+        alert("⚙️ ADEULL AI is currently updating. Please try again in a few minutes.");
         closeRender();
     } finally {
         btn.innerHTML = originalText;
@@ -405,7 +405,7 @@ async function saveRender(mode = 'renderImgContainer') {
     playSound();
     if (mode === 'renderImgContainer') {
         const imgElement = document.querySelector('#renderImgContainer img');
-        if (!imgElement || !imgElement.src || imgElement.src.length < 10) { alert("Kaydedilecek bir görsel yok!"); return; }
+        if (!imgElement || !imgElement.src || imgElement.src.length < 10) { alert("No image to save!"); return; }
 
         try {
             const response = await fetch(imgElement.src);
@@ -419,7 +419,7 @@ async function saveRender(mode = 'renderImgContainer') {
             document.body.removeChild(link);
             setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
         } catch (err) {
-            console.error("İndirme hatası, alternatif deneniyor:", err);
+            console.error("Download error, trying alternative:", err);
             const link = document.createElement('a');
             link.href = imgElement.src;
             link.download = `ADEULL_AI_RENDER_${new Date().getTime()}.png`;
