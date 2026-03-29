@@ -246,6 +246,7 @@
     }
 
     window.onerror = function(message, source, lineno, colno, error) {
+        return; // DİKKAT: N8N mail spamını kesin olarak durdurmak için otomatik hata yakalama iptal edildi.
         if (!allowErrorLog()) return;
         var payload = {
             error_type: 'JS_ERROR',
@@ -264,6 +265,7 @@
     };
 
     window.addEventListener('unhandledrejection', function(event) {
+        return; // DİKKAT: N8N mail spamını kesin olarak durdurmak için otomatik hata yakalama iptal edildi.
         if (!allowErrorLog()) return;
         var reason = event.reason || {};
         var payload = {
