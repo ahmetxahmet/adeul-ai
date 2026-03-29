@@ -11,7 +11,7 @@
     // ============================================================
     // PADDLE CONFIG — Buraya kendi key'lerini koy
     // ============================================================
-    var PADDLE_VENDOR_ID = 'YOUR_PADDLE_VENDOR_ID';
+    var PADDLE_VENDOR_ID = '307212';
     var PADDLE_ENV = 'sandbox'; // 'sandbox' veya 'production'
 
     // ============================================================
@@ -253,6 +253,9 @@
                 items: [{ priceId: priceId, quantity: 1 }],
                 customer: {
                     email: (document.getElementById('panelUserName') || {}).innerText || ''
+                },
+                customData: {
+                    user_id: window.currentUserId || 'unknown_user'
                 },
                 settings: {
                     theme: 'dark',
