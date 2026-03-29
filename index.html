@@ -336,7 +336,7 @@ async function deductCredit(action, amount) {
                 document.getElementById('panelCreditDisplay').innerText = data.new_credits.toLocaleString();
                 return true;
             } else {
-                alert("⚡ " + (data.message || "Krediniz yetersiz!"));
+                alert("⚡ " + (data.message || "Insufficient credits!"));
                 return false;
             }
         } catch(e) { console.warn('Backend kredi kontrolü başarısız:', e); return false; }
