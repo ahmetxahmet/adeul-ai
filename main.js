@@ -13,6 +13,30 @@ window.currentRatio = '16:9';
 window.clickSound = document.getElementById('hoverSound');
 window.CLOUDFLARE_URL = "https://adeul-ia.app.n8n.cloud/webhook/adeul-ai-v2";
 
+// ==============================================================
+// GÜVENLİK: ANTI-TAMPERING (MANİPÜLASYON TESPİTİ)
+// ==============================================================
+var _originalSimulateFunc = null;
+
+function initializeSecurityChecks() {
+    if (typeof simulateAPIConnection !== 'undefined') {
+        _originalSimulateFunc = simulateAPIConnection.toString();
+        
+        setInterval(function() {
+            if (_originalSimulateFunc && simulateAPIConnection.toString() !== _originalSimulateFunc) {
+                console.error("!!! SİSTEME MÜDAHALE TESPİT EDİLDİ !!!");
+                // Orijinal fonksiyonu geri yükle ve saldırıyı logla
+                simulateAPIConnection = new Function('return ' + _originalSimulateFunc).apply(this);
+                
+                // Supabase'e özel bir log gönder (bugtracker.js'deki fonksiyonu kullanabiliriz)
+                if (window.onerror && typeof window.onerror === 'function') {
+                    window.onerror('TAMPERING_DETECTED', 'security_check.js', 1, 1, new Error('simulateAPIConnection fonksiyonu değiştirildi.'));
+                }
+            }
+        }, 5000); // Her 5 saniyede bir kontrol et
+    }
+}
+
 function playSound() { 
     if(window.clickSound) { 
         window.clickSound.currentTime = 0; 
@@ -69,6 +93,7 @@ window.setRatio = function(ratio, btn) {
 
 document.addEventListener('DOMContentLoaded', () => {
     window.selectLang('EN', '🇺🇸');
+    initializeSecurityChecks(); // Güvenlik kontrollerini başlat
 });
 
 function handleLogin(e) {
@@ -277,6 +302,10 @@ async function simulateAPIConnection(btnId, is8K = false) {
         isSketchMode = "EVET";
     }
 
+    // Add secure auth token and user_id to payload for N8N validation
+    const sessionData = window.supabaseClient ? await window.supabaseClient.auth.getSession() : null;
+    const authToken = sessionData?.data?.session?.access_token || "";
+
     const payload = {
         action: 'generate',  
         prompt: userPrompt,
@@ -286,7 +315,9 @@ async function simulateAPIConnection(btnId, is8K = false) {
         language: activeLangCode,
         aspectRatio: window.currentRatio,
         imageSize: "4K",
-        output_mime_type: "image/png"
+        output_mime_type: "image/png",
+        user_id: window.currentUserId || "guest",
+        user_token: authToken
     };
 
     try {
