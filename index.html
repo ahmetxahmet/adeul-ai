@@ -405,15 +405,11 @@ function handleLoginAdvanced(event) {
     if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
-    if(email === 'admin@adeull.com' && password === 'Adeul2026!') {
-        window.isAdminUser = true;
-        applyUserData({ name: "Ahmet Taşkıran", plan: "PRO PLAN", credits: 9999 });
-        return;
-    }
     if(window.supabaseClient) {
         window.supabaseClient.auth.signInWithPassword({ email, password })
         .then(({ data, error }) => {
             if(error) { alert("❌ Hatalı giriş bilgileri!"); return; }
+            if(email === 'admin@adeull.com') window.isAdminUser = true; // Şifre Supabase'den onaylandıktan sonra admin yetkisi ver
             window.supabaseClient.from('users').select('*').eq('email', email).single()
             .then(({ data: userData }) => {
                 if(userData) {
