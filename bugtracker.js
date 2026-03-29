@@ -236,7 +236,17 @@
     // ============================================================
     // OTOMATİK JS HATA YAKALAMA → Supabase error_logs
     // ============================================================
+    var _lastErrTime = 0;
+    var _errCount = 0;
+    function allowErrorLog() {
+        var now = Date.now();
+        if (now - _lastErrTime > 10000) { _errCount = 0; }
+        if (_errCount > 5) return false;
+        _lastErrTime = now; _errCount++; return true;
+    }
+
     window.onerror = function(message, source, lineno, colno, error) {
+        if (!allowErrorLog()) return;
         var payload = {
             error_type: 'JS_ERROR',
             message: message || 'Unknown error',
@@ -249,11 +259,12 @@
                 method: 'POST',
                 headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
                 body: JSON.stringify(payload)
-            });
+            }).catch(function(){});
         } catch (e) {}
     };
 
     window.addEventListener('unhandledrejection', function(event) {
+        if (!allowErrorLog()) return;
         var reason = event.reason || {};
         var payload = {
             error_type: 'PROMISE_REJECTION',
@@ -267,7 +278,7 @@
                 method: 'POST',
                 headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
                 body: JSON.stringify(payload)
-            });
+            }).catch(function(){});
         } catch (e) {}
     });
 
