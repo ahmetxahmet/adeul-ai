@@ -320,23 +320,28 @@ const SUPABASE_URL = 'https://wcqwkagktddvqjxzjxbj.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
 window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 window.currentUserId = null;
-window.isAdminUser = false;
 async function deductCredit(action, amount) {
-    // Admin kullanıcı — kredi sistemi komple devre dışı
-    if(window.isAdminUser) return true;
-    
-    const currentCredits = parseInt((document.getElementById('topCreditDisplay').innerText || '0').replace(/,/g,'')) || 0;
-    if(currentCredits <= 0) { alert("⚡ Krediniz tükendi! Lütfen kredi satın alın."); return false; }
-    const newCredits = currentCredits - amount;
-    document.getElementById('topCreditDisplay').innerText = newCredits.toLocaleString();
-    document.getElementById('panelCreditDisplay').innerText = newCredits.toLocaleString();
     if(window.currentUserId && window.supabaseClient) {
         try {
-            await window.supabaseClient.from('users').update({ credits: newCredits }).eq('id', window.currentUserId);
-            await window.supabaseClient.from('transactions').insert({ user_id: window.currentUserId, action: action, credits_used: amount });
-        } catch(e) { console.warn('Supabase kredi güncellenemedi:', e); }
+            // Kredi düşme işlemini frontend yerine Supabase backend'e (RPC) bırakıyoruz
+            const { data, error } = await window.supabaseClient.rpc('secure_deduct_credit', {
+                p_user_id: window.currentUserId,
+                p_amount: amount,
+                p_action: action
+            });
+            
+            if (error) throw error;
+            if (data && data.success) {
+                document.getElementById('topCreditDisplay').innerText = data.new_credits.toLocaleString();
+                document.getElementById('panelCreditDisplay').innerText = data.new_credits.toLocaleString();
+                return true;
+            } else {
+                alert("⚡ " + (data.message || "Krediniz yetersiz!"));
+                return false;
+            }
+        } catch(e) { console.warn('Backend kredi kontrolü başarısız:', e); return false; }
     }
-    return true;
+    return false;
 }
 window.deductCredit = deductCredit;
 </script>
@@ -444,7 +449,6 @@ function applyUserData(userData) {
  
 function logOut() {
     if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
-    window.isAdminUser = false;
     window.currentUserId = null;
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('loginScreen').style.opacity = '1';
