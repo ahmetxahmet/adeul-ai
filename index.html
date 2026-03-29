@@ -414,7 +414,6 @@ function handleLoginAdvanced(event) {
         window.supabaseClient.auth.signInWithPassword({ email, password })
         .then(({ data, error }) => {
             if(error) { alert("❌ Invalid login credentials!"); return; }
-            if(email === 'admin@adeull.com') window.isAdminUser = true; // Şifre Supabase'den onaylandıktan sonra admin yetkisi ver
             window.supabaseClient.from('users').select('*').eq('email', email).single()
             .then(({ data: userData }) => {
                 if(userData) {
