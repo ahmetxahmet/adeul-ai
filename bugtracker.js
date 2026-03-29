@@ -1,7 +1,7 @@
 // ==============================================================
 // BUGTRACKER.JS — ADEULL AI ONARIM AGENT (Frontend)
 // Premium minimal tasarım — ADEULL estetiği
-// Supabase'e yazar → N8N workflow mail atar
+// Writes to Supabase -> Core Engine sends email
 // İleriye dönük: canlı destek, ekran görüntüsü, kategori
 // ==============================================================
 
@@ -246,7 +246,7 @@
     }
 
     window.onerror = function(message, source, lineno, colno, error) {
-        return; // DİKKAT: N8N mail spamını kesin olarak durdurmak için otomatik hata yakalama iptal edildi.
+        return; // WARNING: Automatic error catching disabled to prevent spam.
         if (!allowErrorLog()) return;
         var payload = {
             error_type: 'JS_ERROR',
@@ -265,7 +265,7 @@
     };
 
     window.addEventListener('unhandledrejection', function(event) {
-        return; // DİKKAT: N8N mail spamını kesin olarak durdurmak için otomatik hata yakalama iptal edildi.
+        return; // WARNING: Automatic error catching disabled to prevent spam.
         if (!allowErrorLog()) return;
         var reason = event.reason || {};
         var payload = {
@@ -291,7 +291,7 @@
     window.openLiveChat = function() {
         // TODO: Supabase realtime subscription
         // TODO: Chat UI (glass-panel, ADEULL estetiği)
-        // TODO: Agent tarafı N8N + Claude API
+        // TODO: Agent side Core Engine + AI API
     };
     */
 

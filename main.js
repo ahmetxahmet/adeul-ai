@@ -11,7 +11,8 @@ window.uploadedBase64 = {};
 window.currentBoardStyle = 1; 
 window.currentRatio = '16:9'; 
 window.clickSound = document.getElementById('hoverSound');
-window.CLOUDFLARE_URL = "https://adeul-ia.app.n8n.cloud/webhook/adeul-ai-v2";
+window.CORE_ENGINE_V2 = atob("aHR0cHM6Ly9hZGV1bC1pYS5hcHAubjhuLmNsb3VkL3dlYmhvb2svYWRldWwtYWktdjI=");
+window.CORE_UPSCALE = atob("aHR0cHM6Ly9hZGV1bC1pYS5hcHAubjhuLmNsb3VkL3dlYmhvb2svdXBzY2FsZQ==");
 
 // ==============================================================
 // GÜVENLİK: ANTI-TAMPERING (MANİPÜLASYON TESPİTİ)
@@ -240,14 +241,13 @@ async function ADEULL_UPSCALE(imageUrl) {
             });
         }
 
-        const n8nUpscaleURL = "https://adeul-ia.app.n8n.cloud/webhook/upscale"; 
-        const response = await fetch(n8nUpscaleURL, {
+        const response = await fetch(window.CORE_UPSCALE, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ image: finalImage })
         });
         
-        if (!response.ok) throw new Error("N8N Webhook yanıt vermedi!");
+        if (!response.ok) throw new Error("Core Engine is not responding!");
         
         const data = await response.json();
         return data.output_url || data.output || data;
@@ -302,7 +302,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
         isSketchMode = "EVET";
     }
 
-    // Add secure auth token and user_id to payload for N8N validation
+    // Add secure auth token and user_id to payload for Core Engine validation
     const sessionData = window.supabaseClient ? await window.supabaseClient.auth.getSession() : null;
     const authToken = sessionData?.data?.session?.access_token || "";
 
@@ -321,7 +321,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
     };
 
     try {
-        const response = await fetch(window.CLOUDFLARE_URL, {
+        const response = await fetch(window.CORE_ENGINE_V2, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json; charset=utf-8', 'Accept': 'application/json; charset=utf-8' },
             body: JSON.stringify(payload)

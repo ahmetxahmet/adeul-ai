@@ -1,7 +1,7 @@
 // ==============================================================
 // SUNUM.JS — ADEULL AI PRESENTATION MODULE
-// Ana webhook: window.CLOUDFLARE_URL (adeul-ai-v2)
-// N8N routing: action === "presentation"
+// Core endpoint: window.CORE_ENGINE_V2
+// Core routing: action === "presentation"
 // 2 AŞAMALI SİSTEM: TEXTURE RENDER + ANALİZ
 // BOARD 1: Yuvarlak — premium klasik
 // BOARD 2: Kare — modern minimalist
@@ -235,7 +235,7 @@
         };
 
         try {
-            var response = await fetch(window.CLOUDFLARE_URL, {
+            var response = await fetch(window.CORE_ENGINE_V2, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
