@@ -325,7 +325,6 @@ async function deductCredit(action, amount) {
         try {
             // Kredi düşme işlemini frontend yerine Supabase backend'e (RPC) bırakıyoruz
             const { data, error } = await window.supabaseClient.rpc('secure_deduct_credit', {
-                p_user_id: window.currentUserId,
                 p_amount: amount,
                 p_action: action
             });
