@@ -227,11 +227,17 @@
 
         var userPrompt = (document.getElementById('sunumPromptArea') || {}).value || '';
 
+        // Add secure auth token for Core Engine validation
+        var sessionData = window.supabaseClient ? await window.supabaseClient.auth.getSession() : null;
+        var authToken = sessionData && sessionData.data && sessionData.data.session ? sessionData.data.session.access_token : "";
+
         var payload = {
             action: 'presentation',
             prompt: userPrompt || 'Analyze materials, textures, and color palette',
             images: { boxRef: window._sunumImageBase64 },
-            language: langCode
+            language: langCode,
+            user_id: window.currentUserId || "guest",
+            user_token: authToken
         };
 
         try {
