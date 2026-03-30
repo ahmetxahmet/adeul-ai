@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADEULL ŞANTİYE</title>
+    <style>
+        /* MONUMENT VALLEY & DORFROMANTIK RENK PALETİ */
+        body { margin: 0; overflow: hidden; background: linear-gradient(135deg, #f4e1d2 0%, #e1b3d1 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+        
+        .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); color: #333; }
+        
+        /* DİL SEÇİCİ */
+        #lang-selector { position: absolute; top: 20px; right: 20px; z-index: 300; }
+        #lang-dropdown { background: #fff; border: 2px solid #dd6b5d; color: #dd6b5d; padding: 8px 15px; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 14px; outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        /* ANA MENÜ */
+        #main-menu { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: radial-gradient(circle, rgba(61, 90, 128, 0.9) 0%, rgba(41, 50, 65, 0.95) 100%); color: #fff;}
+        #main-menu h1 { color: #fca311; letter-spacing: 3px; font-size: 42px; text-transform: uppercase; margin-bottom: 20px; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .menu-section { background: rgba(0,0,0,0.4); padding: 20px; margin-bottom: 15px; width: 90%; max-width: 600px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);}
+        .menu-section h3 { margin-top: 0; border-bottom: 2px solid #fca311; padding-bottom: 10px; font-size: 16px; color: #eee; text-transform: uppercase; }
+        .opt-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .opt-btn { background: #f0f0f0; border: 2px solid transparent; color: #555; padding: 10px 15px; cursor: pointer; border-radius: 8px; transition: 0.2s; font-weight: bold; font-size: 13px;}
+        .opt-btn:hover { background: #fff; transform: translateY(-2px); }
+        .opt-btn.active { background: #fff; border-color: #dd6b5d; color: #dd6b5d; box-shadow: 0 4px 10px rgba(221, 107, 93, 0.2); }
+        
+        .main-btn { border: none; color: #fff; padding: 15px 40px; font-size: 18px; font-weight: bold; cursor: pointer; border-radius: 30px; width: 100%; max-width: 300px; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
+        #start-game-btn { background: #dd6b5d; box-shadow: 0 6px 20px rgba(221, 107, 93, 0.4); }
+        #start-game-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(221, 107, 93, 0.6); }
+        
+        /* KAYITLI OYUNA DEVAM BUTONU */
+        #resume-game-btn { background: #4caf50; box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4); display: none; margin-bottom: 15px;}
+        #resume-game-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6); }
+
+        /* OYUN HUD */
+        #ui-layer { position: absolute; top: 20px; left: 20px; z-index: 10; pointer-events: none; display: none; padding: 15px 25px; }
+        #ui-layer h1 { margin: 0; font-size: 24px; color: #dd6b5d; text-transform: uppercase; }
+        #ui-layer p { margin: 5px 0 0 0; font-size: 15px; color: #555; font-weight: bold; }
+        
+        #hud-right { position: absolute; top: 70px; right: 20px; z-index: 10; pointer-events: auto; display: none; width: 220px;}
+        .info-box { padding: 12px 15px; border-radius: 10px; margin-bottom: 10px; font-size: 14px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;}
+        .action-btn { background: #fff; border: 1px solid #ddd; color: #333; padding: 12px 15px; cursor: pointer; border-radius: 8px; font-weight: bold; transition: 0.2s; width: 100%; box-sizing: border-box; margin-bottom: 8px; text-transform: uppercase; font-size: 12px;}
+        .action-btn:hover { background: #f5f5f5; border-color: #ccc; }
+        .restart-btn { background: #e94560; color: #fff; border: none; }
+        .restart-btn:hover { background: #d03a52; }
+
+        /* LEVEL BARI (AŞAĞIDA KAYAN BAR) */
+        #level-bar-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); max-width: 80vw; overflow: hidden; z-index: 10; display: none; padding: 10px; border-radius: 20px; }
+        #level-bar { display: flex; gap: 8px; transition: 0.3s ease-out; }
+        .level-node { width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%; background: #eee; color: #888; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; transition: 0.3s; }
+        .level-node.active { background: #dd6b5d; color: #fff; transform: scale(1.15); box-shadow: 0 4px 10px rgba(221, 107, 93, 0.4); }
+        .level-node.completed { background: #7eb0a6; color: #fff; }
+
+        /* UYARI VE QUİZ EKRANLARI */
+        .modal-box { display: none; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 20px 30px; border-radius: 16px; text-align: center; z-index: 150; width: 90%; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        #alert-box { border-left: 6px solid #e94560; }
+        #alert-title { color: #e94560; margin: 0 0 10px 0; font-size: 20px; text-transform: uppercase; }
+        #quiz-box { border-left: 6px solid #7eb0a6; }
+        #quiz-header { color: #7eb0a6; margin: 0 0 10px 0; font-size: 18px; }
+        #quiz-options { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+        .quiz-btn { flex: 1; min-width: 120px; background: #fff; border: 1px solid #ddd; color: #444; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: 0.2s; font-weight: bold;}
+        .quiz-btn:hover { background: #f0f0f0; border-color: #7eb0a6; color: #7eb0a6; }
+
+        /* 3D OBJELER */
+        #player-emoji { position: absolute; font-size: 32px; pointer-events: none; z-index: 5; transform: translate(-50%, -100%); transition: 0.1s ease-out; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.2)); display: none; }
+        .station-label { position: absolute; color: #333; font-weight: 900; font-size: 18px; background: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transform: translate(-50%, -50%); pointer-events: none; z-index: 4; border: 2px solid #ddd;}
+        
+        #canvas-container { width: 100vw; height: 100vh; display: block; }
+    </style>
+</head>
+<body>
+
+    <div id="lang-selector">
+        <select id="lang-dropdown" onchange="setLang(this.value)">
+            <option value="tr" disabled selected>🌍 Dil / Language</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="tr">🇹🇷 Türkçe</option>
+            <option value="it">🇮🇹 Italiano</option>
+            <option value="ru">🇷🇺 Русский</option>
+            <option value="ar">🇸🇦 العربية</option>
+            <option value="zh">🇨🇳 中文</option>
+            <option value="ja">🇯🇵 日本語</option>
+        </select>
+    </div>
+
+    <div id="main-menu">
+        <h1 id="t-m-title">ADEULL ŞANTİYE</h1>
+        
+        <button id="resume-game-btn" class="main-btn" onclick="resumeGame()" id="t-m-resume">KAYITLI PROJEYE DEVAM ET</button>
+
+        <div class="glass-panel menu-section">
+            <h3 id="t-m-role">Mesleğini Seç</h3>
+            <div class="opt-group" id="role-select">
+                <button class="opt-btn active" onclick="setOpt('role', 'architect')" id="t-r-arch">Mimar</button>
+                <button class="opt-btn" onclick="setOpt('role', 'interior')" id="t-r-int">İç Mimar</button>
+                <button class="opt-btn" onclick="setOpt('role', 'manager')" id="t-r-man">Şantiye Şefi</button>
+            </div>
+            
+            <h3 id="t-m-gender" style="margin-top: 15px;">Karakter</h3>
+            <div class="opt-group" id="gender-select">
+                <button class="opt-btn active" onclick="setOpt('gender', 'm')" id="t-g-m">Erkek</button>
+                <button class="opt-btn" onclick="setOpt('gender', 'f')" id="t-g-f">Kadın</button>
+            </div>
+        </div>
+
+        <div class="glass-panel menu-section">
+            <h3 id="t-m-diff">Zorluk Derecesi</h3>
+            <div class="opt-group" id="diff-select">
+                <button class="opt-btn" onclick="setOpt('diff', 'easy')" id="t-d-e">Basit</button>
+                <button class="opt-btn active" onclick="setOpt('diff', 'med')" id="t-d-m">Orta</button>
+                <button class="opt-btn" onclick="setOpt('diff', 'hard')" id="t-d-h">Zor</button>
+            </div>
+            
+            <h3 id="t-m-mode" style="margin-top: 15px;">Oyun Modu</h3>
+            <div class="opt-group" id="mode-select">
+                <button class="opt-btn active" onclick="setOpt('mode', 'action')" id="t-md-a">Aksiyon (Kutu Diz)</button>
+                <button class="opt-btn" onclick="setOpt('mode', 'trivia')" id="t-md-t">Bilgi (Soru ile İlerle)</button>
+            </div>
+        </div>
+
+        <button id="start-game-btn" class="main-btn" onclick="startGame()" id="t-m-start">YENİ PROJEYE BAŞLA</button>
+    </div>
+
+    <div id="ui-layer" class="glass-panel">
+        <h1 id="level-title">Proje 1</h1>
+        <p id="level-task">Hedef: A'dan B'ye git.</p>
+    </div>
+
+    <div id="hud-right">
+        <div class="glass-panel info-box"><span id="t-h-life">CAN</span> <span id="life-display">❤️❤️❤️</span></div>
+        <div class="glass-panel info-box"><span id="t-h-score">BAKİYE</span> <span id="score-display">0.000</span></div>
+        
+        <button id="btn-scan" class="action-btn glass-panel" onclick="scanMines()">Planı İncele</button>
+        <button class="action-btn restart-btn glass-panel" onclick="restartCurrentLevel()" id="t-h-res">Projeyi Sıfırla</button>
+        <button class="action-btn glass-panel" onclick="returnToMenu()" id="t-h-menu">Ana Menü (ESC)</button>
+    </div>
+
+    <div id="level-bar-container" class="glass-panel">
+        <div id="level-bar"></div>
+    </div>
+
+    <div id="player-emoji">👷🏻‍♂️</div>
+    <div id="labels-container"></div>
+
+    <div id="alert-box" class="glass-panel modal-box">
+        <h2 id="alert-title">🛠️ İŞ KAZASI!</h2>
+        <p id="alert-msg" style="font-weight: 500; margin-bottom: 15px;">Hooop usta naptın!</p>
+        <button class="action-btn restart-btn" onclick="closeAlert()" id="t-a-btn">Devam Et</button>
+    </div>
+
+    <div id="quiz-box" class="glass-panel modal-box">
+        <h2 id="quiz-header">🧐 YAPI DENETİM!</h2>
+        <p id="quiz-q" style="margin:5px 0; font-weight: bold; color: #444;">Soruyu bil, ustayı yürüt:</p>
+        <div id="quiz-options"></div>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+
+        // --- GLOBAL DİL SÖZLÜĞÜ (10 DİL) ---
+        const uiDict = {
+            tr: { m_title: "ADEULL ŞANTİYE", m_role: "Mesleğini Seç", m_gender: "Karakter", m_diff: "Zorluk Derecesi", m_mode: "Oyun Modu", r_arch: "Mimar", r_int: "İç Mimar", r_man: "Şantiye Şefi", g_m: "Erkek", g_f: "Kadın", d_e: "Basit", d_m: "Orta", d_h: "Zor", md_a: "Aksiyon", md_t: "Bilgi Modu", start: "YENİ PROJEYE BAŞLA", resume: "KAYITLI PROJEYE DEVAM ET", h_life: "CAN", h_score: "BAKİYE", h_res: "Bölümü Sıfırla", h_menu: "Ana Menü (ESC)", a_btn: "Devam Et", a_err: "🛠️ İŞ KAZASI!", a_info: "🚀 PROJE TAMAM!", q_head_t: "🤔 BİLGİ MODU", q_head_a: "🧐 YAPI DENETİM", scan_btn: "Planı İncele", scan_used: "Plan Kullanıldı", msg_win: "Tebrikler Paşam! 30 Projeyi bitirdin.", msg_die: "Şantiye mühürlendi! Patron zar zor 1 can buldu.", msg_correct: "Helal Usta! Doğru cevap.", msg_wrong_t: "Yanlış cevap usta! Son istasyona dönüyorsun.", msg_wrong_a: "Yanlış Cevap! Canın gitmedi.", task_pre: "Hedef:", task_post: "İstasyonu!", mats: { brick: "Tuğla", concrete: "Beton", grass: "Çim" } },
+            en: { m_title: "ADEULL CONSTRUCTION", m_role: "Profession", m_gender: "Character", m_diff: "Difficulty", m_mode: "Game Mode", r_arch: "Architect", r_int: "Interior Des.", r_man: "Site Manager", g_m: "Male", g_f: "Female", d_e: "Easy", d_m: "Medium", d_h: "Hard", md_a: "Action", md_t: "Trivia", start: "NEW PROJECT", resume: "RESUME SAVED PROJECT", h_life: "LIVES", h_score: "BALANCE", h_res: "Reset Level", h_menu: "Main Menu (ESC)", a_btn: "Continue", a_err: "🛠️ ACCIDENT!", a_info: "🚀 PROJECT DONE!", q_head_t: "🤔 TRIVIA MODE", q_head_a: "🧐 INSPECTION", scan_btn: "Inspect Plan", scan_used: "Plan Used", msg_win: "Congrats Boss! You finished 30 projects.", msg_die: "Site sealed! Boss found 1 life.", msg_correct: "Well done! Correct.", msg_wrong_t: "Wrong! Back to the last station.", msg_wrong_a: "Wrong! Got a warning.", task_pre: "Target:", task_post: "Station!", mats: { brick: "Brick", concrete: "Concrete", grass: "Grass" } }
+        };
+        ["de", "fr", "es", "it", "ru", "ar", "zh", "ja"].forEach(l => uiDict[l] = uiDict.en);
+
+        // --- ZENGİNLEŞTİRİLMİŞ ESPRİ VE SORU HAFIZASI ---
+        const roleErrors = {
+            tr: {
+                architect: ["Kot farkını unuttun bina havada kaldı usta!", "Taşıyıcı duvara pencere açtın, bina çökecek!", "Vaziyet planını ters okumuşsun!", "Emsal hesabını patlattın!", "Kolonu kestin paşam! Statikçi ağlıyor.", "Çatı eğimini ters verdin, su alıyor!", "Yangın merdivenini unuttun!", "Kuzey cepheye yatak odası koydun!"],
+                interior: ["Şantiyeye parke döşedin, şişti hepsi usta!", "Müşteri ferah olsun dedi, kolonu pembeye boyadın!", "Usta o İtalyan koltuk merdivende sıkıştı!", "Prizleri dolabın arkasında unuttun!", "Spot lambaları kör noktaya taktın!", "Alçıpan asma tavan çöktü!", "Kombiyi mutfağın ortasında bıraktın!", "Mutfak tezgahını 110 cm yaptın!"],
+                manager: ["C30 yerine C15 beton döktürdün usta!", "İş güvenliği uzmanı sahaya girdi, baretin yok!", "Harç bitti, ustalar çaya kaçtı usta!", "Demir donatıyı eksik bağlattın!", "Kalıp patladı beton ziyan oldu!", "Hafriyat kamyonu çamura saplandı!", "Vince yanlış yük bağladın!", "Taşeronlar kavga etti, şantiye durdu!"]
+            },
+            en: {
+                architect: ["Elevation forgot, building floats!", "Window on a load wall!", "Site plan upside down!", "Cut the column! Engineer cries.", "Wrong roof pitch!"],
+                interior: ["Parquet in mud, swelled!", "Painted column pink!", "Sofa stuck in stairs!", "Forgot outlets behind closet!", "Spotlights in blind spot!"],
+                manager: ["Poured C15 instead of C30!", "Inspector arrived, fined!", "Mortar empty, workers left!", "Rebar is missing!", "Formwork exploded!"]
+            }
+        };
+
+        const quizzes = {
+            tr: [
+                { q: "Mimarlıkta 'Taşıyıcı Sistem' hangisidir?", opts: ["Kolon/Kiriş", "Asma Tavan", "Laminat Parke"], ans: 0 },
+                { q: "Betona fazla su katarsak ne olur?", opts: ["Parlak olur", "Dayanımı düşer", "Hızlı kurur"], ans: 1 },
+                { q: "İzometrik perspektifte hangisi yoktur?", opts: ["Yükseklik", "Genişlik", "Kaçış Noktası"], ans: 2 },
+                { q: "Şantiyede en kritik kural nedir?", opts: ["Baret Takmak", "Radyo Açmak", "Çay Molası"], ans: 0 },
+                { q: "Röleve nedir?", opts: ["Mevcut binanın ölçümü", "Yıkım kararı", "Tasarım süreci"], ans: 0 },
+                { q: "Su basmanı seviyesi neresidir?", opts: ["Çatı katı", "Zemin kat seviyesi", "Su deposu"], ans: 1 },
+                { q: "Ataşman şantiyede ne demektir?", opts: ["Ek iş tutanağı", "Baret lambası", "Ekskavatör ucu"], ans: 0 },
+                { q: "Puantör ne iş yapar?", opts: ["Harç karıştırır", "İşçi giriş/çıkışını yazar", "Vinç kullanır"], ans: 1 },
+                { q: "Hafriyat ne anlama gelir?", opts: ["Boya işi", "Kazı işi", "Çatı işi"], ans: 1 },
+                { q: "Mimarın en çok kullandığı kısayol?", opts: ["CTRL+C", "CTRL+Z (Geri Al)", "ALT+F4"], ans: 1 },
+                { q: "Şantiyede sarı bareti kim takar?", opts: ["Mimar", "İşçi/Usta", "Müfettiş"], ans: 1 },
+                { q: "Beton döküldükten sonra neden sulanır?", opts: ["Temiz olsun diye", "Çatlamaması için", "Rengi açılsın diye"], ans: 1 },
+                { q: "Grobeton ne işe yarar?", opts: ["Süsleme", "Temel altı düzeltme", "Çatı kaplama"], ans: 1 },
+                { q: "Şakul ne için kullanılır?", opts: ["Yataylık", "Düşeylik", "Boyama"], ans: 1 }
+            ],
+            en: [
+                { q: "What is the 'Load-Bearing System'?", opts: ["Column/Beam", "Drop Ceiling", "Parquet"], ans: 0 },
+                { q: "What happens if you add too much water to concrete?", opts: ["Shinier", "Loses strength", "Dries faster"], ans: 1 },
+                { q: "What is missing in isometric perspective?", opts: ["Height", "Width", "Vanishing Point"], ans: 2 },
+                { q: "Most critical rule on site?", opts: ["Wear Helmet", "Play Radio", "Tea Break"], ans: 0 },
+                { q: "What is an As-Built survey?", opts: ["Measuring existing", "Demolition", "Design"], ans: 0 }
+            ]
+        };
+
+        let lang = 'tr';
+        window.setLang = function(l) {
+            lang = l;
+            document.getElementById('t-m-title').innerText = uiDict[lang].m_title;
+            document.getElementById('t-m-role').innerText = uiDict[lang].m_role;
+            document.getElementById('t-m-gender').innerText = uiDict[lang].m_gender;
+            document.getElementById('t-m-diff').innerText = uiDict[lang].m_diff;
+            document.getElementById('t-m-mode').innerText = uiDict[lang].m_mode;
+            document.getElementById('t-r-arch').innerText = uiDict[lang].r_arch;
+            document.getElementById('t-r-int').innerText = uiDict[lang].r_int;
+            document.getElementById('t-r-man').innerText = uiDict[lang].r_man;
+            document.getElementById('t-g-m').innerText = uiDict[lang].g_m;
+            document.getElementById('t-g-f').innerText = uiDict[lang].g_f;
+            document.getElementById('t-d-e').innerText = uiDict[lang].d_e;
+            document.getElementById('t-d-m').innerText = uiDict[lang].d_m;
+            document.getElementById('t-d-h').innerText = uiDict[lang].d_h;
+            document.getElementById('t-md-a').innerText = uiDict[lang].md_a;
+            document.getElementById('t-md-t').innerText = uiDict[lang].md_t;
+            document.getElementById('start-game-btn').innerText = uiDict[lang].start;
+            document.getElementById('resume-game-btn').innerText = uiDict[lang].resume;
+            document.getElementById('t-h-life').innerText = uiDict[lang].h_life;
+            document.getElementById('t-h-score').innerText = uiDict[lang].h_score;
+            document.getElementById('t-h-res').innerText = uiDict[lang].h_res;
+            document.getElementById('t-h-menu').innerText = uiDict[lang].h_menu;
+            document.getElementById('t-a-btn').innerText = uiDict[lang].a_btn;
+            resetRadarText();
+            if(activeLevel) updateTaskText();
+        }
+
+        function resetRadarText() {
+            if(scanAvailable > 0) document.getElementById('btn-scan').innerText = uiDict[lang].scan_btn;
+            else document.getElementById('btn-scan').innerText = uiDict[lang].scan_used;
+        }
+
+        // --- TETRIS / ARCADE SES MOTORU ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            
+            if (type === 'tick') { 
+                osc.type = 'square'; osc.frequency.setValueAtTime(440, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'error') { 
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.3);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'success') { 
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(261.63, audioCtx.currentTime); 
+                osc.frequency.setValueAtTime(329.63, audioCtx.currentTime + 0.1); 
+                osc.frequency.setValueAtTime(392.00, audioCtx.currentTime + 0.2); 
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime + 0.3); 
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+            }
+        }
+
+        // --- OYUN DURUMU & KAYIT SİSTEMİ (LOCAL STORAGE) ---
+        const state = { role: 'architect', gender: 'm', diff: 'med', mode: 'action', score: 0.000, lives: 3, isPaused: false };
+        let currentLevel = 0, activeLevel = null;
+        let pendingMove = null; 
+        let shouldRollback = false; // CEZA VEYA HATA SONRASI GERİ DÜŞMEYİ KONTROL EDER
+        
+        const charMap = { architect: { m: '👷🏻‍♂️', f: '👷🏻‍♀️' }, interior: { m: '👨🏻‍🎨', f: '👩🏻‍🎨' }, manager: { m: '👷🏽‍♂️', f: '👷🏽‍♀️' } };
+        const diffMap = { easy: 0, med: 1, hard: 2 };
+
+        window.onload = () => {
+            const saved = localStorage.getItem('adeull_save');
+            if (saved) { document.getElementById('resume-game-btn').style.display = 'block'; }
+        };
+
+        function saveGame() {
+            const data = { role: state.role, gender: state.gender, diff: state.diff, mode: state.mode, score: state.score, lives: state.lives, level: currentLevel };
+            localStorage.setItem('adeull_save', JSON.stringify(data));
+        }
+
+        window.resumeGame = function() {
+            playSound('success');
+            const saved = JSON.parse(localStorage.getItem('adeull_save'));
+            if(saved) {
+                state.role = saved.role; state.gender = saved.gender; state.diff = saved.diff; state.mode = saved.mode;
+                state.score = saved.score; state.lives = saved.lives; currentLevel = saved.level;
+                initGameUI();
+                loadLevel(currentLevel);
+            }
+        }
+
+        window.setOpt = function(opt, val) {
+            playSound('tick'); state[opt] = val;
+            const group = document.getElementById(`${opt}-select`);
+            group.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        };
+
+        window.startGame = function() {
+            state.score = 0; state.lives = 3; currentLevel = 0;
+            saveGame(); 
+            initGameUI();
+            loadLevel(0);
+        };
+
+        function initGameUI() {
+            playSound('success');
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('lang-selector').style.display = 'none';
+            document.getElementById('ui-layer').style.display = 'block';
+            document.getElementById('hud-right').style.display = 'block';
+            document.getElementById('level-bar-container').style.display = 'block';
+            
+            const playerEl = document.getElementById('player-emoji');
+            playerEl.innerText = charMap[state.role][state.gender];
+            playerEl.style.display = 'block';
+            
+            document.getElementById('btn-scan').style.display = (state.mode === 'trivia') ? 'none' : 'block';
+            
+            updateScore(0); updateLives(0);
+        }
+
+        window.returnToMenu = function() { playSound('tick'); location.reload(); };
+        window.addEventListener('keydown', (e) => { if(e.key === 'Escape' && document.getElementById('main-menu').style.display === 'none') returnToMenu(); });
+        window.restartCurrentLevel = function() { loadLevel(currentLevel); };
+
+        function updateScore(amt) { state.score += amt; document.getElementById('score-display').innerText = state.score.toFixed(3); saveGame(); }
+
+        function updateLives(amt) {
+            state.lives += amt; if(state.lives > 5) state.lives = 5;
+            let lifeStr = ""; for(let i=0; i<state.lives; i++) lifeStr += "❤️";
+            if(state.lives <= 0) lifeStr = uiDict[lang].a_err;
+            document.getElementById('life-display').innerText = lifeStr;
+            saveGame();
+        }
+
+        function updateLevelBar(lvlIdx) {
+            const bar = document.getElementById('level-bar');
+            bar.innerHTML = '';
+            let start = Math.max(0, lvlIdx - 2);
+            let end = Math.min(29, start + 5);
+            if (end - start < 5) start = Math.max(0, end - 5);
+            for(let i = start; i <= end; i++) {
+                const node = document.createElement('div'); node.className = 'level-node';
+                if (i < lvlIdx) node.classList.add('completed');
+                if (i === lvlIdx) node.classList.add('active');
+                node.innerText = i + 1; bar.appendChild(node);
+            }
+        }
+
+        // --- BİLGİ (TRIVIA) SİSTEMİ ---
+        function triggerQuiz(isTriviaMode = false) {
+            state.isPaused = true;
+            const qList = (lang === 'tr' ? quizzes.tr : quizzes.en) || quizzes.en;
+            const qData = qList[Math.floor(Math.random() * qList.length)];
+            
+            document.getElementById('quiz-header').innerText = isTriviaMode ? uiDict[lang].q_head_t : uiDict[lang].q_head_a;
+            document.getElementById('quiz-q').innerText = qData.q;
+            
+            const optDiv = document.getElementById('quiz-options'); optDiv.innerHTML = '';
+            qData.opts.forEach((o, i) => {
+                const btn = document.createElement('button'); btn.className = 'quiz-btn'; btn.innerText = o;
+                btn.onclick = () => checkQuiz(i, qData.ans, isTriviaMode);
+                optDiv.appendChild(btn);
+            });
+            document.getElementById('quiz-box').style.display = 'block';
+        }
+
+        // SORU SİSTEMİNİN "GERİ ATMA" BUG'I BURADA ÇÖZÜLDÜ
+        window.checkQuiz = function(selected, correct, isTriviaMode) {
+            document.getElementById('quiz-box').style.display = "none";
+            state.isPaused = false;
+            
+            if(selected === correct) {
+                playSound('success');
+                if(isTriviaMode) {
+                    finalizeMove(pendingMove.gx, pendingMove.gz);
+                } else {
+                    updateLives(1);
+                    shouldRollback = false; // DOĞRU BİLDİ, GERİ ATMA YOK!
+                    showAlert(uiDict[lang].msg_correct_a, "success"); 
+                }
+            } else {
+                playSound('error');
+                if(isTriviaMode) {
+                    hitPipe(pendingMove.gx, pendingMove.gz, uiDict[lang].msg_wrong_t);
+                    // hitPipe otomatik olarak shouldRollback = true yapar
+                } else {
+                    shouldRollback = false; // YANLIŞ BİLDİ AMA UYARI ALDI, GERİ ATMA YOK!
+                    showAlert(uiDict[lang].msg_wrong_a, "error");
+                }
+            }
+            pendingMove = null;
+        };
+
+        function showAlert(msg, type="error", isLevelUp=false) {
+            state.isPaused = true;
+            document.getElementById('alert-msg').innerText = msg;
+            const box = document.getElementById('alert-box');
+            
+            if (type === "error") {
+                box.style.borderLeftColor = "#e94560";
+                document.getElementById('alert-title').innerText = uiDict[lang].a_err;
+                document.getElementById('alert-title').style.color = "#e94560";
+            } else {
+                box.style.borderLeftColor = "#81b29a";
+                document.getElementById('alert-title').innerText = uiDict[lang].a_info;
+                document.getElementById('alert-title').style.color = "#81b29a";
+            }
+            document.getElementById('t-a-btn').style.display = isLevelUp ? 'none' : 'block';
+            box.style.display = 'block';
+        }
+
+        window.closeAlert = function() {
+            playSound('tick');
+            document.getElementById('alert-box').style.display = 'none';
+            state.isPaused = false;
+            
+            if(state.lives <= 0) {
+                alert(uiDict[lang].msg_die);
+                state.lives = 1; updateLives(0);
+                loadLevel(currentLevel); 
+                return;
+            }
+            
+            // EĞER GERİ ATILMASI GEREKİYORSA (SADECE MAYIN VEYA BİLGİ MODUNDA YANLIŞ CEVAP)
+            if (shouldRollback) {
+                currentSegmentBlocks.forEach(b => { scene.remove(b.mesh); pathBlocks = pathBlocks.filter(pb => pb !== b); });
+                currentSegmentBlocks = []; 
+                movePlayerTo(lastStationPos.x, lastStationPos.z);
+                shouldRollback = false;
+            }
+        }
+
+        // --- 3D SAHNE & GRAFİKLER (MONUMENT VALLEY / DORFROMANTIK STİLİ) ---
+        const scene = new THREE.Scene();
+        const aspect = window.innerWidth / window.innerHeight;
+        const d = 10; 
+        const camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d, -d, 1, 1000);
+        camera.position.set(20, 20, 20); camera.lookAt(0, 0, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+        scene.add(hemiLight);
+        const dirLight = new THREE.DirectionalLight(0xffeedd, 0.6);
+        dirLight.position.set(10, 20, 10); dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 1024; dirLight.shadow.mapSize.height = 1024;
+        scene.add(dirLight);
+
+        const boxGeo = new THREE.BoxGeometry(0.96, 1, 0.96);
+        const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2();
+        
+        let gridSize = 5, stations = [], mines = [], pathBlocks = [], currentSegmentBlocks = []; 
+        let scanAvailable = 1, playerPos = { x: 0, z: 0 }, lastStationPos = { x: 0, z: 0 }, targetStationIndex = 1;
+        let hitPlaneMesh, islandBase;
+
+        // UÇ KÖŞELERE İSTASYON YERLEŞTİRİCİ
+        function getDistributedStations(size, count) {
+            const sts = [];
+            const fixedPoints = [
+                {x: 0, z: 0}, {x: size-1, z: size-1}, 
+                {x: 0, z: size-1}, {x: size-1, z: 0}, 
+                {x: Math.floor(size/2), z: 0}, {x: Math.floor(size/2), z: size-1},
+                {x: 0, z: Math.floor(size/2)}, {x: size-1, z: Math.floor(size/2)}
+            ];
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            for(let i=0; i<count; i++) {
+                if (i < fixedPoints.length) sts.push({ l: letters[i], x: fixedPoints[i].x, z: fixedPoints[i].z });
+                else sts.push({ l: letters[i], x: Math.floor(Math.random()*size), z: Math.floor(Math.random()*size) });
+            }
+            return sts;
+        }
+
+        function getLevelData(idx) {
+            const mType = idx % 3 === 0 ? 'brick' : (idx % 3 === 1 ? 'concrete' : 'grass');
+            const dynSize = Math.min(13, 5 + Math.floor(idx/4)*2);
+            const stCount = Math.min(26, 2 + Math.floor(idx/3)); 
+            const dynStations = getDistributedStations(dynSize, stCount);
+            return { matKey: mType, size: dynSize, stations: dynStations };
+        }
+
+        function loadLevel(levelIndex) {
+            if(levelIndex >= 30) { alert(uiDict[lang].msg_win); localStorage.removeItem('adeull_save'); location.reload(); return; }
+            currentLevel = levelIndex; activeLevel = getLevelData(levelIndex);
+            gridSize = activeLevel.size; targetStationIndex = 1;
+            saveGame(); // Yeni levela geçince kaydet
+
+            document.getElementById('level-title').innerText = `${lang==='tr'?'Proje':'Project'} ${levelIndex + 1}`;
+            updateLevelBar(levelIndex); updateTaskText();
+
+            if(hitPlaneMesh) scene.remove(hitPlaneMesh);
+            if(islandBase) scene.remove(islandBase);
+            stations.forEach(s => { scene.remove(s.mesh); s.div.remove(); }); stations = [];
+            pathBlocks.forEach(b => scene.remove(b.mesh)); pathBlocks = []; currentSegmentBlocks = [];
+
+            // GÖRÜNMEZ TIKLAMA ZEMİNİ (Y=0)
+            const planeGeo = new THREE.PlaneGeometry(gridSize, gridSize); planeGeo.rotateX(-Math.PI/2);
+            hitPlaneMesh = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({visible: false}));
+            scene.add(hitPlaneMesh);
+
+            // DORFROMANTIK/MONUMENT VALLEY STİLİ YÜZEN ADA
+            const baseMat = new THREE.MeshStandardMaterial({ color: 0x3d5a80, roughness: 0.9, flatShading: true });
+            islandBase = new THREE.Mesh(new THREE.BoxGeometry(gridSize, 2, gridSize), baseMat);
+            islandBase.position.y = -1.01; 
+            islandBase.receiveShadow = true;
+            scene.add(islandBase);
+
+            // İSTASYONLAR
+            activeLevel.stations.forEach(st => {
+                const mat = new THREE.MeshStandardMaterial({ color: 0xfca311, roughness: 0.2 });
+                const mesh = new THREE.Mesh(boxGeo, mat);
+                mesh.position.set(st.x - gridSize/2 + 0.5, 0, st.z - gridSize/2 + 0.5);
+                mesh.castShadow = true; mesh.receiveShadow = true;
+                
+                const edges = new THREE.EdgesGeometry(boxGeo);
+                const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 }));
+                mesh.add(line);
+
+                scene.add(mesh);
+                const div = document.createElement('div'); div.className = 'station-label'; div.innerText = st.l;
+                document.getElementById('labels-container').appendChild(div);
+                stations.push({ gridX: st.x, gridZ: st.z, label: st.l, mesh, div });
+            });
+
+            lastStationPos = { x: activeLevel.stations[0].x, z: activeLevel.stations[0].z };
+            movePlayerTo(lastStationPos.x, lastStationPos.z);
+            
+            // MAYINLAR (Sadece Aksiyon Modunda)
+            mines = [];
+            if (state.mode !== 'trivia') {
+                const totalMines = 2 + Math.floor(currentLevel/2) + diffMap[state.diff]; 
+                let attempts = 0; let validMines = false;
+                
+                while(!validMines && attempts < 20) {
+                    mines = [];
+                    while(mines.length < totalMines) {
+                        let mx = Math.floor(Math.random() * gridSize), mz = Math.floor(Math.random() * gridSize);
+                        if (!activeLevel.stations.some(s => s.x === mx && s.z === mz) && !mines.some(m => m.x === mx && m.z === mz)) {
+                            mines.push({x: mx, z: mz});
+                        }
+                    }
+                    validMines = true; 
+                    attempts++;
+                }
+            }
+            resetRadar();
+        }
+
+        function updateTaskText() { document.getElementById('level-task').innerText = `${uiDict[lang].task_pre} ${activeLevel.stations[targetStationIndex].l} ${uiDict[lang].task_post} (${uiDict[lang].mats[activeLevel.matKey]})`; }
+
+        function movePlayerTo(gx, gz) { playerPos = { x: gx, z: gz }; }
+
+        function resetRadar() { scanAvailable = 1; resetRadarText(); document.getElementById('btn-scan').disabled = false; }
+
+        window.scanMines = function() {
+            if(scanAvailable <= 0 || state.isPaused || state.mode === 'trivia') return;
+            scanAvailable--; document.getElementById('btn-scan').disabled = true; resetRadarText(); playSound('success');
+            const mineGeo = new THREE.PlaneGeometry(0.8, 0.8); mineGeo.rotateX(-Math.PI/2);
+            const mineMat = new THREE.MeshBasicMaterial({ color: 0xe94560, transparent: true, opacity: 0.8 });
+            mines.forEach(m => {
+                const mesh = new THREE.Mesh(mineGeo, mineMat);
+                mesh.position.set(m.x - gridSize/2 + 0.5, 0.02, m.z - gridSize/2 + 0.5);
+                scene.add(mesh); m.revealedMesh = mesh;
+            });
+            setTimeout(() => { mines.forEach(m => { if(m.revealedMesh) { scene.remove(m.revealedMesh); m.revealedMesh = null; } }); }, 2500);
+        }
+
+        window.addEventListener('pointerdown', (event) => {
+            if(event.target.tagName === 'BUTTON' || event.target.tagName === 'SELECT' || state.isPaused || document.getElementById('main-menu').style.display !== 'none') return;
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObject(hitPlaneMesh);
+            if (intersects.length > 0) {
+                const p = intersects[0].point;
+                const gx = Math.floor(p.x + gridSize/2), gz = Math.floor(p.z + gridSize/2);
+                if(gx >= 0 && gx < gridSize && gz >= 0 && gz < gridSize) handleGridClick(gx, gz);
+            }
+        });
+
+        function handleGridClick(gx, gz) {
+            const isAdjacent = (Math.abs(playerPos.x - gx) === 1 && playerPos.z === gz) || (Math.abs(playerPos.z - gz) === 1 && playerPos.x === gx);
+            if(!isAdjacent) return; 
+
+            if(state.mode === 'trivia') { pendingMove = { gx, gz }; triggerQuiz(true); return; }
+            finalizeMove(gx, gz);
+            if(Math.random() < 0.05) { setTimeout(() => triggerQuiz(false), 400); }
+        }
+
+        function finalizeMove(gx, gz) {
+            if(mines.some(m => m.x === gx && m.z === gz)) { hitPipe(gx, gz); return; }
+            const targetSt = activeLevel.stations[targetStationIndex];
+            if(gx === targetSt.x && gz === targetSt.z) { reachStation(gx, gz); return; }
+            placeBlock(gx, gz); movePlayerTo(gx, gz); updateScore(0.001); playSound('tick');
+        }
+
+        function placeBlock(gx, gz) {
+            let baseColor;
+            if (activeLevel.matKey === "brick") { baseColor = new THREE.Color().setHex(0xe07a5f); } // Pastel Kiremit
+            else if (activeLevel.matKey === "concrete") { baseColor = new THREE.Color().setHex(0xcfd2d6); } // Pastel Gri
+            else { baseColor = new THREE.Color().setHex(0x81b29a); } // Pastel Yeşil
+
+            baseColor.offsetHSL(0, 0, (gx+gz)*0.01 - 0.05);
+
+            const mat = new THREE.MeshStandardMaterial({ color: baseColor, roughness: 0.8, flatShading: true });
+            const mesh = new THREE.Mesh(boxGeo, mat);
+            
+            const edges = new THREE.EdgesGeometry(boxGeo);
+            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 }));
+            mesh.add(line);
+
+            mesh.position.set(gx - gridSize/2 + 0.5, 0, gz - gridSize/2 + 0.5);
+            mesh.castShadow = true; mesh.receiveShadow = true;
+            mesh.scale.set(0.1, 0.1, 0.1);
+            
+            scene.add(mesh);
+            const blockData = { mesh, gx, gz };
+            pathBlocks.push(blockData); currentSegmentBlocks.push(blockData);
+        }
+
+        function hitPipe(gx, gz, customMsg = null) {
+            playSound('error'); updateLives(-1);
+            let roleKey = state.role === 'architect' ? 'err_arch' : (state.role === 'interior' ? 'err_int' : 'err_man');
+            const msgs = (lang === 'tr' ? roleErrors.tr : roleErrors.en)[roleKey] || roleErrors.en[roleKey];
+            const msg = customMsg || msgs[Math.floor(Math.random() * msgs.length)];
+            
+            shouldRollback = true; // GERİ DÜŞMEYİ AKTİFLEŞTİR
+            showAlert(msg + ` (${uiDict[lang].h_life}: ${state.lives})`, "error");
+
+            const errMat = new THREE.MeshBasicMaterial({ color: 0xe94560 });
+            const errMesh = new THREE.Mesh(boxGeo, errMat);
+            errMesh.position.set(gx - gridSize/2 + 0.5, 0, gz - gridSize/2 + 0.5);
+            scene.add(errMesh);
+            setTimeout(() => { scene.remove(errMesh); }, 800);
+        }
+
+        function reachStation(gx, gz) {
+            playSound('success'); updateScore(0.050); movePlayerTo(gx, gz);
+            lastStationPos = { x: gx, z: gz }; currentSegmentBlocks = []; targetStationIndex++;
+            if(targetStationIndex >= activeLevel.stations.length) {
+                shouldRollback = false; // LEVEL GEÇİNCE GERİ DÜŞME İPTAL
+                showAlert(uiDict[lang].a_info, "success", true); 
+                setTimeout(() => {
+                    document.getElementById('alert-box').style.display = 'none'; state.isPaused = false;
+                    loadLevel(currentLevel + 1);
+                }, 2000);
+            } else {
+                updateTaskText(); resetRadar();
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            pathBlocks.forEach(b => { if(b.mesh.scale.x < 1) { const s = b.mesh.scale.x + (1 - b.mesh.scale.x) * 0.3; b.mesh.scale.set(s, s, s); } });
+            stations.forEach(st => {
+                const vector = new THREE.Vector3(st.mesh.position.x, 0.5, st.mesh.position.z); vector.project(camera);
+                st.div.style.left = `${(vector.x * .5 + .5) * window.innerWidth}px`; st.div.style.top = `${(vector.y * -.5 + .5) * window.innerHeight}px`;
+            });
+            const pVector = new THREE.Vector3(playerPos.x - gridSize/2 + 0.5, 0.5, playerPos.z - gridSize/2 + 0.5); pVector.project(camera);
+            const emojiEl = document.getElementById('player-emoji');
+            emojiEl.style.left = `${(pVector.x * .5 + .5) * window.innerWidth}px`;
+            const bounce = Math.sin(Date.now() * 0.01) * 8;
+            emojiEl.style.top = `calc(${(pVector.y * -.5 + .5) * window.innerHeight}px - ${bounce}px)`;
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            const aspect = window.innerWidth / window.innerHeight;
+            camera.left = -d * aspect; camera.right = d * aspect; camera.top = d; camera.bottom = -d;
+            camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>

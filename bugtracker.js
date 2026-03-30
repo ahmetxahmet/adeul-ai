@@ -67,6 +67,62 @@
     }
 
     // ============================================================
+    // OYUN MODÜLÜ (ISOLATED IFRAME)
+    // ============================================================
+    function createGameButton() {
+        var btn = document.createElement('div');
+        btn.id = 'gameLaunchBtn';
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect><path d="M6 12h4"></path><path d="M8 10v4"></path><line x1="15" y1="13" x2="15.01" y2="13"></line><line x1="18" y1="11" x2="18.01" y2="11"></line></svg>'; 
+        btn.style.cssText = 'position:fixed;bottom:80px;left:16px;z-index:9999;height:32px;width:32px;' +
+            'background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:8px;' +
+            'display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.2);' +
+            'backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all 0.3s ease;font-family:inherit;';
+        btn.onmouseenter = function() {
+            btn.style.color = 'rgba(255,255,255,0.8)';
+            btn.style.borderColor = 'rgba(255,255,255,0.2)';
+            btn.style.background = 'rgba(0,0,0,0.6)';
+        };
+        btn.onmouseleave = function() {
+            btn.style.color = 'rgba(255,255,255,0.2)';
+            btn.style.borderColor = 'rgba(255,255,255,0.08)';
+            btn.style.background = 'rgba(0,0,0,0.4)';
+        };
+        btn.onclick = function() { toggleGameModal(); };
+        document.body.appendChild(btn);
+    }
+
+    window.toggleGameSize = function() {
+        var gm = document.getElementById('gameModalWindow');
+        if(!gm) return;
+        if (gm.style.width === '100%') {
+            gm.style.width = '420px'; gm.style.height = '600px';
+            gm.style.bottom = '40px'; gm.style.right = '40px';
+            gm.style.borderRadius = '16px';
+        } else {
+            gm.style.width = '100%'; gm.style.height = '100%';
+            gm.style.bottom = '0'; gm.style.right = '0';
+            gm.style.borderRadius = '0';
+        }
+    };
+
+    window.toggleGameModal = function() {
+        var modal = document.getElementById('gameModalWindow');
+        if (modal) {
+            modal.remove(); // Ram temizlensin diye tamamen yok ediyoruz
+        } else {
+            modal = document.createElement('div');
+            modal.id = 'gameModalWindow';
+            modal.style.cssText = 'position:fixed;bottom:40px;right:40px;width:420px;height:600px;z-index:10000;background:rgba(10,10,10,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,0.5);display:flex;flex-direction:column;transition:all 0.3s ease;';
+            modal.innerHTML = '<div style="height:36px;background:rgba(0,0,0,0.5);display:flex;justify-content:space-between;align-items:center;padding:0 12px;border-bottom:1px solid rgba(255,255,255,0.05);">' +
+                '<span style="color:rgba(255,255,255,0.5);font-size:9px;letter-spacing:0.2em;font-weight:bold;">ADEULL MINI GAME</span>' +
+                '<div style="display:flex;gap:12px;"><button onclick="toggleGameSize()" style="color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;font-size:12px;">[ ]</button>' +
+                '<button onclick="toggleGameModal()" style="color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;font-size:12px;">✕</button></div></div>' +
+                '<iframe src="game.html" style="width:100%;height:calc(100% - 36px);border:none;"></iframe>';
+            document.body.appendChild(modal);
+        }
+    };
+
+    // ============================================================
     // 2. REPORT MODAL — glass-panel, ADEULL estetiği
     // ============================================================
     function createBugModal() {
@@ -314,10 +370,12 @@
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
             createBugButton();
+            createGameButton();
             createBugModal();
         });
     } else {
         createBugButton();
+        createGameButton();
         createBugModal();
     }
 
