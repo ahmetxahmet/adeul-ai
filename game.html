@@ -85,9 +85,9 @@
     <div id="main-menu">
         <h1 id="t-m-title">ADEULL GAME</h1>
         
-        <button id="resume-game-btn" class="main-btn" onclick="resumeGame()" id="t-m-resume">KAYITLI PROJEYE DEVAM ET</button>
+        <button id="resume-game-btn" class="main-btn" onclick="resumeGame()">KAYITLI PROJEYE DEVAM ET</button>
 
-        <div class="glass-panel menu-section">
+        <div class="menu-section">
             <h3 id="t-m-role">Mesleğini Seç</h3>
             <div class="opt-group" id="role-select">
                 <button class="opt-btn active" onclick="setOpt('role', 'architect')" id="t-r-arch">Mimar</button>
@@ -102,7 +102,7 @@
             </div>
         </div>
 
-        <div class="glass-panel menu-section">
+        <div class="menu-section">
             <h3 id="t-m-diff">Zorluk Derecesi</h3>
             <div class="opt-group" id="diff-select">
                 <button class="opt-btn" onclick="setOpt('diff', 'easy')" id="t-d-e">Basit</button>
@@ -117,7 +117,7 @@
             </div>
         </div>
 
-        <button id="start-game-btn" class="main-btn" onclick="startGame()" id="t-m-start">YENİ PROJEYE BAŞLA</button>
+        <button id="start-game-btn" class="main-btn" onclick="startGame()">YENİ PROJEYE BAŞLA</button>
         
     </div>
 
@@ -167,8 +167,8 @@
             { code: 'AR', flag: '🇦🇪', key: 'ar' }, { code: 'IT', flag: '🇮🇹', key: 'it' }
         ];
         const uiDict = {
-            tr: { m_title: "ADEULL GAME", m_role: "Mesleğini Seç", m_gender: "Karakter", m_diff: "Zorluk Derecesi", m_mode: "Oyun Modu", r_arch: "Mimar", r_int: "İç Mimar", r_man: "Şantiye Şefi", g_m: "Erkek", g_f: "Kadın", d_e: "Basit", d_m: "Orta", d_h: "Zor", md_a: "Aksiyon", md_t: "Bilgi Modu", start: "YENİ PROJEYE BAŞLA", resume: "KAYITLI PROJEYE DEVAM ET", h_life: "CAN", h_score: "BAKİYE", h_res: "Bölümü Sıfırla", h_menu: "Ana Menü (ESC)", a_btn: "Devam Et", a_err: "🛠️ İŞ KAZASI!", a_info: "🚀 PROJE TAMAM!", q_head_t: "🤔 BİLGİ MODU", q_head_a: "🧐 YAPI DENETİM", scan_btn: "Planı İncele", scan_used: "Plan Kullanıldı", msg_win: "Tebrikler Paşam! 30 Projeyi bitirdin.", msg_die: "Şantiye mühürlendi! Patron zar zor 1 can buldu.", msg_correct: "Helal Usta! Doğru cevap.", msg_wrong_t: "Yanlış cevap usta! Son istasyona dönüyorsun.", msg_wrong_a: "Yanlış Cevap! Canın gitmedi.", task_pre: "Hedef:", task_post: "İstasyonu!", mats: { brick: "Tuğla", concrete: "Beton", grass: "Çim" } },
-            en: { m_title: "ADEULL GAME", m_role: "Profession", m_gender: "Character", m_diff: "Difficulty", m_mode: "Game Mode", r_arch: "Architect", r_int: "Interior Des.", r_man: "Site Manager", g_m: "Male", g_f: "Female", d_e: "Easy", d_m: "Medium", d_h: "Hard", md_a: "Action", md_t: "Trivia", start: "NEW PROJECT", resume: "RESUME SAVED PROJECT", h_life: "LIVES", h_score: "BALANCE", h_res: "Reset Level", h_menu: "Main Menu (ESC)", a_btn: "Continue", a_err: "🛠️ ACCIDENT!", a_info: "🚀 PROJECT DONE!", q_head_t: "🤔 TRIVIA MODE", q_head_a: "🧐 INSPECTION", scan_btn: "Inspect Plan", scan_used: "Plan Used", msg_win: "Congrats Boss! You finished 30 projects.", msg_die: "Site sealed! Boss found 1 life.", msg_correct: "Well done! Correct.", msg_wrong_t: "Wrong! Back to the last station.", msg_wrong_a: "Wrong! Got a warning.", task_pre: "Target:", task_post: "Station!", mats: { brick: "Brick", concrete: "Concrete", grass: "Grass" } },
+            tr: { m_title: "ADEULL GAME", m_role: "Mesleğini Seç", m_gender: "Karakter", m_diff: "Zorluk Derecesi", m_mode: "Oyun Modu", r_arch: "Mimar", r_int: "İç Mimar", r_man: "Şantiye Şefi", g_m: "Erkek", g_f: "Kadın", d_e: "Basit", d_m: "Orta", d_h: "Zor", md_a: "Aksiyon", md_t: "Bilgi Modu", start: "YENİ PROJEYE BAŞLA", resume: "KAYITLI PROJEYE DEVAM ET", h_life: "CAN", h_score: "BAKİYE", h_res: "Bölümü Sıfırla", h_menu: "Ana Menü (ESC)", a_btn: "Devam Et", a_err: "🛠️ İŞ KAZASI!", a_info: "🚀 PROJE TAMAM!", q_head_t: "🤔 BİLGİ MODU", q_head_a: "🧐 YAPI DENETİM", scan_btn: "Planı İncele", scan_used: "Plan Kullanıldı", msg_win: "Tebrikler Paşam! 30 Projeyi bitirdin, artık emekli olabilirsin.", msg_die: "Şantiye mühürlendi! Patron iflas etti ama sana kıyamadı, zar zor 1 can buldu.", msg_correct: ["Helal Usta! Doğru cevap.", "Aynen böyle devam!", "Bu işi biliyorsun!", "Patron mutlu oldu!", "Kahvemi nasıl alırdın usta?"], msg_wrong_t: ["Yanlış cevap usta! Son istasyona dönüyorsun.", "Olmamış, baştan alalım.", "Mimar kızacak, geri dön!", "Maaştan kesilecek bu gidişle..."], msg_wrong_a: ["Yanlış Cevap! Canın gitmedi ama müfettiş not aldı.", "Neyse ki bu seferlik yırttın.", "Bir daha olmasın paşam."], task_pre: "Hedef:", task_post: "İstasyonu!", mats: { brick: "Tuğla", concrete: "Beton", grass: "Çim" } },
+            en: { m_title: "ADEULL GAME", m_role: "Profession", m_gender: "Character", m_diff: "Difficulty", m_mode: "Game Mode", r_arch: "Architect", r_int: "Interior Des.", r_man: "Site Manager", g_m: "Male", g_f: "Female", d_e: "Easy", d_m: "Medium", d_h: "Hard", md_a: "Action", md_t: "Trivia", start: "NEW PROJECT", resume: "RESUME SAVED PROJECT", h_life: "LIVES", h_score: "BALANCE", h_res: "Reset Level", h_menu: "Main Menu (ESC)", a_btn: "Continue", a_err: "🛠️ ACCIDENT!", a_info: "🚀 PROJECT DONE!", q_head_t: "🤔 TRIVIA MODE", q_head_a: "🧐 INSPECTION", scan_btn: "Inspect Plan", scan_used: "Plan Used", msg_win: "Congrats Boss! You finished 30 projects. Time to retire.", msg_die: "Site sealed! The boss found 1 last life for you.", msg_correct: ["Well done! Correct answer.", "Keep it up!", "You know your stuff!", "The boss is happy!"], msg_wrong_t: ["Wrong! Back to the last station.", "That's not it, try again.", "The architect will be mad, go back!"], msg_wrong_a: ["Wrong answer! You got a warning this time.", "You got lucky this time.", "Don't let it happen again."], task_pre: "Target:", task_post: "Station!", mats: { brick: "Brick", concrete: "Concrete", grass: "Grass" } },
             es: { m_title: "ADEULL JUEGO", m_role: "Profesión", m_gender: "Personaje", m_diff: "Dificultad", m_mode: "Modo", r_arch: "Arquitecto", r_int: "Interiorista", r_man: "Jefe de Obra", g_m: "Hombre", g_f: "Mujer", d_e: "Fácil", d_m: "Medio", d_h: "Difícil", md_a: "Acción", md_t: "Trivial", start: "NUEVO PROYECTO", resume: "REANUDAR PROYECTO", h_life: "VIDAS", h_score: "SALDO", h_res: "Reiniciar", h_menu: "Menú Principal", a_btn: "Continuar", a_err: "🛠️ ¡ACCIDENTE!", a_info: "🚀 ¡LISTO!", q_head_t: "🤔 MODO TRIVIAL", q_head_a: "🧐 INSPECCIÓN", scan_btn: "Plano", scan_used: "Usado", msg_win: "¡Terminaste!", msg_die: "¡Obra clausurada!", msg_correct: "¡Correcto!", msg_wrong_t: "¡Incorrecto!", msg_wrong_a: "¡Advertencia!", task_pre: "Objetivo:", task_post: "Estación!", mats: { brick: "Ladrillo", concrete: "Hormigón", grass: "Césped" } },
             de: { m_title: "ADEULL SPIEL", m_role: "Beruf", m_gender: "Charakter", m_diff: "Schwierigkeit", m_mode: "Modus", r_arch: "Architekt", r_int: "Innenarchitekt", r_man: "Bauleiter", g_m: "Männlich", g_f: "Weiblich", d_e: "Einfach", d_m: "Mittel", d_h: "Schwer", md_a: "Aktion", md_t: "Wissen", start: "NEUES PROJEKT", resume: "FORTSETZEN", h_life: "LEBEN", h_score: "SALDO", h_res: "Neustarten", h_menu: "Hauptmenü", a_btn: "Weiter", a_err: "🛠️ UNFALL!", a_info: "🚀 FERTIG!", q_head_t: "🤔 WISSENSMODUS", q_head_a: "🧐 INSPEKTION", scan_btn: "Plan Prüfen", scan_used: "Genutzt", msg_win: "Du hast gewonnen!", msg_die: "Baustelle zu!", msg_correct: "Richtig!", msg_wrong_t: "Falsch!", msg_wrong_a: "Verwarnung!", task_pre: "Ziel:", task_post: "Station!", mats: { brick: "Ziegel", concrete: "Beton", grass: "Gras" } },
             fr: { m_title: "JEU ADEULL", m_role: "Profession", m_gender: "Personnage", m_diff: "Difficulté", m_mode: "Mode", r_arch: "Architecte", r_int: "Décorateur", r_man: "Chef Chantier", g_m: "Homme", g_f: "Femme", d_e: "Facile", d_m: "Moyen", d_h: "Difficile", md_a: "Action", md_t: "Trivia", start: "NOUVEAU PROJET", resume: "REPRENDRE PROJET", h_life: "VIES", h_score: "SOLDE", h_res: "Recommencer", h_menu: "Menu Principal", a_btn: "Continuer", a_err: "🛠️ ACCIDENT!", a_info: "🚀 TERMINÉ!", q_head_t: "🤔 TRIVIA", q_head_a: "🧐 INSPECTION", scan_btn: "Inspecter", scan_used: "Utilisé", msg_win: "Vous avez gagné!", msg_die: "Fermé!", msg_correct: "Correct!", msg_wrong_t: "Faux!", msg_wrong_a: "Avertissement!", task_pre: "Cible:", task_post: "Station!", mats: { brick: "Brique", concrete: "Béton", grass: "Herbe" } },
@@ -179,9 +179,9 @@
         // --- ENHANCED EVENT AND QUESTION MEMORY ---
         const roleErrors = {
             tr: {
-                architect: ["Kot farkını unuttun bina havada kaldı usta!", "Taşıyıcı duvara pencere açtın, bina çökecek!", "Vaziyet planını ters okumuşsun!", "Emsal hesabını patlattın!", "Kolonu kestin paşam! Statikçi ağlıyor.", "Çatı eğimini ters verdin, su alıyor!", "Yangın merdivenini unuttun!", "Kuzey cepheye yatak odası koydun!"],
-                interior: ["Şantiyeye parke döşedin, şişti hepsi usta!", "Müşteri ferah olsun dedi, kolonu pembeye boyadın!", "Usta o İtalyan koltuk merdivende sıkıştı!", "Prizleri dolabın arkasında unuttun!", "Spot lambaları kör noktaya taktın!", "Alçıpan asma tavan çöktü!", "Kombiyi mutfağın ortasında bıraktın!", "Mutfak tezgahını 110 cm yaptın!"],
-                manager: ["C30 yerine C15 beton döktürdün usta!", "İş güvenliği uzmanı sahaya girdi, baretin yok!", "Harç bitti, ustalar çaya kaçtı usta!", "Demir donatıyı eksik bağlattın!", "Kalıp patladı beton ziyan oldu!", "Hafriyat kamyonu çamura saplandı!", "Vince yanlış yük bağladın!", "Taşeronlar kavga etti, şantiye durdu!"]
+                architect: ["Kot farkını unuttun, bina havada kaldı!", "Taşıyıcı duvara pencere açtın, statikçi ağlıyor!", "Vaziyet planını ters okumuşsun, komşu arsaya girdin!", "Emsal hesabını patlattın, proje mühürlenecek!", "Çatı eğimini ters verdin, göl oldu içerisi!", "Yangın merdivenini unuttun, insanlar nasıl kaçacak?", "Asansör makine dairesi eksik, merdivenle mi çıkacaklar?", "Tesisat şaftını unuttun, borular salondan mı geçsin?"],
+                interior: ["Şantiyeye parke döşedin, şişti hepsi!", "Müşteri 'ferah olsun' dedi, sen pembe mermer döşedin!", "O İtalyan koltuk merdivende sıkıştı, geçmiyor!", "Prizleri dolabın arkasında unuttun, nasıl takacaklar fişi?", "Spot lambaları kör noktaya taktın, kimse görmüyor!", "Alçıpan asma tavan çöktü, ustanın macunu fazlaydı herhalde!", "Mutfak tezgahını 110 cm yaptın, devler mi kullanacak?", "Bar sandalyeleri masadan yüksek, cüce mi oturacak?"],
+                manager: ["C30 yerine C15 beton döktürdün, bu bina çöker!", "İş güvenliği uzmanı sahaya girdi, baretin yok!", "Harç bitti, ustalar çaya kaçtı!", "Demir donatıyı eksik bağlattın, müteahhit görmesin!", "Kalıp patladı, 2 metreküp beton ziyan oldu!", "Hafriyat kamyonu çamura saplandı, çekici çağır!", "Vince yanlış yük bağladın, devrilecek!", "Taşeronlar kavga etti, şantiye tatil!"]
             },
             en: {
                 architect: ["Elevation forgot, building floats!", "Window on a load wall!", "Site plan upside down!", "Cut the column! Engineer cries.", "Wrong roof pitch!"],
@@ -206,7 +206,20 @@
                 { q: "Şantiyede sarı bareti kim takar?", opts: ["Mimar", "İşçi/Usta", "Müfettiş"], ans: 1 },
                 { q: "Beton döküldükten sonra neden sulanır?", opts: ["Temiz olsun diye", "Çatlamaması için", "Rengi açılsın diye"], ans: 1 },
                 { q: "Grobeton ne işe yarar?", opts: ["Süsleme", "Temel altı düzeltme", "Çatı kaplama"], ans: 1 },
-                { q: "Şakul ne için kullanılır?", opts: ["Yataylık", "Düşeylik", "Boyama"], ans: 1 }
+                { q: "Şakul ne için kullanılır?", opts: ["Yataylık", "Düşeylik", "Boyama"], ans: 1 },
+                { q: "Bir yapının rüzgar ve deprem yüklerine karşı direncini ne sağlar?", opts: ["Peyzaj", "Statik Proje", "Elektrik Tesisatı"], ans: 1 },
+                { q: "İç mimaride 'Lümen' neyin birimidir?", opts: ["Sıcaklık", "Işık Akısı", "Ses Seviyesi"], ans: 1 },
+                { q: "'Nervürlü donatı' nerede kullanılır?", opts: ["Sıva içinde", "Betonarme yapılarda", "Çatı kaplamasında"], ans: 1 },
+                { q: "Pafta üzerinde '1/50' ölçek ne anlama gelir?", opts: ["50 kat büyütülmüş", "Gerçeğin 50'de biri", "50 metre uzunluk"], ans: 1 },
+                { q: "Şantiyede 'iksa' ne için yapılır?", opts: ["Derin kazılarda göçmeyi önlemek", "Duvar boyamak", "Zemin parlatmak"], ans: 0 },
+                { q: "LEED sertifikası ne ile ilgilidir?", opts: ["Tarihi eser restorasyonu", "Yeşil ve çevreci binalar", "Acil çıkış planları"], ans: 1 },
+                { q: "Mutfak tasarımında 'altın üçgen' neleri ifade eder?", opts: ["Buzdolabı, Ocak, Evye", "Masa, Sandalye, Lamba", "Priz, Musluk, Pencere"], ans: 0 },
+                { q: "Bir projenin imar durumunu hangi kurum belirler?", opts: ["Belediye", "Mimarlar Odası", "Polis"], ans: 0 },
+                { q: "Asmolen döşeme ne avantajı sağlar?", opts: ["Daha ucuzdur", "Düz bir tavan yüzeyi sağlar", "Daha hafiftir"], ans: 1 },
+                { q: "Giydirme cephe (curtain wall) nedir?", opts: ["Binanın taşıyıcı olmayan dış kabuğu", "Binanın boyası", "Binanın temel duvarı"], ans: 0 },
+                { q: "Şap neyin üzerine atılır?", opts: ["Tavan", "Duvar", "Döşeme betonu"], ans: 2 },
+                { q: "Mies van der Rohe'nin ünlü sözü nedir?", opts: ["Form fonksiyonu izler", "Az, çoktur (Less is more)", "Ev, içinde yaşanılan bir makinedir"], ans: 1 },
+                { q: "Hangi malzeme ısı yalıtımında en etkilidir?", opts: ["Taşyünü", "Alçıpan", "Mermer"], ans: 0 }
             ],
             en: [
                 { q: "What is the 'Load-Bearing System'?", opts: ["Column/Beam", "Drop Ceiling", "Parquet"], ans: 0 },
@@ -217,6 +230,11 @@
             ]
         };
         ['es', 'de', 'fr', 'id', 'hi', 'ar', 'it'].forEach(l => quizzes[l] = quizzes.en);
+
+        function getRandomMsg(arr) {
+            if (!Array.isArray(arr)) return arr;
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
 
         window.toggleLangMenu = function() {
             const dropdown = document.getElementById('langDropdown');
@@ -313,11 +331,23 @@
             populateLangMenu();
             setLang('TR', '🇹🇷', 'tr');
             const saved = localStorage.getItem('adeull_save');
-            if (saved) { document.getElementById('resume-game-btn').style.display = 'block'; }
+            if (saved) { 
+                document.getElementById('resume-game-btn').style.display = 'block'; 
+                document.getElementById('start-game-btn').style.marginTop = '15px';
+            }
         };
 
         function saveGame() {
-            const data = { role: state.role, gender: state.gender, diff: state.diff, mode: state.mode, score: state.score, lives: state.lives, level: currentLevel };
+            const pathCoords = pathBlocks.map(b => ({ gx: b.gx, gz: b.gz }));
+            const data = { 
+                role: state.role, gender: state.gender, diff: state.diff, mode: state.mode, 
+                score: state.score, lives: state.lives, level: currentLevel,
+                path: pathCoords,
+                playerPos: playerPos,
+                lastStationPos: lastStationPos,
+                targetStationIndex: targetStationIndex,
+                scanAvailable: scanAvailable
+            };
             localStorage.setItem('adeull_save', JSON.stringify(data));
         }
 
@@ -328,7 +358,7 @@
                 state.role = saved.role; state.gender = saved.gender; state.diff = saved.diff; state.mode = saved.mode;
                 state.score = saved.score; state.lives = saved.lives; currentLevel = saved.level;
                 initGameUI();
-                loadLevel(currentLevel);
+                loadLevel(currentLevel, saved);
             }
         }
 
@@ -417,26 +447,26 @@
             if(selected === correct) {
                 playSound('success');
                 if(isTriviaMode) {
-                    finalizeMove(pendingMove.gx, pendingMove.gz);
+                    showAlert(getRandomMsg(uiDict[lang].msg_correct), "success", false, () => finalizeMove(pendingMove.gx, pendingMove.gz));
                 } else {
                     updateLives(1);
                     shouldRollback = false; // CORRECT ANSWER, NO ROLLBACK!
-                    showAlert(uiDict[lang].msg_correct_a, "success"); 
+                    showAlert(getRandomMsg(uiDict[lang].msg_correct), "success"); 
                 }
             } else {
                 playSound('error');
                 if(isTriviaMode) {
-                    hitPipe(pendingMove.gx, pendingMove.gz, uiDict[lang].msg_wrong_t);
+                    hitPipe(pendingMove.gx, pendingMove.gz, getRandomMsg(uiDict[lang].msg_wrong_t));
                     // hitPipe triggers shouldRollback = true
                 } else {
                     shouldRollback = false; // WRONG ANSWER BUT WARNED, NO ROLLBACK!
-                    showAlert(uiDict[lang].msg_wrong_a, "error");
+                    showAlert(getRandomMsg(uiDict[lang].msg_wrong_a), "error");
                 }
             }
             pendingMove = null;
         };
 
-        function showAlert(msg, type="error", isLevelUp=false) {
+        function showAlert(msg, type="error", isLevelUp=false, callback = null) {
             state.isPaused = true;
             document.getElementById('alert-msg').innerText = msg;
             const box = document.getElementById('alert-box');
@@ -450,11 +480,13 @@
                 document.getElementById('alert-title').innerText = uiDict[lang].a_info;
                 document.getElementById('alert-title').style.color = "#81b29a";
             }
-            document.getElementById('t-a-btn').style.display = isLevelUp ? 'none' : 'block';
+            const continueBtn = document.getElementById('t-a-btn');
+            continueBtn.style.display = isLevelUp ? 'none' : 'block';
+            continueBtn.onclick = () => closeAlert(callback);
             box.style.display = 'block';
         }
 
-        window.closeAlert = function() {
+        window.closeAlert = function(callback = null) {
             playSound('tick');
             document.getElementById('alert-box').style.display = 'none';
             state.isPaused = false;
@@ -473,6 +505,8 @@
                 movePlayerTo(lastStationPos.x, lastStationPos.z);
                 shouldRollback = false;
             }
+
+            if (callback) callback();
         }
 
         // --- 3D SCENE & GRAPHICS ---
@@ -527,13 +561,13 @@
             return { matKey: mType, size: dynSize, stations: dynStations };
         }
 
-        function loadLevel(levelIndex) {
+        function loadLevel(levelIndex, resumeData = null) {
             if(levelIndex >= 30) { alert(uiDict[lang].msg_win); localStorage.removeItem('adeull_save'); location.reload(); return; }
             currentLevel = levelIndex; activeLevel = getLevelData(levelIndex);
             gridSize = activeLevel.size; targetStationIndex = 1;
-            saveGame(); // Save on new level
-
-            document.getElementById('level-title').innerText = `${lang==='tr'?'Proje':'Project'} ${levelIndex + 1}`;
+            
+            const prjText = lang === 'tr' ? 'Proje' : (lang === 'es' ? 'Proyecto' : (lang === 'de' ? 'Projekt' : (lang === 'fr' ? 'Projet' : (lang === 'it' ? 'Progetto' : 'Project'))));
+            document.getElementById('level-title').innerText = `${prjText} ${levelIndex + 1}`;
             updateLevelBar(levelIndex); updateTaskText();
 
             if(hitPlaneMesh) scene.remove(hitPlaneMesh);
@@ -570,9 +604,6 @@
                 stations.push({ gridX: st.x, gridZ: st.z, label: st.l, mesh, div });
             });
 
-            lastStationPos = { x: activeLevel.stations[0].x, z: activeLevel.stations[0].z };
-            movePlayerTo(lastStationPos.x, lastStationPos.z);
-            
             // MINES (Only in Action Mode)
             mines = [];
             if (state.mode !== 'trivia') {
@@ -593,7 +624,24 @@
                     attempts++;
                 }
             }
-            resetRadar();
+
+            if (resumeData) {
+                // Restore from save
+                resumeData.path.forEach(p => placeBlock(p.gx, p.gz, false));
+                playerPos = resumeData.playerPos;
+                lastStationPos = resumeData.lastStationPos;
+                targetStationIndex = resumeData.targetStationIndex;
+                scanAvailable = resumeData.scanAvailable;
+                resetRadarText();
+                document.getElementById('btn-scan').disabled = scanAvailable <= 0;
+                movePlayerTo(playerPos.x, playerPos.z);
+            } else {
+                // New level start
+                lastStationPos = { x: activeLevel.stations[0].x, z: activeLevel.stations[0].z };
+                movePlayerTo(lastStationPos.x, lastStationPos.z);
+                resetRadar();
+                saveGame(); // Save state at the beginning of a new level
+            }
         }
 
         function updateTaskText() { document.getElementById('level-task').innerText = `${uiDict[lang].task_pre} ${activeLevel.stations[targetStationIndex].l} ${uiDict[lang].task_post} (${uiDict[lang].mats[activeLevel.matKey]})`; }
@@ -643,7 +691,7 @@
             placeBlock(gx, gz); movePlayerTo(gx, gz); updateScore(0.001); playSound('tick');
         }
 
-        function placeBlock(gx, gz) {
+        function placeBlock(gx, gz, animate = true) {
             let baseColor;
             if (activeLevel.matKey === "brick") { baseColor = new THREE.Color().setHex(0xe07a5f); } // Pastel Brick
             else if (activeLevel.matKey === "concrete") { baseColor = new THREE.Color().setHex(0xcfd2d6); } // Pastel Grey
@@ -660,18 +708,19 @@
 
             mesh.position.set(gx - gridSize/2 + 0.5, 0, gz - gridSize/2 + 0.5);
             mesh.castShadow = true; mesh.receiveShadow = true;
-            mesh.scale.set(0.1, 0.1, 0.1);
+            if (animate) mesh.scale.set(0.1, 0.1, 0.1);
+            else mesh.scale.set(1, 1, 1);
             
             scene.add(mesh);
             const blockData = { mesh, gx, gz };
             pathBlocks.push(blockData); currentSegmentBlocks.push(blockData);
+            if (animate) saveGame();
         }
 
         function hitPipe(gx, gz, customMsg = null) {
             playSound('error'); updateLives(-1);
-            let roleKey = state.role === 'architect' ? 'err_arch' : (state.role === 'interior' ? 'err_int' : 'err_man');
-            const msgs = (lang === 'tr' ? roleErrors.tr : roleErrors.en)[roleKey] || roleErrors.en[roleKey];
-            const msg = customMsg || msgs[Math.floor(Math.random() * msgs.length)];
+            const msgs = (lang === 'tr' ? roleErrors.tr : roleErrors.en)[state.role] || roleErrors.en.manager;
+            const msg = customMsg || getRandomMsg(msgs);
             
             shouldRollback = true; // ACTIVATE ROLLBACK
             showAlert(msg + ` (${uiDict[lang].h_life}: ${state.lives})`, "error");
