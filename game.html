@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADEULL ŞANTİYE</title>
+    <title>ADEULL GAME</title>
     <style>
-        /* MONUMENT VALLEY & DORFROMANTIK RENK PALETİ */
+        /* MONUMENT VALLEY & DORFROMANTIK COLOR PALETTE */
         body { margin: 0; overflow: hidden; background: linear-gradient(135deg, #f4e1d2 0%, #e1b3d1 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
         
         .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); color: #333; }
         
-        /* DİL SEÇİCİ */
+        /* LANGUAGE SELECTOR */
         #lang-selector { position: absolute; top: 20px; right: 20px; z-index: 300; }
         #lang-dropdown { background: #fff; border: 2px solid #dd6b5d; color: #dd6b5d; padding: 8px 15px; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 14px; outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
-        /* ANA MENÜ */
+        /* MAIN MENU */
         #main-menu { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: radial-gradient(circle, rgba(61, 90, 128, 0.9) 0%, rgba(41, 50, 65, 0.95) 100%); color: #fff;}
         #main-menu h1 { color: #fca311; letter-spacing: 3px; font-size: 42px; text-transform: uppercase; margin-bottom: 20px; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .menu-section { background: rgba(0,0,0,0.4); padding: 20px; margin-bottom: 15px; width: 90%; max-width: 600px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);}
@@ -28,11 +28,11 @@
         #start-game-btn { background: #dd6b5d; box-shadow: 0 6px 20px rgba(221, 107, 93, 0.4); }
         #start-game-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(221, 107, 93, 0.6); }
         
-        /* KAYITLI OYUNA DEVAM BUTONU */
+        /* RESUME GAME BUTTON */
         #resume-game-btn { background: #4caf50; box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4); display: none; margin-bottom: 15px;}
         #resume-game-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6); }
 
-        /* OYUN HUD */
+        /* GAME HUD */
         #ui-layer { position: absolute; top: 20px; left: 20px; z-index: 10; pointer-events: none; display: none; padding: 15px 25px; }
         #ui-layer h1 { margin: 0; font-size: 24px; color: #dd6b5d; text-transform: uppercase; }
         #ui-layer p { margin: 5px 0 0 0; font-size: 15px; color: #555; font-weight: bold; }
@@ -44,14 +44,14 @@
         .restart-btn { background: #e94560; color: #fff; border: none; }
         .restart-btn:hover { background: #d03a52; }
 
-        /* LEVEL BARI (AŞAĞIDA KAYAN BAR) */
+        /* LEVEL BAR (BOTTOM SCROLLING BAR) */
         #level-bar-container { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); max-width: 80vw; overflow: hidden; z-index: 10; display: none; padding: 10px; border-radius: 20px; }
         #level-bar { display: flex; gap: 8px; transition: 0.3s ease-out; }
         .level-node { width: 30px; height: 30px; flex-shrink: 0; border-radius: 50%; background: #eee; color: #888; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; transition: 0.3s; }
         .level-node.active { background: #dd6b5d; color: #fff; transform: scale(1.15); box-shadow: 0 4px 10px rgba(221, 107, 93, 0.4); }
         .level-node.completed { background: #7eb0a6; color: #fff; }
 
-        /* UYARI VE QUİZ EKRANLARI */
+        /* ALERT AND QUIZ SCREENS */
         .modal-box { display: none; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 20px 30px; border-radius: 16px; text-align: center; z-index: 150; width: 90%; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
         #alert-box { border-left: 6px solid #e94560; }
         #alert-title { color: #e94560; margin: 0 0 10px 0; font-size: 20px; text-transform: uppercase; }
@@ -61,7 +61,7 @@
         .quiz-btn { flex: 1; min-width: 120px; background: #fff; border: 1px solid #ddd; color: #444; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: 0.2s; font-weight: bold;}
         .quiz-btn:hover { background: #f0f0f0; border-color: #7eb0a6; color: #7eb0a6; }
 
-        /* 3D OBJELER */
+        /* 3D OBJECTS */
         #player-emoji { position: absolute; font-size: 32px; pointer-events: none; z-index: 5; transform: translate(-50%, -100%); transition: 0.1s ease-out; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.2)); display: none; }
         .station-label { position: absolute; color: #333; font-weight: 900; font-size: 18px; background: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transform: translate(-50%, -50%); pointer-events: none; z-index: 4; border: 2px solid #ddd;}
         
@@ -72,7 +72,7 @@
 
     <div id="lang-selector">
         <select id="lang-dropdown" onchange="setLang(this.value)">
-            <option value="tr" disabled selected>🌍 Dil / Language</option>
+            <option value="en" disabled selected>🌍 Language</option>
             <option value="en">🇬🇧 English</option>
             <option value="de">🇩🇪 Deutsch</option>
             <option value="fr">🇫🇷 Français</option>
@@ -87,7 +87,7 @@
     </div>
 
     <div id="main-menu">
-        <h1 id="t-m-title">ADEULL ŞANTİYE</h1>
+        <h1 id="t-m-title">ADEULL GAME</h1>
         
         <button id="resume-game-btn" class="main-btn" onclick="resumeGame()" id="t-m-resume">KAYITLI PROJEYE DEVAM ET</button>
 
@@ -122,6 +122,11 @@
         </div>
 
         <button id="start-game-btn" class="main-btn" onclick="startGame()" id="t-m-start">YENİ PROJEYE BAŞLA</button>
+        
+        <a href="https://www.instagram.com/adeullai/" target="_blank" style="margin-top: 25px; color: rgba(255,255,255,0.6); text-decoration: none; display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: bold; transition: color 0.3s;" onmouseenter="this.style.color='#fff'" onmouseleave="this.style.color='rgba(255,255,255,0.6)'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            @adeullai
+        </a>
     </div>
 
     <div id="ui-layer" class="glass-panel">
@@ -162,14 +167,14 @@
     <script type="module">
         import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
-        // --- GLOBAL DİL SÖZLÜĞÜ (10 DİL) ---
+        // --- GLOBAL DICTIONARY (10 LANGUAGES) ---
         const uiDict = {
-            tr: { m_title: "ADEULL ŞANTİYE", m_role: "Mesleğini Seç", m_gender: "Karakter", m_diff: "Zorluk Derecesi", m_mode: "Oyun Modu", r_arch: "Mimar", r_int: "İç Mimar", r_man: "Şantiye Şefi", g_m: "Erkek", g_f: "Kadın", d_e: "Basit", d_m: "Orta", d_h: "Zor", md_a: "Aksiyon", md_t: "Bilgi Modu", start: "YENİ PROJEYE BAŞLA", resume: "KAYITLI PROJEYE DEVAM ET", h_life: "CAN", h_score: "BAKİYE", h_res: "Bölümü Sıfırla", h_menu: "Ana Menü (ESC)", a_btn: "Devam Et", a_err: "🛠️ İŞ KAZASI!", a_info: "🚀 PROJE TAMAM!", q_head_t: "🤔 BİLGİ MODU", q_head_a: "🧐 YAPI DENETİM", scan_btn: "Planı İncele", scan_used: "Plan Kullanıldı", msg_win: "Tebrikler Paşam! 30 Projeyi bitirdin.", msg_die: "Şantiye mühürlendi! Patron zar zor 1 can buldu.", msg_correct: "Helal Usta! Doğru cevap.", msg_wrong_t: "Yanlış cevap usta! Son istasyona dönüyorsun.", msg_wrong_a: "Yanlış Cevap! Canın gitmedi.", task_pre: "Hedef:", task_post: "İstasyonu!", mats: { brick: "Tuğla", concrete: "Beton", grass: "Çim" } },
-            en: { m_title: "ADEULL CONSTRUCTION", m_role: "Profession", m_gender: "Character", m_diff: "Difficulty", m_mode: "Game Mode", r_arch: "Architect", r_int: "Interior Des.", r_man: "Site Manager", g_m: "Male", g_f: "Female", d_e: "Easy", d_m: "Medium", d_h: "Hard", md_a: "Action", md_t: "Trivia", start: "NEW PROJECT", resume: "RESUME SAVED PROJECT", h_life: "LIVES", h_score: "BALANCE", h_res: "Reset Level", h_menu: "Main Menu (ESC)", a_btn: "Continue", a_err: "🛠️ ACCIDENT!", a_info: "🚀 PROJECT DONE!", q_head_t: "🤔 TRIVIA MODE", q_head_a: "🧐 INSPECTION", scan_btn: "Inspect Plan", scan_used: "Plan Used", msg_win: "Congrats Boss! You finished 30 projects.", msg_die: "Site sealed! Boss found 1 life.", msg_correct: "Well done! Correct.", msg_wrong_t: "Wrong! Back to the last station.", msg_wrong_a: "Wrong! Got a warning.", task_pre: "Target:", task_post: "Station!", mats: { brick: "Brick", concrete: "Concrete", grass: "Grass" } }
+            tr: { m_title: "ADEULL GAME", m_role: "Mesleğini Seç", m_gender: "Karakter", m_diff: "Zorluk Derecesi", m_mode: "Oyun Modu", r_arch: "Mimar", r_int: "İç Mimar", r_man: "Şantiye Şefi", g_m: "Erkek", g_f: "Kadın", d_e: "Basit", d_m: "Orta", d_h: "Zor", md_a: "Aksiyon", md_t: "Bilgi Modu", start: "YENİ PROJEYE BAŞLA", resume: "KAYITLI PROJEYE DEVAM ET", h_life: "CAN", h_score: "BAKİYE", h_res: "Bölümü Sıfırla", h_menu: "Ana Menü (ESC)", a_btn: "Devam Et", a_err: "🛠️ İŞ KAZASI!", a_info: "🚀 PROJE TAMAM!", q_head_t: "🤔 BİLGİ MODU", q_head_a: "🧐 YAPI DENETİM", scan_btn: "Planı İncele", scan_used: "Plan Kullanıldı", msg_win: "Tebrikler Paşam! 30 Projeyi bitirdin.", msg_die: "Şantiye mühürlendi! Patron zar zor 1 can buldu.", msg_correct: "Helal Usta! Doğru cevap.", msg_wrong_t: "Yanlış cevap usta! Son istasyona dönüyorsun.", msg_wrong_a: "Yanlış Cevap! Canın gitmedi.", task_pre: "Hedef:", task_post: "İstasyonu!", mats: { brick: "Tuğla", concrete: "Beton", grass: "Çim" } },
+            en: { m_title: "ADEULL GAME", m_role: "Profession", m_gender: "Character", m_diff: "Difficulty", m_mode: "Game Mode", r_arch: "Architect", r_int: "Interior Des.", r_man: "Site Manager", g_m: "Male", g_f: "Female", d_e: "Easy", d_m: "Medium", d_h: "Hard", md_a: "Action", md_t: "Trivia", start: "NEW PROJECT", resume: "RESUME SAVED PROJECT", h_life: "LIVES", h_score: "BALANCE", h_res: "Reset Level", h_menu: "Main Menu (ESC)", a_btn: "Continue", a_err: "🛠️ ACCIDENT!", a_info: "🚀 PROJECT DONE!", q_head_t: "🤔 TRIVIA MODE", q_head_a: "🧐 INSPECTION", scan_btn: "Inspect Plan", scan_used: "Plan Used", msg_win: "Congrats Boss! You finished 30 projects.", msg_die: "Site sealed! Boss found 1 life.", msg_correct: "Well done! Correct.", msg_wrong_t: "Wrong! Back to the last station.", msg_wrong_a: "Wrong! Got a warning.", task_pre: "Target:", task_post: "Station!", mats: { brick: "Brick", concrete: "Concrete", grass: "Grass" } }
         };
         ["de", "fr", "es", "it", "ru", "ar", "zh", "ja"].forEach(l => uiDict[l] = uiDict.en);
 
-        // --- ZENGİNLEŞTİRİLMİŞ ESPRİ VE SORU HAFIZASI ---
+        // --- ENHANCED EVENT AND QUESTION MEMORY ---
         const roleErrors = {
             tr: {
                 architect: ["Kot farkını unuttun bina havada kaldı usta!", "Taşıyıcı duvara pencere açtın, bina çökecek!", "Vaziyet planını ters okumuşsun!", "Emsal hesabını patlattın!", "Kolonu kestin paşam! Statikçi ağlıyor.", "Çatı eğimini ters verdin, su alıyor!", "Yangın merdivenini unuttun!", "Kuzey cepheye yatak odası koydun!"],
@@ -209,7 +214,7 @@
             ]
         };
 
-        let lang = 'tr';
+        let lang = 'en';
         window.setLang = function(l) {
             lang = l;
             document.getElementById('t-m-title').innerText = uiDict[lang].m_title;
@@ -243,7 +248,7 @@
             else document.getElementById('btn-scan').innerText = uiDict[lang].scan_used;
         }
 
-        // --- TETRIS / ARCADE SES MOTORU ---
+        // --- TETRIS / ARCADE AUDIO ENGINE ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -268,11 +273,11 @@
             }
         }
 
-        // --- OYUN DURUMU & KAYIT SİSTEMİ (LOCAL STORAGE) ---
+        // --- GAME STATE & SAVE SYSTEM (LOCAL STORAGE) ---
         const state = { role: 'architect', gender: 'm', diff: 'med', mode: 'action', score: 0.000, lives: 3, isPaused: false };
         let currentLevel = 0, activeLevel = null;
         let pendingMove = null; 
-        let shouldRollback = false; // CEZA VEYA HATA SONRASI GERİ DÜŞMEYİ KONTROL EDER
+        let shouldRollback = false; // CONTROLS ROLLBACK AFTER PENALTY OR ERROR
         
         const charMap = { architect: { m: '👷🏻‍♂️', f: '👷🏻‍♀️' }, interior: { m: '👨🏻‍🎨', f: '👩🏻‍🎨' }, manager: { m: '👷🏽‍♂️', f: '👷🏽‍♀️' } };
         const diffMap = { easy: 0, med: 1, hard: 2 };
@@ -357,7 +362,7 @@
             }
         }
 
-        // --- BİLGİ (TRIVIA) SİSTEMİ ---
+        // --- TRIVIA SYSTEM ---
         function triggerQuiz(isTriviaMode = false) {
             state.isPaused = true;
             const qList = (lang === 'tr' ? quizzes.tr : quizzes.en) || quizzes.en;
@@ -375,7 +380,7 @@
             document.getElementById('quiz-box').style.display = 'block';
         }
 
-        // SORU SİSTEMİNİN "GERİ ATMA" BUG'I BURADA ÇÖZÜLDÜ
+        // ROLLBACK BUG ON QUESTIONS FIXED HERE
         window.checkQuiz = function(selected, correct, isTriviaMode) {
             document.getElementById('quiz-box').style.display = "none";
             state.isPaused = false;
@@ -386,16 +391,16 @@
                     finalizeMove(pendingMove.gx, pendingMove.gz);
                 } else {
                     updateLives(1);
-                    shouldRollback = false; // DOĞRU BİLDİ, GERİ ATMA YOK!
+                    shouldRollback = false; // CORRECT ANSWER, NO ROLLBACK!
                     showAlert(uiDict[lang].msg_correct_a, "success"); 
                 }
             } else {
                 playSound('error');
                 if(isTriviaMode) {
                     hitPipe(pendingMove.gx, pendingMove.gz, uiDict[lang].msg_wrong_t);
-                    // hitPipe otomatik olarak shouldRollback = true yapar
+                    // hitPipe triggers shouldRollback = true
                 } else {
-                    shouldRollback = false; // YANLIŞ BİLDİ AMA UYARI ALDI, GERİ ATMA YOK!
+                    shouldRollback = false; // WRONG ANSWER BUT WARNED, NO ROLLBACK!
                     showAlert(uiDict[lang].msg_wrong_a, "error");
                 }
             }
@@ -432,7 +437,7 @@
                 return;
             }
             
-            // EĞER GERİ ATILMASI GEREKİYORSA (SADECE MAYIN VEYA BİLGİ MODUNDA YANLIŞ CEVAP)
+            // IF ROLLBACK IS REQUIRED (ONLY MINE OR TRIVIA WRONG ANSWER)
             if (shouldRollback) {
                 currentSegmentBlocks.forEach(b => { scene.remove(b.mesh); pathBlocks = pathBlocks.filter(pb => pb !== b); });
                 currentSegmentBlocks = []; 
@@ -441,7 +446,7 @@
             }
         }
 
-        // --- 3D SAHNE & GRAFİKLER (MONUMENT VALLEY / DORFROMANTIK STİLİ) ---
+        // --- 3D SCENE & GRAPHICS ---
         const scene = new THREE.Scene();
         const aspect = window.innerWidth / window.innerHeight;
         const d = 10; 
@@ -468,7 +473,7 @@
         let scanAvailable = 1, playerPos = { x: 0, z: 0 }, lastStationPos = { x: 0, z: 0 }, targetStationIndex = 1;
         let hitPlaneMesh, islandBase;
 
-        // UÇ KÖŞELERE İSTASYON YERLEŞTİRİCİ
+        // EDGE STATION DISTRIBUTOR
         function getDistributedStations(size, count) {
             const sts = [];
             const fixedPoints = [
@@ -497,7 +502,7 @@
             if(levelIndex >= 30) { alert(uiDict[lang].msg_win); localStorage.removeItem('adeull_save'); location.reload(); return; }
             currentLevel = levelIndex; activeLevel = getLevelData(levelIndex);
             gridSize = activeLevel.size; targetStationIndex = 1;
-            saveGame(); // Yeni levela geçince kaydet
+            saveGame(); // Save on new level
 
             document.getElementById('level-title').innerText = `${lang==='tr'?'Proje':'Project'} ${levelIndex + 1}`;
             updateLevelBar(levelIndex); updateTaskText();
@@ -507,19 +512,19 @@
             stations.forEach(s => { scene.remove(s.mesh); s.div.remove(); }); stations = [];
             pathBlocks.forEach(b => scene.remove(b.mesh)); pathBlocks = []; currentSegmentBlocks = [];
 
-            // GÖRÜNMEZ TIKLAMA ZEMİNİ (Y=0)
+            // INVISIBLE CLICK PLANE (Y=0)
             const planeGeo = new THREE.PlaneGeometry(gridSize, gridSize); planeGeo.rotateX(-Math.PI/2);
             hitPlaneMesh = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({visible: false}));
             scene.add(hitPlaneMesh);
 
-            // DORFROMANTIK/MONUMENT VALLEY STİLİ YÜZEN ADA
+            // FLOATING ISLAND
             const baseMat = new THREE.MeshStandardMaterial({ color: 0x3d5a80, roughness: 0.9, flatShading: true });
             islandBase = new THREE.Mesh(new THREE.BoxGeometry(gridSize, 2, gridSize), baseMat);
             islandBase.position.y = -1.01; 
             islandBase.receiveShadow = true;
             scene.add(islandBase);
 
-            // İSTASYONLAR
+            // STATIONS
             activeLevel.stations.forEach(st => {
                 const mat = new THREE.MeshStandardMaterial({ color: 0xfca311, roughness: 0.2 });
                 const mesh = new THREE.Mesh(boxGeo, mat);
@@ -539,7 +544,7 @@
             lastStationPos = { x: activeLevel.stations[0].x, z: activeLevel.stations[0].z };
             movePlayerTo(lastStationPos.x, lastStationPos.z);
             
-            // MAYINLAR (Sadece Aksiyon Modunda)
+            // MINES (Only in Action Mode)
             mines = [];
             if (state.mode !== 'trivia') {
                 const totalMines = 2 + Math.floor(currentLevel/2) + diffMap[state.diff]; 
@@ -609,9 +614,9 @@
 
         function placeBlock(gx, gz) {
             let baseColor;
-            if (activeLevel.matKey === "brick") { baseColor = new THREE.Color().setHex(0xe07a5f); } // Pastel Kiremit
-            else if (activeLevel.matKey === "concrete") { baseColor = new THREE.Color().setHex(0xcfd2d6); } // Pastel Gri
-            else { baseColor = new THREE.Color().setHex(0x81b29a); } // Pastel Yeşil
+            if (activeLevel.matKey === "brick") { baseColor = new THREE.Color().setHex(0xe07a5f); } // Pastel Brick
+            else if (activeLevel.matKey === "concrete") { baseColor = new THREE.Color().setHex(0xcfd2d6); } // Pastel Grey
+            else { baseColor = new THREE.Color().setHex(0x81b29a); } // Pastel Green
 
             baseColor.offsetHSL(0, 0, (gx+gz)*0.01 - 0.05);
 
@@ -637,7 +642,7 @@
             const msgs = (lang === 'tr' ? roleErrors.tr : roleErrors.en)[roleKey] || roleErrors.en[roleKey];
             const msg = customMsg || msgs[Math.floor(Math.random() * msgs.length)];
             
-            shouldRollback = true; // GERİ DÜŞMEYİ AKTİFLEŞTİR
+            shouldRollback = true; // ACTIVATE ROLLBACK
             showAlert(msg + ` (${uiDict[lang].h_life}: ${state.lives})`, "error");
 
             const errMat = new THREE.MeshBasicMaterial({ color: 0xe94560 });
@@ -651,7 +656,7 @@
             playSound('success'); updateScore(0.050); movePlayerTo(gx, gz);
             lastStationPos = { x: gx, z: gz }; currentSegmentBlocks = []; targetStationIndex++;
             if(targetStationIndex >= activeLevel.stations.length) {
-                shouldRollback = false; // LEVEL GEÇİNCE GERİ DÜŞME İPTAL
+                shouldRollback = false; // CANCEL ROLLBACK ON LEVEL PASS
                 showAlert(uiDict[lang].a_info, "success", true); 
                 setTimeout(() => {
                     document.getElementById('alert-box').style.display = 'none'; state.isPaused = false;
