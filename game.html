@@ -166,15 +166,19 @@
         // --- GLOBAL DICTIONARY (LANGUAGES) ---
         const langOptions = [
             { code: 'EN', flag: '🇺🇸', key: 'en' }, { code: 'TR', flag: '🇹🇷', key: 'tr' }, { code: 'ES', flag: '🇪🇸', key: 'es' },
-            { code: 'DE', flag: '🇩🇪', key: 'de' }, { code: 'FR', flag: '🇫🇷', key: 'fr' }, { code: 'PT', flag: '🇧🇷', key: 'pt' },
-            { code: 'ID', flag: '🇮🇩', key: 'id' }, { code: 'HI', flag: '🇮🇳', key: 'hi' }, { code: 'AR', flag: '🇦🇪', key: 'ar' },
-            { code: 'IT', flag: '🇮🇹', key: 'it' }
+            { code: 'DE', flag: '🇩🇪', key: 'de' }, { code: 'FR', flag: '🇫🇷', key: 'fr' },
+            { code: 'ID', flag: '🇮🇩', key: 'id' }, { code: 'HI', flag: '🇮🇳', key: 'hi' }, 
+            { code: 'AR', flag: '🇦🇪', key: 'ar' }, { code: 'IT', flag: '🇮🇹', key: 'it' }
         ];
         const uiDict = {
             tr: { m_title: "ADEULL GAME", m_role: "Mesleğini Seç", m_gender: "Karakter", m_diff: "Zorluk Derecesi", m_mode: "Oyun Modu", r_arch: "Mimar", r_int: "İç Mimar", r_man: "Şantiye Şefi", g_m: "Erkek", g_f: "Kadın", d_e: "Basit", d_m: "Orta", d_h: "Zor", md_a: "Aksiyon", md_t: "Bilgi Modu", start: "YENİ PROJEYE BAŞLA", resume: "KAYITLI PROJEYE DEVAM ET", h_life: "CAN", h_score: "BAKİYE", h_res: "Bölümü Sıfırla", h_menu: "Ana Menü (ESC)", a_btn: "Devam Et", a_err: "🛠️ İŞ KAZASI!", a_info: "🚀 PROJE TAMAM!", q_head_t: "🤔 BİLGİ MODU", q_head_a: "🧐 YAPI DENETİM", scan_btn: "Planı İncele", scan_used: "Plan Kullanıldı", msg_win: "Tebrikler Paşam! 30 Projeyi bitirdin.", msg_die: "Şantiye mühürlendi! Patron zar zor 1 can buldu.", msg_correct: "Helal Usta! Doğru cevap.", msg_wrong_t: "Yanlış cevap usta! Son istasyona dönüyorsun.", msg_wrong_a: "Yanlış Cevap! Canın gitmedi.", task_pre: "Hedef:", task_post: "İstasyonu!", mats: { brick: "Tuğla", concrete: "Beton", grass: "Çim" } },
-            en: { m_title: "ADEULL GAME", m_role: "Profession", m_gender: "Character", m_diff: "Difficulty", m_mode: "Game Mode", r_arch: "Architect", r_int: "Interior Des.", r_man: "Site Manager", g_m: "Male", g_f: "Female", d_e: "Easy", d_m: "Medium", d_h: "Hard", md_a: "Action", md_t: "Trivia", start: "NEW PROJECT", resume: "RESUME SAVED PROJECT", h_life: "LIVES", h_score: "BALANCE", h_res: "Reset Level", h_menu: "Main Menu (ESC)", a_btn: "Continue", a_err: "🛠️ ACCIDENT!", a_info: "🚀 PROJECT DONE!", q_head_t: "🤔 TRIVIA MODE", q_head_a: "🧐 INSPECTION", scan_btn: "Inspect Plan", scan_used: "Plan Used", msg_win: "Congrats Boss! You finished 30 projects.", msg_die: "Site sealed! Boss found 1 life.", msg_correct: "Well done! Correct.", msg_wrong_t: "Wrong! Back to the last station.", msg_wrong_a: "Wrong! Got a warning.", task_pre: "Target:", task_post: "Station!", mats: { brick: "Brick", concrete: "Concrete", grass: "Grass" } }
+            en: { m_title: "ADEULL GAME", m_role: "Profession", m_gender: "Character", m_diff: "Difficulty", m_mode: "Game Mode", r_arch: "Architect", r_int: "Interior Des.", r_man: "Site Manager", g_m: "Male", g_f: "Female", d_e: "Easy", d_m: "Medium", d_h: "Hard", md_a: "Action", md_t: "Trivia", start: "NEW PROJECT", resume: "RESUME SAVED PROJECT", h_life: "LIVES", h_score: "BALANCE", h_res: "Reset Level", h_menu: "Main Menu (ESC)", a_btn: "Continue", a_err: "🛠️ ACCIDENT!", a_info: "🚀 PROJECT DONE!", q_head_t: "🤔 TRIVIA MODE", q_head_a: "🧐 INSPECTION", scan_btn: "Inspect Plan", scan_used: "Plan Used", msg_win: "Congrats Boss! You finished 30 projects.", msg_die: "Site sealed! Boss found 1 life.", msg_correct: "Well done! Correct.", msg_wrong_t: "Wrong! Back to the last station.", msg_wrong_a: "Wrong! Got a warning.", task_pre: "Target:", task_post: "Station!", mats: { brick: "Brick", concrete: "Concrete", grass: "Grass" } },
+            es: { m_title: "ADEULL JUEGO", m_role: "Profesión", m_gender: "Personaje", m_diff: "Dificultad", m_mode: "Modo", r_arch: "Arquitecto", r_int: "Interiorista", r_man: "Jefe de Obra", g_m: "Hombre", g_f: "Mujer", d_e: "Fácil", d_m: "Medio", d_h: "Difícil", md_a: "Acción", md_t: "Trivial", start: "NUEVO PROYECTO", resume: "REANUDAR PROYECTO", h_life: "VIDAS", h_score: "SALDO", h_res: "Reiniciar", h_menu: "Menú Principal", a_btn: "Continuar", a_err: "🛠️ ¡ACCIDENTE!", a_info: "🚀 ¡LISTO!", q_head_t: "🤔 MODO TRIVIAL", q_head_a: "🧐 INSPECCIÓN", scan_btn: "Plano", scan_used: "Usado", msg_win: "¡Terminaste!", msg_die: "¡Obra clausurada!", msg_correct: "¡Correcto!", msg_wrong_t: "¡Incorrecto!", msg_wrong_a: "¡Advertencia!", task_pre: "Objetivo:", task_post: "Estación!", mats: { brick: "Ladrillo", concrete: "Hormigón", grass: "Césped" } },
+            de: { m_title: "ADEULL SPIEL", m_role: "Beruf", m_gender: "Charakter", m_diff: "Schwierigkeit", m_mode: "Modus", r_arch: "Architekt", r_int: "Innenarchitekt", r_man: "Bauleiter", g_m: "Männlich", g_f: "Weiblich", d_e: "Einfach", d_m: "Mittel", d_h: "Schwer", md_a: "Aktion", md_t: "Wissen", start: "NEUES PROJEKT", resume: "FORTSETZEN", h_life: "LEBEN", h_score: "SALDO", h_res: "Neustarten", h_menu: "Hauptmenü", a_btn: "Weiter", a_err: "🛠️ UNFALL!", a_info: "🚀 FERTIG!", q_head_t: "🤔 WISSENSMODUS", q_head_a: "🧐 INSPEKTION", scan_btn: "Plan Prüfen", scan_used: "Genutzt", msg_win: "Du hast gewonnen!", msg_die: "Baustelle zu!", msg_correct: "Richtig!", msg_wrong_t: "Falsch!", msg_wrong_a: "Verwarnung!", task_pre: "Ziel:", task_post: "Station!", mats: { brick: "Ziegel", concrete: "Beton", grass: "Gras" } },
+            fr: { m_title: "JEU ADEULL", m_role: "Profession", m_gender: "Personnage", m_diff: "Difficulté", m_mode: "Mode", r_arch: "Architecte", r_int: "Décorateur", r_man: "Chef Chantier", g_m: "Homme", g_f: "Femme", d_e: "Facile", d_m: "Moyen", d_h: "Difficile", md_a: "Action", md_t: "Trivia", start: "NOUVEAU PROJET", resume: "REPRENDRE PROJET", h_life: "VIES", h_score: "SOLDE", h_res: "Recommencer", h_menu: "Menu Principal", a_btn: "Continuer", a_err: "🛠️ ACCIDENT!", a_info: "🚀 TERMINÉ!", q_head_t: "🤔 TRIVIA", q_head_a: "🧐 INSPECTION", scan_btn: "Inspecter", scan_used: "Utilisé", msg_win: "Vous avez gagné!", msg_die: "Fermé!", msg_correct: "Correct!", msg_wrong_t: "Faux!", msg_wrong_a: "Avertissement!", task_pre: "Cible:", task_post: "Station!", mats: { brick: "Brique", concrete: "Béton", grass: "Herbe" } },
+            it: { m_title: "GIOCO ADEULL", m_role: "Professione", m_gender: "Personaggio", m_diff: "Difficoltà", m_mode: "Modalità", r_arch: "Architetto", r_int: "Interior Des.", r_man: "Dir. Lavori", g_m: "Uomo", g_f: "Donna", d_e: "Facile", d_m: "Medio", d_h: "Difficile", md_a: "Azione", md_t: "Curiosità", start: "NUOVO PROGETTO", resume: "RIPRENDI", h_life: "VITE", h_score: "SALDO", h_res: "Riavvia", h_menu: "Menu Principale", a_btn: "Continua", a_err: "🛠️ INCIDENTE!", a_info: "🚀 COMPLETATO!", q_head_t: "🤔 CURIOSITÀ", q_head_a: "🧐 ISPEZIONE", scan_btn: "Ispeziona", scan_used: "Usato", msg_win: "Hai vinto!", msg_die: "Chiuso!", msg_correct: "Corretto!", msg_wrong_t: "Sbagliato!", msg_wrong_a: "Attenzione!", task_pre: "Obiettivo:", task_post: "Stazione!", mats: { brick: "Mattone", concrete: "Calcestruzzo", grass: "Erba" } }
         };
-        ['es', 'de', 'fr', 'pt', 'id', 'hi', 'ar', 'it'].forEach(l => uiDict[l] = uiDict.en);
+        ['id', 'hi', 'ar'].forEach(l => uiDict[l] = uiDict.en);
 
         // --- ENHANCED EVENT AND QUESTION MEMORY ---
         const roleErrors = {
@@ -189,7 +193,7 @@
                 manager: ["Poured C15 instead of C30!", "Inspector arrived, fined!", "Mortar empty, workers left!", "Rebar is missing!", "Formwork exploded!"]
             }
         };
-        ['es', 'de', 'fr', 'pt', 'id', 'hi', 'ar', 'it'].forEach(l => roleErrors[l] = roleErrors.en);
+        ['es', 'de', 'fr', 'id', 'hi', 'ar', 'it'].forEach(l => roleErrors[l] = roleErrors.en);
 
         const quizzes = {
             tr: [
@@ -216,7 +220,7 @@
                 { q: "What is an As-Built survey?", opts: ["Measuring existing", "Demolition", "Design"], ans: 0 }
             ]
         };
-        ['es', 'de', 'fr', 'pt', 'id', 'hi', 'ar', 'it'].forEach(l => quizzes[l] = quizzes.en);
+        ['es', 'de', 'fr', 'id', 'hi', 'ar', 'it'].forEach(l => quizzes[l] = quizzes.en);
 
         window.toggleLangMenu = function() {
             const dropdown = document.getElementById('langDropdown');
