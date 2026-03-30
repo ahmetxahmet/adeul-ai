@@ -552,11 +552,13 @@
                 
                 while(!validMines && attempts < 20) {
                     mines = [];
-                    while(mines.length < totalMines) {
+                    let innerAttempts = 0; // FAILSAFE: Sonsuz donguyu engeller
+                    while(mines.length < totalMines && innerAttempts < 200) {
                         let mx = Math.floor(Math.random() * gridSize), mz = Math.floor(Math.random() * gridSize);
                         if (!activeLevel.stations.some(s => s.x === mx && s.z === mz) && !mines.some(m => m.x === mx && m.z === mz)) {
                             mines.push({x: mx, z: mz});
                         }
+                        innerAttempts++;
                     }
                     validMines = true; 
                     attempts++;
