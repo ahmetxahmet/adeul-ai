@@ -72,8 +72,9 @@
     function createGameButton() {
         var btn = document.createElement('div');
         btn.id = 'gameLaunchBtn';
-        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect><path d="M6 12h4"></path><path d="M8 10v4"></path><line x1="15" y1="13" x2="15.01" y2="13"></line><line x1="18" y1="11" x2="18.01" y2="11"></line></svg>'; 
-        btn.style.cssText = 'position:fixed;bottom:80px;left:16px;z-index:9999;height:32px;width:32px;' +
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect><path d="M6 12h4"></path><path d="M8 10v4"></path><line x1="15" y1="13" x2="15.01" y2="13"></line><line x1="18" y1="11" x2="18.01" y2="11"></line></svg>' +
+            '<span style="font-size:8px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-left:8px;">GAME</span>';
+        btn.style.cssText = 'position:fixed;bottom:80px;right:16px;z-index:9999;height:32px;padding:0 12px;' +
             'background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:8px;' +
             'display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.2);' +
             'backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all 0.3s ease;font-family:inherit;';

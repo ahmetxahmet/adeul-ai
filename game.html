@@ -6,31 +6,34 @@
     <title>ADEULL GAME</title>
     <style>
         /* MONUMENT VALLEY & DORFROMANTIK COLOR PALETTE */
-        body { margin: 0; overflow: hidden; background: linear-gradient(135deg, #f4e1d2 0%, #e1b3d1 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+        body { margin: 0; overflow: hidden; background: #111; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
         
         .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); color: #333; }
         
         /* LANGUAGE SELECTOR */
         #lang-selector { position: absolute; top: 20px; right: 20px; z-index: 300; }
-        #lang-dropdown { background: #fff; border: 2px solid #dd6b5d; color: #dd6b5d; padding: 8px 15px; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 14px; outline: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        #langBtn { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px 12px; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 12px; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(10px); }
+        #langDropdown { display: none; position: absolute; top: 100%; right: 0; background: rgba(30,30,30,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; margin-top: 5px; overflow: hidden; backdrop-filter: blur(10px); width: 150px; }
+        .lang-option { background: none; border: none; color: #fff; padding: 10px 15px; width: 100%; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 13px; }
+        .lang-option:hover { background: rgba(255,255,255,0.1); }
         
         /* MAIN MENU */
-        #main-menu { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: radial-gradient(circle, rgba(61, 90, 128, 0.9) 0%, rgba(41, 50, 65, 0.95) 100%); color: #fff;}
-        #main-menu h1 { color: #fca311; letter-spacing: 3px; font-size: 42px; text-transform: uppercase; margin-bottom: 20px; text-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .menu-section { background: rgba(0,0,0,0.4); padding: 20px; margin-bottom: 15px; width: 90%; max-width: 600px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);}
-        .menu-section h3 { margin-top: 0; border-bottom: 2px solid #fca311; padding-bottom: 10px; font-size: 16px; color: #eee; text-transform: uppercase; }
+        #main-menu { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: rgba(0,0,0,0.85); backdrop-filter: blur(16px); color: #fff;}
+        #main-menu h1 { color: white; font-weight: 900; letter-spacing: 0.5em; font-size: clamp(2rem, 8vw, 4rem); text-transform: uppercase; margin-bottom: 2rem; }
+        .menu-section { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 24px; margin-bottom: 15px; width: 90%; max-width: 450px; border-radius: 24px; }
+        .menu-section h3 { margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.3em; }
         .opt-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        .opt-btn { background: #f0f0f0; border: 2px solid transparent; color: #555; padding: 10px 15px; cursor: pointer; border-radius: 8px; transition: 0.2s; font-weight: bold; font-size: 13px;}
-        .opt-btn:hover { background: #fff; transform: translateY(-2px); }
-        .opt-btn.active { background: #fff; border-color: #dd6b5d; color: #dd6b5d; box-shadow: 0 4px 10px rgba(221, 107, 93, 0.2); }
+        .opt-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 10px 15px; cursor: pointer; border-radius: 12px; transition: 0.2s; font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; flex: 1; }
+        .opt-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .opt-btn.active { background: #fff; border-color: #fff; color: #000; }
         
-        .main-btn { border: none; color: #fff; padding: 15px 40px; font-size: 18px; font-weight: bold; cursor: pointer; border-radius: 30px; width: 100%; max-width: 300px; text-transform: uppercase; margin-top: 10px; transition: 0.3s; }
-        #start-game-btn { background: #dd6b5d; box-shadow: 0 6px 20px rgba(221, 107, 93, 0.4); }
-        #start-game-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(221, 107, 93, 0.6); }
+        .main-btn { border: none; padding: 18px 40px; font-size: 14px; font-weight: 800; cursor: pointer; border-radius: 16px; width: 100%; max-width: 450px; text-transform: uppercase; margin-top: 10px; transition: 0.3s; letter-spacing: 0.2em; }
+        #start-game-btn { background: #fff; color: #000; }
+        #start-game-btn:hover { background: #ddd; transform: translateY(-2px); }
         
         /* RESUME GAME BUTTON */
-        #resume-game-btn { background: #4caf50; box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4); display: none; margin-bottom: 15px;}
-        #resume-game-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6); }
+        #resume-game-btn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); display: none; margin-bottom: 15px;}
+        #resume-game-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
 
         /* GAME HUD */
         #ui-layer { position: absolute; top: 20px; left: 20px; z-index: 10; pointer-events: none; display: none; padding: 15px 25px; }
@@ -71,19 +74,12 @@
 <body>
 
     <div id="lang-selector">
-        <select id="lang-dropdown" onchange="setLang(this.value)">
-            <option value="en" disabled selected>🌍 Language</option>
-            <option value="en">🇬🇧 English</option>
-            <option value="de">🇩🇪 Deutsch</option>
-            <option value="fr">🇫🇷 Français</option>
-            <option value="es">🇪🇸 Español</option>
-            <option value="tr">🇹🇷 Türkçe</option>
-            <option value="it">🇮🇹 Italiano</option>
-            <option value="ru">🇷🇺 Русский</option>
-            <option value="ar">🇸🇦 العربية</option>
-            <option value="zh">🇨🇳 中文</option>
-            <option value="ja">🇯🇵 日本語</option>
-        </select>
+        <button id="langBtn" onclick="toggleLangMenu()">
+            <span id="activeFlag">🇹🇷</span> <span id="activeCode">TR</span> ▼
+        </button>
+        <div id="langDropdown">
+            <!-- Options will be added by JS -->
+        </div>
     </div>
 
     <div id="main-menu">
@@ -167,12 +163,18 @@
     <script type="module">
         import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
 
-        // --- GLOBAL DICTIONARY (10 LANGUAGES) ---
+        // --- GLOBAL DICTIONARY (LANGUAGES) ---
+        const langOptions = [
+            { code: 'EN', flag: '🇺🇸', key: 'en' }, { code: 'TR', flag: '🇹🇷', key: 'tr' }, { code: 'ES', flag: '🇪🇸', key: 'es' },
+            { code: 'DE', flag: '🇩🇪', key: 'de' }, { code: 'FR', flag: '🇫🇷', key: 'fr' }, { code: 'PT', flag: '🇧🇷', key: 'pt' },
+            { code: 'ID', flag: '🇮🇩', key: 'id' }, { code: 'HI', flag: '🇮🇳', key: 'hi' }, { code: 'AR', flag: '🇦🇪', key: 'ar' },
+            { code: 'IT', flag: '🇮🇹', key: 'it' }
+        ];
         const uiDict = {
             tr: { m_title: "ADEULL GAME", m_role: "Mesleğini Seç", m_gender: "Karakter", m_diff: "Zorluk Derecesi", m_mode: "Oyun Modu", r_arch: "Mimar", r_int: "İç Mimar", r_man: "Şantiye Şefi", g_m: "Erkek", g_f: "Kadın", d_e: "Basit", d_m: "Orta", d_h: "Zor", md_a: "Aksiyon", md_t: "Bilgi Modu", start: "YENİ PROJEYE BAŞLA", resume: "KAYITLI PROJEYE DEVAM ET", h_life: "CAN", h_score: "BAKİYE", h_res: "Bölümü Sıfırla", h_menu: "Ana Menü (ESC)", a_btn: "Devam Et", a_err: "🛠️ İŞ KAZASI!", a_info: "🚀 PROJE TAMAM!", q_head_t: "🤔 BİLGİ MODU", q_head_a: "🧐 YAPI DENETİM", scan_btn: "Planı İncele", scan_used: "Plan Kullanıldı", msg_win: "Tebrikler Paşam! 30 Projeyi bitirdin.", msg_die: "Şantiye mühürlendi! Patron zar zor 1 can buldu.", msg_correct: "Helal Usta! Doğru cevap.", msg_wrong_t: "Yanlış cevap usta! Son istasyona dönüyorsun.", msg_wrong_a: "Yanlış Cevap! Canın gitmedi.", task_pre: "Hedef:", task_post: "İstasyonu!", mats: { brick: "Tuğla", concrete: "Beton", grass: "Çim" } },
             en: { m_title: "ADEULL GAME", m_role: "Profession", m_gender: "Character", m_diff: "Difficulty", m_mode: "Game Mode", r_arch: "Architect", r_int: "Interior Des.", r_man: "Site Manager", g_m: "Male", g_f: "Female", d_e: "Easy", d_m: "Medium", d_h: "Hard", md_a: "Action", md_t: "Trivia", start: "NEW PROJECT", resume: "RESUME SAVED PROJECT", h_life: "LIVES", h_score: "BALANCE", h_res: "Reset Level", h_menu: "Main Menu (ESC)", a_btn: "Continue", a_err: "🛠️ ACCIDENT!", a_info: "🚀 PROJECT DONE!", q_head_t: "🤔 TRIVIA MODE", q_head_a: "🧐 INSPECTION", scan_btn: "Inspect Plan", scan_used: "Plan Used", msg_win: "Congrats Boss! You finished 30 projects.", msg_die: "Site sealed! Boss found 1 life.", msg_correct: "Well done! Correct.", msg_wrong_t: "Wrong! Back to the last station.", msg_wrong_a: "Wrong! Got a warning.", task_pre: "Target:", task_post: "Station!", mats: { brick: "Brick", concrete: "Concrete", grass: "Grass" } }
         };
-        ["de", "fr", "es", "it", "ru", "ar", "zh", "ja"].forEach(l => uiDict[l] = uiDict.en);
+        ['es', 'de', 'fr', 'pt', 'id', 'hi', 'ar', 'it'].forEach(l => uiDict[l] = uiDict.en);
 
         // --- ENHANCED EVENT AND QUESTION MEMORY ---
         const roleErrors = {
@@ -187,6 +189,7 @@
                 manager: ["Poured C15 instead of C30!", "Inspector arrived, fined!", "Mortar empty, workers left!", "Rebar is missing!", "Formwork exploded!"]
             }
         };
+        ['es', 'de', 'fr', 'pt', 'id', 'hi', 'ar', 'it'].forEach(l => roleErrors[l] = roleErrors.en);
 
         const quizzes = {
             tr: [
@@ -213,10 +216,34 @@
                 { q: "What is an As-Built survey?", opts: ["Measuring existing", "Demolition", "Design"], ans: 0 }
             ]
         };
+        ['es', 'de', 'fr', 'pt', 'id', 'hi', 'ar', 'it'].forEach(l => quizzes[l] = quizzes.en);
 
-        let lang = 'en';
-        window.setLang = function(l) {
-            lang = l;
+        window.toggleLangMenu = function() {
+            const dropdown = document.getElementById('langDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function populateLangMenu() {
+            const dropdown = document.getElementById('langDropdown');
+            dropdown.innerHTML = '';
+            langOptions.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'lang-option';
+                btn.innerHTML = `<span>${opt.flag}</span> ${opt.code}`;
+                btn.onclick = () => setLang(opt.code, opt.flag, opt.key);
+                dropdown.appendChild(btn);
+            });
+        }
+
+        let lang = 'tr';
+        window.setLang = function(code, flag, key) {
+            lang = key;
+            document.getElementById('activeFlag').innerText = flag;
+            document.getElementById('activeCode').innerText = code;
+            if(document.getElementById('langDropdown').style.display === 'block') {
+                toggleLangMenu();
+            }
+
             document.getElementById('t-m-title').innerText = uiDict[lang].m_title;
             document.getElementById('t-m-role').innerText = uiDict[lang].m_role;
             document.getElementById('t-m-gender').innerText = uiDict[lang].m_gender;
@@ -283,6 +310,8 @@
         const diffMap = { easy: 0, med: 1, hard: 2 };
 
         window.onload = () => {
+            populateLangMenu();
+            setLang('TR', '🇹🇷', 'tr');
             const saved = localStorage.getItem('adeull_save');
             if (saved) { document.getElementById('resume-game-btn').style.display = 'block'; }
         };
