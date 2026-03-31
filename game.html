@@ -331,7 +331,16 @@
         window.onload = async () => {
             populateLangMenu();
             
-            const savedLangKey = localStorage.getItem('adeull_game_lang') || 'en';
+            // Ana sitenin dilini yakala, yoksa EN kullan
+            let defaultLangKey = 'en';
+            try {
+                if (window.parent && window.parent.document.getElementById('activeCode')) {
+                    const pCode = window.parent.document.getElementById('activeCode').innerText.toLowerCase();
+                    if (langOptions.some(o => o.key === pCode)) defaultLangKey = pCode;
+                }
+            } catch(e) {}
+
+            const savedLangKey = localStorage.getItem('adeull_game_lang') || defaultLangKey;
             const langOption = langOptions.find(opt => opt.key === savedLangKey) || langOptions[0];
             setLang(langOption.code, langOption.flag, langOption.key);
 
@@ -339,14 +348,17 @@
             let savedData = null;
 
             // Önce sunucudan yüklemeyi dene (kullanıcı girişi varsa)
-            const supabase = window.parent.supabaseClient;
-            const userId = window.parent.currentUserId;
+            const supabase = window.parent ? window.parent.supabaseClient : null;
+            const userId = window.parent ? window.parent.currentUserId : null;
 
             if (supabase && userId) {
                 try {
                     const { data, error } = await supabase.from('game_saves').select('save_data').eq('user_id', userId).single();
                     if (error && error.code !== 'PGRST116') { console.error('Server save load error:', error); }
-                    if (data) { savedData = data.save_data; }
+                    if (data && data.save_data) { 
+                        savedData = data.save_data; 
+                        localStorage.setItem('adeull_save', JSON.stringify(savedData)); // Local ile eşitle
+                    }
                 } catch(e) { console.error('Server save load exception:', e); }
             }
 
@@ -397,6 +409,8 @@
         window.resumeGame = function(saved = null) {
             playSound('success');
             
+            if (saved instanceof Event) saved = null; // Buton tıklamasıyla gelen gizli event objesini engelle
+
             // Eğer oyun zaten arka planda yüklüyse ve sadece menü açıksa (sayfa yenilenmemişse)
             if (state.isPaused && activeLevel) {
                 document.getElementById('main-menu').style.display = 'none';
@@ -414,9 +428,9 @@
                 if (localSave) saved = JSON.parse(localSave);
             }
             sessionStorage.removeItem('adeull_skip_auto_resume');
-            if(saved) {
+            if(saved && saved.role) {
                 state.role = saved.role; state.gender = saved.gender; state.diff = saved.diff; state.mode = saved.mode;
-                state.score = saved.score; state.lives = saved.lives; currentLevel = saved.level;
+                state.score = saved.score || 0; state.lives = saved.lives || 3; currentLevel = saved.level || 0;
                 initGameUI();
                 loadLevel(currentLevel, saved);
             }
