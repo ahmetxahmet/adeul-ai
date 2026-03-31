@@ -344,7 +344,6 @@
             const langOption = langOptions.find(opt => opt.key === savedLangKey) || langOptions[0];
             setLang(langOption.code, langOption.flag, langOption.key);
 
-            const skipAuto = sessionStorage.getItem('adeull_skip_auto_resume');
             let savedData = null;
 
             // Önce sunucudan yüklemeyi dene (kullanıcı girişi varsa)
@@ -368,9 +367,7 @@
                 if (localSave) { savedData = JSON.parse(localSave); }
             }
             
-            if (savedData && !skipAuto) {
-                resumeGame(savedData);
-            } else if (savedData) {
+            if (savedData) {
                 document.getElementById('resume-game-btn').style.display = 'block';
                 document.getElementById('start-game-btn').style.marginTop = '10px';
             }
@@ -427,7 +424,6 @@
                 const localSave = localStorage.getItem('adeull_save');
                 if (localSave) saved = JSON.parse(localSave);
             }
-            sessionStorage.removeItem('adeull_skip_auto_resume');
             if(saved && saved.role) {
                 state.role = saved.role; state.gender = saved.gender; state.diff = saved.diff; state.mode = saved.mode;
                 state.score = saved.score || 0; state.lives = saved.lives || 3; currentLevel = saved.level || 0;
