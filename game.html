@@ -66,7 +66,7 @@
 
         /* 3D OBJECTS */
         #player-emoji { position: absolute; font-size: 32px; pointer-events: none; z-index: 5; transform: translate(-50%, -100%); transition: 0.1s ease-out; filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.2)); display: none; }
-        .station-label { position: absolute; color: #333; font-weight: 900; font-size: 18px; background: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transform: translate(-50%, -50%); pointer-events: none; z-index: 4; border: 2px solid #ddd;}
+        .station-label { position: absolute; color: #333; font-weight: 800; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); padding: 4px 8px; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transform: translate(-50%, -120%); pointer-events: none; z-index: 4; border: 1px solid #ddd; white-space: nowrap;}
         
         #canvas-container { width: 100vw; height: 100vh; display: block; }
     </style>
@@ -512,21 +512,22 @@
         // --- 3D SCENE & GRAPHICS ---
         const scene = new THREE.Scene();
         const aspect = window.innerWidth / window.innerHeight;
-        const d = 10; 
+        const d = 12; 
         const camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d, -d, 1, 1000);
         camera.position.set(20, 20, 20); camera.lookAt(0, 0, 0);
         
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true }); // Antialias kapalı, performans için
         renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Mobil cihazlarda aşırı yormaması için
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.6);
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.8);
         scene.add(hemiLight);
-        const dirLight = new THREE.DirectionalLight(0xffeedd, 0.6);
+        const dirLight = new THREE.DirectionalLight(0xffeedd, 0.8);
         dirLight.position.set(10, 20, 10); dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 1024; dirLight.shadow.mapSize.height = 1024;
+        dirLight.shadow.mapSize.width = 512; dirLight.shadow.mapSize.height = 512; // Gölge çözünürlüğü düşürüldü
         scene.add(dirLight);
 
         const boxGeo = new THREE.BoxGeometry(0.96, 1, 0.96);
@@ -543,6 +544,11 @@
         hoverMesh.visible = false;
         scene.add(hoverMesh);
 
+        const funnyStationNames = {
+            tr: ["Şantiye Şefliği", "Çay Ocağı", "Kalıpçıların Yanı", "Patronun Odası", "Beton Mikseri", "Sıvacı Hasan", "Malzeme Deposu", "Vinç Altı", "Yemekhane", "Güvenlik Kulübesi"],
+            en: ["Site Office", "Tea Corner", "Formwork Area", "Boss's Room", "Concrete Mixer", "Plasterer's Spot", "Material Storage", "Under Crane", "Cafeteria", "Security Booth"]
+        };
+        
         // EDGE STATION DISTRIBUTOR
         function getDistributedStations(size, count) {
             const sts = [];
@@ -552,10 +558,18 @@
                 {x: Math.floor(size/2), z: 0}, {x: Math.floor(size/2), z: size-1},
                 {x: 0, z: Math.floor(size/2)}, {x: size-1, z: Math.floor(size/2)}
             ];
-            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            
+            let namesPool = [...(lang === 'tr' ? funnyStationNames.tr : funnyStationNames.en)];
+            if (namesPool.length === 0) namesPool = ["A", "B", "C", "D", "E"]; // Failsafe
+
             for(let i=0; i<count; i++) {
-                if (i < fixedPoints.length) sts.push({ l: letters[i], x: fixedPoints[i].x, z: fixedPoints[i].z });
-                else sts.push({ l: letters[i], x: Math.floor(Math.random()*size), z: Math.floor(Math.random()*size) });
+                // Random isim seç ve listeden çıkar ki aynı isim gelmesin
+                const nameIdx = Math.floor(Math.random() * namesPool.length);
+                const stName = namesPool[nameIdx] || "Nokta " + (i+1);
+                if(namesPool.length > 1) namesPool.splice(nameIdx, 1);
+                
+                if (i < fixedPoints.length) sts.push({ l: stName, x: fixedPoints[i].x, z: fixedPoints[i].z });
+                else sts.push({ l: stName, x: Math.floor(Math.random()*size), z: Math.floor(Math.random()*size) });
             }
             return sts;
         }
@@ -563,7 +577,7 @@
         function getLevelData(idx) {
             const mType = idx % 3 === 0 ? 'brick' : (idx % 3 === 1 ? 'concrete' : 'grass');
             const dynSize = Math.min(13, 5 + Math.floor(idx/4)*2);
-            const stCount = Math.min(26, 2 + Math.floor(idx/3)); 
+            const stCount = Math.min(8, 2 + Math.floor(idx/2)); // Her 2 levelde 1 durak artar (Maks 8)
             const dynStations = getDistributedStations(dynSize, stCount);
             return { matKey: mType, size: dynSize, stations: dynStations };
         }
@@ -597,7 +611,7 @@
 
             // GRID LINES
             gridHelperObj = new THREE.GridHelper(gridSize, gridSize, 0xffffff, 0xffffff);
-            gridHelperObj.material.opacity = 0.15;
+            gridHelperObj.material.opacity = 0.1; // Daha soft grid
             gridHelperObj.material.transparent = true;
             gridHelperObj.position.y = 0.01;
             scene.add(gridHelperObj);
@@ -730,13 +744,13 @@
             else if (activeLevel.matKey === "concrete") { baseColor = new THREE.Color().setHex(0xcfd2d6); } // Pastel Grey
             else { baseColor = new THREE.Color().setHex(0x81b29a); } // Pastel Green
 
-            baseColor.offsetHSL(0, 0, (gx+gz)*0.01 - 0.05);
+            baseColor.offsetHSL(0, 0, (gx+gz)*0.01 - 0.05); // Hafif renk tonlaması
 
             const mat = new THREE.MeshStandardMaterial({ color: baseColor, roughness: 0.8, flatShading: true });
             const mesh = new THREE.Mesh(boxGeo, mat);
             
             const edges = new THREE.EdgesGeometry(boxGeo);
-            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 }));
+            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 1, opacity: 0.5, transparent: true }));
             mesh.add(line);
 
             mesh.position.set(gx - gridSize/2 + 0.5, 0, gz - gridSize/2 + 0.5);
@@ -780,12 +794,23 @@
             }
         }
 
+        let frameCount = 0;
         function animate() {
             requestAnimationFrame(animate);
+            frameCount++;
             pathBlocks.forEach(b => { if(b.mesh.scale.x < 1) { const s = b.mesh.scale.x + (1 - b.mesh.scale.x) * 0.3; b.mesh.scale.set(s, s, s); } });
+            
             stations.forEach(st => {
-                const vector = new THREE.Vector3(st.mesh.position.x, 0.5, st.mesh.position.z); vector.project(camera);
-                st.div.style.left = `${(vector.x * .5 + .5) * window.innerWidth}px`; st.div.style.top = `${(vector.y * -.5 + .5) * window.innerHeight}px`;
+                // İstasyon kutularına animasyon
+                st.mesh.rotation.y += 0.02;
+                st.mesh.position.y = Math.sin(frameCount * 0.05 + st.mesh.position.x) * 0.1;
+                
+                // Label pozisyonu güncelleme (her 2 frame'de 1 performansı korumak için)
+                if(frameCount % 2 === 0) {
+                    const vector = new THREE.Vector3(st.mesh.position.x, 0.8, st.mesh.position.z); vector.project(camera);
+                    st.div.style.left = `${(vector.x * .5 + .5) * window.innerWidth}px`; 
+                    st.div.style.top = `${(vector.y * -.5 + .5) * window.innerHeight}px`;
+                }
             });
             const pVector = new THREE.Vector3(playerPos.x - gridSize/2 + 0.5, 0.5, playerPos.z - gridSize/2 + 0.5); pVector.project(camera);
             const emojiEl = document.getElementById('player-emoji');
