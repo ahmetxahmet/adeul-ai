@@ -95,14 +95,10 @@
     window.toggleGameSize = function() {
         var gm = document.getElementById('gameModalWindow');
         if(!gm) return;
-        if (gm.style.width === '840px') {
-            gm.style.width = '420px'; gm.style.height = '600px';
-            gm.style.bottom = '40px'; gm.style.right = '40px';
-            gm.style.borderRadius = '16px';
+        if (gm.style.maxWidth === '840px') {
+            gm.style.maxWidth = '420px'; gm.style.maxHeight = '600px';
         } else {
-            gm.style.width = '840px'; gm.style.height = '90vh';
-            gm.style.bottom = '40px'; gm.style.right = '40px';
-            gm.style.borderRadius = '16px';
+            gm.style.maxWidth = '840px'; gm.style.maxHeight = '90vh';
         }
     };
 
@@ -113,7 +109,7 @@
         } else {
             modal = document.createElement('div');
             modal.id = 'gameModalWindow';
-            modal.style.cssText = 'position:fixed;bottom:40px;right:40px;width:420px;height:600px;z-index:10000;background:rgba(10,10,10,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,0.5);display:flex;flex-direction:column;transition:all 0.3s ease;';
+            modal.style.cssText = 'position:fixed;bottom:20px;right:20px;width:calc(100vw - 40px);max-width:420px;height:calc(100vh - 100px);max-height:600px;z-index:10000;background:rgba(10,10,10,0.95);border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;box-shadow:0 20px 40px rgba(0,0,0,0.5);display:flex;flex-direction:column;transition:all 0.3s ease;';
             modal.innerHTML = '<div style="height:36px;background:rgba(0,0,0,0.5);display:flex;justify-content:space-between;align-items:center;padding:0 12px;border-bottom:1px solid rgba(255,255,255,0.05);">' +
                 '<span style="color:rgba(255,255,255,0.5);font-size:9px;letter-spacing:0.2em;font-weight:bold;">ADEULL MINI GAME</span>' +
                 '<div style="display:flex;gap:12px;"><button onclick="toggleGameSize()" style="color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;font-size:12px;">[ ]</button>' +

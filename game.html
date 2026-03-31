@@ -320,7 +320,7 @@
         }
 
         // --- GAME STATE & SAVE SYSTEM (LOCAL STORAGE) ---
-        const state = { role: 'architect', gender: 'm', diff: 'med', mode: 'action', score: 0.000, lives: 3, isPaused: false };
+        const state = { role: 'architect', gender: 'm', diff: 'med', mode: 'action', score: 0.000, lives: 3, isPaused: true }; // Başlangıçta her zaman PAUSED
         let currentLevel = 0, activeLevel = null;
         let pendingMove = null; 
         let shouldRollback = false; // CONTROLS ROLLBACK AFTER PENALTY OR ERROR
@@ -331,8 +331,8 @@
         window.onload = async () => {
             populateLangMenu();
             
-            // Ana sitenin dilini yakala, yoksa EN kullan
-            let defaultLangKey = 'en';
+            // Ana sitenin dilini yakala, yoksa TR kullan
+            let defaultLangKey = 'tr';
             try {
                 if (window.parent && window.parent.document.getElementById('activeCode')) {
                     const pCode = window.parent.document.getElementById('activeCode').innerText.toLowerCase();
@@ -340,8 +340,7 @@
                 }
             } catch(e) {}
 
-            const savedLangKey = localStorage.getItem('adeull_game_lang') || defaultLangKey;
-            const langOption = langOptions.find(opt => opt.key === savedLangKey) || langOptions[0];
+            const langOption = langOptions.find(opt => opt.key === defaultLangKey) || langOptions.find(o => o.key === 'tr');
             setLang(langOption.code, langOption.flag, langOption.key);
 
             let savedData = null;
@@ -661,8 +660,8 @@
 
         function getLevelData(idx) {
             const mType = idx % 3 === 0 ? 'brick' : (idx % 3 === 1 ? 'concrete' : 'grass');
-            const dynSize = Math.min(13, 5 + Math.floor(idx/4)*2);
-            const stCount = Math.min(8, 2 + Math.floor(idx/2)); // Her 2 levelde 1 durak artar (Maks 8)
+            const dynSize = Math.min(13, 5 + Math.floor(idx/2)); // Grid boyutu yavaşça artar
+            const stCount = Math.min(8, 2 + idx); // Her levelde KESİNLİKLE 1 durak artar (Maks 8)
             const dynStations = getDistributedStations(dynSize, stCount);
             return { matKey: mType, size: dynSize, stations: dynStations };
         }
