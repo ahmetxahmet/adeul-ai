@@ -534,7 +534,14 @@
         
         let gridSize = 5, stations = [], mines = [], pathBlocks = [], currentSegmentBlocks = []; 
         let scanAvailable = 1, playerPos = { x: 0, z: 0 }, lastStationPos = { x: 0, z: 0 }, targetStationIndex = 1;
-        let hitPlaneMesh, islandBase;
+        let hitPlaneMesh, islandBase, hoverMesh, gridHelperObj;
+
+        // HOVER (HIGHLIGHT) MESH
+        const hoverGeo = new THREE.PlaneGeometry(0.96, 0.96); hoverGeo.rotateX(-Math.PI/2);
+        const hoverMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 });
+        hoverMesh = new THREE.Mesh(hoverGeo, hoverMat);
+        hoverMesh.visible = false;
+        scene.add(hoverMesh);
 
         // EDGE STATION DISTRIBUTOR
         function getDistributedStations(size, count) {
@@ -572,6 +579,7 @@
 
             if(hitPlaneMesh) scene.remove(hitPlaneMesh);
             if(islandBase) scene.remove(islandBase);
+            if(gridHelperObj) scene.remove(gridHelperObj);
             stations.forEach(s => { scene.remove(s.mesh); s.div.remove(); }); stations = [];
             pathBlocks.forEach(b => scene.remove(b.mesh)); pathBlocks = []; currentSegmentBlocks = [];
 
@@ -580,12 +588,19 @@
             hitPlaneMesh = new THREE.Mesh(planeGeo, new THREE.MeshBasicMaterial({visible: false}));
             scene.add(hitPlaneMesh);
 
-            // FLOATING ISLAND
+            // FLOATING ISLAND (THIN BASE)
             const baseMat = new THREE.MeshStandardMaterial({ color: 0x3d5a80, roughness: 0.9, flatShading: true });
-            islandBase = new THREE.Mesh(new THREE.BoxGeometry(gridSize, 2, gridSize), baseMat);
-            islandBase.position.y = -1.01; 
+            islandBase = new THREE.Mesh(new THREE.BoxGeometry(gridSize, 0.1, gridSize), baseMat);
+            islandBase.position.y = -0.05; 
             islandBase.receiveShadow = true;
             scene.add(islandBase);
+
+            // GRID LINES
+            gridHelperObj = new THREE.GridHelper(gridSize, gridSize, 0xffffff, 0xffffff);
+            gridHelperObj.material.opacity = 0.15;
+            gridHelperObj.material.transparent = true;
+            gridHelperObj.position.y = 0.01;
+            scene.add(gridHelperObj);
 
             // STATIONS
             activeLevel.stations.forEach(st => {
@@ -662,6 +677,24 @@
             });
             setTimeout(() => { mines.forEach(m => { if(m.revealedMesh) { scene.remove(m.revealedMesh); m.revealedMesh = null; } }); }, 2500);
         }
+
+        window.addEventListener('pointermove', (event) => {
+            if(event.target.tagName === 'BUTTON' || event.target.tagName === 'SELECT' || state.isPaused || document.getElementById('main-menu').style.display !== 'none' || !hitPlaneMesh) {
+                if(hoverMesh) hoverMesh.visible = false;
+                return;
+            }
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1; mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObject(hitPlaneMesh);
+            if (intersects.length > 0) {
+                const p = intersects[0].point;
+                const gx = Math.floor(p.x + gridSize/2), gz = Math.floor(p.z + gridSize/2);
+                if(gx >= 0 && gx < gridSize && gz >= 0 && gz < gridSize) {
+                    hoverMesh.position.set(gx - gridSize/2 + 0.5, 0.015, gz - gridSize/2 + 0.5);
+                    hoverMesh.visible = true;
+                } else hoverMesh.visible = false;
+            } else hoverMesh.visible = false;
+        });
 
         window.addEventListener('pointerdown', (event) => {
             if(event.target.tagName === 'BUTTON' || event.target.tagName === 'SELECT' || state.isPaused || document.getElementById('main-menu').style.display !== 'none') return;
