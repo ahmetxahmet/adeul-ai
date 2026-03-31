@@ -256,6 +256,7 @@
         let lang = 'en';
         window.setLang = function(code, flag, key) {
             lang = key;
+            localStorage.setItem('adeull_game_lang', key); // Dil tercihini kaydet
             document.getElementById('activeFlag').innerText = flag;
             document.getElementById('activeCode').innerText = code;
             if(document.getElementById('langDropdown').style.display === 'block') {
@@ -327,21 +328,46 @@
         const charMap = { architect: { m: '👷🏻‍♂️', f: '👷🏻‍♀️' }, interior: { m: '👨🏻‍🎨', f: '👩🏻‍🎨' }, manager: { m: '👷🏽‍♂️', f: '👷🏽‍♀️' } };
         const diffMap = { easy: 0, med: 1, hard: 2 };
 
-        window.onload = () => {
+        window.onload = async () => {
             populateLangMenu();
-            setLang('EN', '🇺🇸', 'en');
-            const saved = localStorage.getItem('adeull_save');
-            const skipAuto = sessionStorage.getItem('adeull_skip_auto_resume');
             
-            if (saved && !skipAuto) {
-                resumeGame();
-            } else if (saved) {
+            const savedLangKey = localStorage.getItem('adeull_game_lang') || 'en';
+            const langOption = langOptions.find(opt => opt.key === savedLangKey) || langOptions[0];
+            setLang(langOption.code, langOption.flag, langOption.key);
+
+            const skipAuto = sessionStorage.getItem('adeull_skip_auto_resume');
+            let savedData = null;
+
+            // Önce sunucudan yüklemeyi dene (kullanıcı girişi varsa)
+            const supabase = window.parent.supabaseClient;
+            const userId = window.parent.currentUserId;
+
+            if (supabase && userId) {
+                try {
+                    const { data, error } = await supabase.from('game_saves').select('save_data').eq('user_id', userId).single();
+                    if (error && error.code !== 'PGRST116') { console.error('Server save load error:', error); }
+                    if (data) { savedData = data.save_data; }
+                } catch(e) { console.error('Server save load exception:', e); }
+            }
+
+            // Sunucuda yoksa, local storage'a bak
+            if (!savedData) {
+                const localSave = localStorage.getItem('adeull_save');
+                if (localSave) { savedData = JSON.parse(localSave); }
+            }
+            
+            if (savedData && !skipAuto) {
+                resumeGame(savedData);
+            } else if (savedData) {
                 document.getElementById('resume-game-btn').style.display = 'block';
                 document.getElementById('start-game-btn').style.marginTop = '10px';
             }
         };
 
-        function saveGame() {
+        // NOT: Bu fonksiyonun çalışması için Supabase'de şu tabloya ihtiyaç var:
+        // CREATE TABLE game_saves ( user_id uuid PRIMARY KEY REFERENCES auth.users(id), save_data jsonb, updated_at timestamptz );
+        // Ayrıca RLS policy'leri ayarlanmalı: "Enable RLS" ve "Users can only see and edit their own save."
+        async function saveGame() {
             const pathCoords = pathBlocks.map(b => ({ gx: b.gx, gz: b.gz }));
             const data = { 
                 role: state.role, gender: state.gender, diff: state.diff, mode: state.mode, 
@@ -352,12 +378,28 @@
                 targetStationIndex: targetStationIndex,
                 scanAvailable: scanAvailable
             };
-            localStorage.setItem('adeull_save', JSON.stringify(data));
+            // Fallback olarak local'e de kaydet
+            localStorage.setItem('adeull_save', JSON.stringify(data)); 
+
+            // Sunucuya kaydet (await kullanmıyoruz ki UI beklemesin)
+            const supabase = window.parent.supabaseClient;
+            const userId = window.parent.currentUserId;
+            if (supabase && userId) {
+                supabase
+                    .from('game_saves')
+                    .upsert({ user_id: userId, save_data: data, updated_at: new Date().toISOString() })
+                    .then(({ error }) => {
+                        if (error) console.error('Server save error:', error);
+                    });
+            }
         }
 
-        window.resumeGame = function() {
+        window.resumeGame = function(saved = null) {
             playSound('success');
-            const saved = JSON.parse(localStorage.getItem('adeull_save'));
+            if (!saved) {
+                const localSave = localStorage.getItem('adeull_save');
+                if (localSave) saved = JSON.parse(localSave);
+            }
             sessionStorage.removeItem('adeull_skip_auto_resume');
             if(saved) {
                 state.role = saved.role; state.gender = saved.gender; state.diff = saved.diff; state.mode = saved.mode;
@@ -376,7 +418,7 @@
 
         window.startGame = function() {
             state.score = 0; state.lives = 3; currentLevel = 0;
-            sessionStorage.removeItem('adeull_skip_auto_resume');
+            localStorage.removeItem('adeull_save'); // Yeni oyunda eski local kaydı sil
             saveGame(); 
             initGameUI();
             loadLevel(0);
