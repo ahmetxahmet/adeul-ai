@@ -19,30 +19,30 @@
         
         /* MAIN MENU */
         #main-menu { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: rgba(0,0,0,0.85); backdrop-filter: blur(16px); color: #fff;}
-        #main-menu h1 { color: white; font-weight: 900; letter-spacing: 0.3em; font-size: clamp(1.5rem, 6vw, 3rem); text-transform: uppercase; margin-bottom: 1rem; }
-        .menu-section { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 15px; margin-bottom: 10px; width: 90%; max-width: 380px; border-radius: 16px; }
-        .menu-section h3 { margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px; font-size: 10px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 10px; }
+        #main-menu h1 { color: white; font-weight: 900; letter-spacing: 0.3em; font-size: clamp(1.2rem, 5vw, 2rem); text-transform: uppercase; margin-bottom: 0.5rem; }
+        .menu-section { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 10px 15px; margin-bottom: 8px; width: 90%; max-width: 380px; border-radius: 12px; }
+        .menu-section h3 { margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; font-size: 9px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
         .opt-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        .opt-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 8px 10px; cursor: pointer; border-radius: 8px; transition: 0.2s; font-weight: bold; font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; flex: 1; text-align: center; }
+        .opt-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5); padding: 6px 8px; cursor: pointer; border-radius: 8px; transition: 0.2s; font-weight: bold; font-size: 8px; text-transform: uppercase; letter-spacing: 0.05em; flex: 1; text-align: center; }
         .opt-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
         .opt-btn.active { background: #fff; border-color: #fff; color: #000; }
         
-        .main-btn { border: none; padding: 12px 30px; font-size: 11px; font-weight: 800; cursor: pointer; border-radius: 12px; width: 90%; max-width: 380px; text-transform: uppercase; margin-top: 5px; transition: 0.3s; letter-spacing: 0.15em; }
+        .main-btn { border: none; padding: 10px 20px; font-size: 10px; font-weight: 800; cursor: pointer; border-radius: 10px; width: 90%; max-width: 380px; text-transform: uppercase; margin-top: 5px; transition: 0.3s; letter-spacing: 0.15em; }
         #start-game-btn { background: #fff; color: #000; }
         #start-game-btn:hover { background: #ddd; transform: translateY(-2px); }
         
         /* RESUME GAME BUTTON */
-        #resume-game-btn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); display: none; margin-bottom: 15px;}
+        #resume-game-btn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); display: none; margin-bottom: 10px;}
         #resume-game-btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
 
         /* GAME HUD */
-        #ui-layer { position: absolute; top: 20px; left: 20px; z-index: 10; pointer-events: none; display: none; padding: 15px 25px; }
-        #ui-layer h1 { margin: 0; font-size: 20px; color: #dd6b5d; text-transform: uppercase; }
-        #ui-layer p { margin: 5px 0 0 0; font-size: 12px; color: #555; font-weight: bold; }
+        #ui-layer { position: absolute; top: 10px; left: 10px; z-index: 10; pointer-events: none; display: none; padding: 10px 15px; }
+        #ui-layer h1 { margin: 0; font-size: 14px; color: #dd6b5d; text-transform: uppercase; }
+        #ui-layer p { margin: 5px 0 0 0; font-size: 9px; color: #555; font-weight: bold; }
         
-        #hud-right { position: absolute; top: 70px; right: 20px; z-index: 10; pointer-events: auto; display: none; width: 160px;}
-        .info-box { padding: 8px 12px; border-radius: 8px; margin-bottom: 8px; font-size: 11px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;}
-        .action-btn { background: #fff; border: 1px solid #ddd; color: #333; padding: 8px 12px; cursor: pointer; border-radius: 6px; font-weight: bold; transition: 0.2s; width: 100%; box-sizing: border-box; margin-bottom: 6px; text-transform: uppercase; font-size: 10px;}
+        #hud-right { position: absolute; top: 50px; right: 10px; z-index: 10; pointer-events: auto; display: none; width: 120px;}
+        .info-box { padding: 6px 8px; border-radius: 8px; margin-bottom: 6px; font-size: 9px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;}
+        .action-btn { background: #fff; border: 1px solid #ddd; color: #333; padding: 6px 8px; cursor: pointer; border-radius: 6px; font-weight: bold; transition: 0.2s; width: 100%; box-sizing: border-box; margin-bottom: 4px; text-transform: uppercase; font-size: 8px;}
         .action-btn:hover { background: #f5f5f5; border-color: #ccc; }
         .restart-btn { background: #e94560; color: #fff; border: none; }
         .restart-btn:hover { background: #d03a52; }
@@ -253,7 +253,7 @@
             });
         }
 
-        let lang = 'tr';
+        let lang = 'en';
         window.setLang = function(code, flag, key) {
             lang = key;
             document.getElementById('activeFlag').innerText = flag;
@@ -329,11 +329,15 @@
 
         window.onload = () => {
             populateLangMenu();
-            setLang('TR', '🇹🇷', 'tr');
+            setLang('EN', '🇺🇸', 'en');
             const saved = localStorage.getItem('adeull_save');
-            if (saved) { 
-                document.getElementById('resume-game-btn').style.display = 'block'; 
-                document.getElementById('start-game-btn').style.marginTop = '15px';
+            const skipAuto = sessionStorage.getItem('adeull_skip_auto_resume');
+            
+            if (saved && !skipAuto) {
+                resumeGame();
+            } else if (saved) {
+                document.getElementById('resume-game-btn').style.display = 'block';
+                document.getElementById('start-game-btn').style.marginTop = '10px';
             }
         };
 
@@ -354,6 +358,7 @@
         window.resumeGame = function() {
             playSound('success');
             const saved = JSON.parse(localStorage.getItem('adeull_save'));
+            sessionStorage.removeItem('adeull_skip_auto_resume');
             if(saved) {
                 state.role = saved.role; state.gender = saved.gender; state.diff = saved.diff; state.mode = saved.mode;
                 state.score = saved.score; state.lives = saved.lives; currentLevel = saved.level;
@@ -371,6 +376,7 @@
 
         window.startGame = function() {
             state.score = 0; state.lives = 3; currentLevel = 0;
+            sessionStorage.removeItem('adeull_skip_auto_resume');
             saveGame(); 
             initGameUI();
             loadLevel(0);
@@ -393,7 +399,11 @@
             updateScore(0); updateLives(0);
         }
 
-        window.returnToMenu = function() { playSound('tick'); location.reload(); };
+        window.returnToMenu = function() { 
+            playSound('tick'); 
+            sessionStorage.setItem('adeull_skip_auto_resume', '1');
+            location.reload(); 
+        };
         window.addEventListener('keydown', (e) => { if(e.key === 'Escape' && document.getElementById('main-menu').style.display === 'none') returnToMenu(); });
         window.restartCurrentLevel = function() { loadLevel(currentLevel); };
 

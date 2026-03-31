@@ -95,14 +95,14 @@
     window.toggleGameSize = function() {
         var gm = document.getElementById('gameModalWindow');
         if(!gm) return;
-        if (gm.style.width === '100%') {
+        if (gm.style.width === '840px') {
             gm.style.width = '420px'; gm.style.height = '600px';
             gm.style.bottom = '40px'; gm.style.right = '40px';
             gm.style.borderRadius = '16px';
         } else {
-            gm.style.width = '100%'; gm.style.height = '100%';
-            gm.style.bottom = '0'; gm.style.right = '0';
-            gm.style.borderRadius = '0';
+            gm.style.width = '840px'; gm.style.height = '90vh';
+            gm.style.bottom = '40px'; gm.style.right = '40px';
+            gm.style.borderRadius = '16px';
         }
     };
 
