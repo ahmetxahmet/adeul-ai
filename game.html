@@ -396,6 +396,19 @@
 
         window.resumeGame = function(saved = null) {
             playSound('success');
+            
+            // Eğer oyun zaten arka planda yüklüyse ve sadece menü açıksa (sayfa yenilenmemişse)
+            if (state.isPaused && activeLevel) {
+                document.getElementById('main-menu').style.display = 'none';
+                document.getElementById('lang-selector').style.display = 'none';
+                document.getElementById('ui-layer').style.display = 'block';
+                document.getElementById('hud-right').style.display = 'block';
+                document.getElementById('level-bar-container').style.display = 'block';
+                document.getElementById('player-emoji').style.display = 'block';
+                state.isPaused = false;
+                return;
+            }
+
             if (!saved) {
                 const localSave = localStorage.getItem('adeull_save');
                 if (localSave) saved = JSON.parse(localSave);
@@ -419,6 +432,16 @@
         window.startGame = function() {
             state.score = 0; state.lives = 3; currentLevel = 0;
             localStorage.removeItem('adeull_save'); // Yeni oyunda eski local kaydı sil
+            state.isPaused = false;
+            
+            // Eğer sayfayı yenilemeden yeni oyuna başlanıyorsa eski sahneyi temizle
+            if (hitPlaneMesh) { scene.remove(hitPlaneMesh); hitPlaneMesh = null; }
+            if (islandBase) { scene.remove(islandBase); islandBase = null; }
+            if (gridHelperObj) { scene.remove(gridHelperObj); gridHelperObj = null; }
+            stations.forEach(s => { scene.remove(s.mesh); if(s.div) s.div.remove(); }); stations = [];
+            pathBlocks.forEach(b => scene.remove(b.mesh)); pathBlocks = []; currentSegmentBlocks = [];
+            document.getElementById('labels-container').innerHTML = '';
+
             saveGame(); 
             initGameUI();
             loadLevel(0);
@@ -443,8 +466,21 @@
 
         window.returnToMenu = function() { 
             playSound('tick'); 
-            sessionStorage.setItem('adeull_skip_auto_resume', '1');
-            location.reload(); 
+            
+            // Sayfayı yenilemek yerine sadece UI'ı gizleyip menüyü gösteriyoruz (Oyun sıfırlanmaz)
+            document.getElementById('ui-layer').style.display = 'none';
+            document.getElementById('hud-right').style.display = 'none';
+            document.getElementById('level-bar-container').style.display = 'none';
+            document.getElementById('player-emoji').style.display = 'none';
+            document.getElementById('alert-box').style.display = 'none';
+            document.getElementById('quiz-box').style.display = 'none';
+            
+            document.getElementById('main-menu').style.display = 'flex';
+            document.getElementById('lang-selector').style.display = 'block';
+            document.getElementById('resume-game-btn').style.display = 'block';
+            document.getElementById('start-game-btn').style.marginTop = '10px';
+            
+            state.isPaused = true;
         };
         window.addEventListener('keydown', (e) => { if(e.key === 'Escape' && document.getElementById('main-menu').style.display === 'none') returnToMenu(); });
         window.restartCurrentLevel = function() { loadLevel(currentLevel); };
