@@ -541,10 +541,13 @@
             document.getElementById('quiz-box').style.display = "none";
             state.isPaused = false;
             
+            const currentMove = pendingMove; // Hamleyi güvenli değişkene al
+            pendingMove = null; // Artık orijinalini güvenle silebiliriz
+            
             if(selected === correct) {
                 playSound('success');
                 if(isTriviaMode) {
-                    showAlert(getRandomMsg(uiDict[lang].msg_correct), "success", false, () => finalizeMove(pendingMove.gx, pendingMove.gz));
+                    showAlert(getRandomMsg(uiDict[lang].msg_correct), "success", false, () => finalizeMove(currentMove.gx, currentMove.gz));
                 } else {
                     updateLives(1);
                     shouldRollback = false; // CORRECT ANSWER, NO ROLLBACK!
@@ -553,14 +556,13 @@
             } else {
                 playSound('error');
                 if(isTriviaMode) {
-                    hitPipe(pendingMove.gx, pendingMove.gz, getRandomMsg(uiDict[lang].msg_wrong_t));
+                    hitPipe(currentMove.gx, currentMove.gz, getRandomMsg(uiDict[lang].msg_wrong_t));
                     // hitPipe triggers shouldRollback = true
                 } else {
                     shouldRollback = false; // WRONG ANSWER BUT WARNED, NO ROLLBACK!
                     showAlert(getRandomMsg(uiDict[lang].msg_wrong_a), "error");
                 }
             }
-            pendingMove = null;
         };
 
         function showAlert(msg, type="error", isLevelUp=false, callback = null) {
