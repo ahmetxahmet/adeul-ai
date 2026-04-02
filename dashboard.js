@@ -23,66 +23,66 @@
             name: 'STUDENT',
             monthlyPrice: 10,
             yearlyPrice: 96,
-            renders: 50,
-            renders8k: 1,
+            renders: 40,
+            renders8k: 2,
             weeklyLimit: 15,
             color: 'rgba(255,255,255,0.05)',
             accent: 'rgba(255,255,255,0.4)',
-            paddleMonthlyId: 'pri_STUDENT_MONTHLY',
-            paddleYearlyId: 'pri_STUDENT_YEARLY'
+            paddleMonthlyId: 'pri_01kn4cpg0x5c7n5pc563qxw3vt',
+            paddleYearlyId: 'pri_01kn4cv9natt70v5f967mgqxa7'
         },
         {
             id: 'standard',
             name: 'STANDARD',
             monthlyPrice: 19,
             yearlyPrice: 182,
-            renders: 150,
+            renders: 100,
             renders8k: 5,
             weeklyLimit: 50,
             color: 'rgba(255,255,255,0.05)',
             accent: 'rgba(255,255,255,0.5)',
-            paddleMonthlyId: 'pri_STANDARD_MONTHLY',
-            paddleYearlyId: 'pri_STANDARD_YEARLY'
+            paddleMonthlyId: 'pri_01kn4cznqrrbkwma7jq7y0452j',
+            paddleYearlyId: 'pri_01kn4d13fsaax40b64z0xq2j96'
         },
         {
             id: 'pro',
             name: 'PRO',
             monthlyPrice: 39,
             yearlyPrice: 374,
-            renders: 400,
+            renders: 300,
             renders8k: 15,
-            weeklyLimit: 120,
+            weeklyLimit: 100,
             popular: true,
             color: 'rgba(255,255,255,0.08)',
             accent: '#fff',
-            paddleMonthlyId: 'pri_PRO_MONTHLY',
-            paddleYearlyId: 'pri_PRO_YEARLY'
+            paddleMonthlyId: 'pri_01kn4d4ds1t2z46acc3ewdpw60',
+            paddleYearlyId: 'pri_01kn4d5s0ghezbdaep0rmkzhf2'
         },
         {
             id: 'ultra',
             name: 'ULTRA',
             monthlyPrice: 69,
             yearlyPrice: 662,
-            renders: 1000,
+            renders: 700,
             renders8k: 50,
-            weeklyLimit: 300,
+            weeklyLimit: 250,
             color: 'rgba(255,255,255,0.05)',
             accent: 'rgba(255,255,255,0.5)',
-            paddleMonthlyId: 'pri_ULTRA_MONTHLY',
-            paddleYearlyId: 'pri_ULTRA_YEARLY'
+            paddleMonthlyId: 'pri_01kn4dbethm4fc7m1y86xemwpm',
+            paddleYearlyId: 'pri_01kn4dcf93676kk55ryp92cydk'
         },
         {
             id: 'vision',
             name: 'VISION',
             monthlyPrice: 129,
             yearlyPrice: 1238,
-            renders: 3000,
+            renders: 2000,
             renders8k: 150,
             weeklyLimit: 800,
             color: 'rgba(255,255,255,0.05)',
             accent: 'rgba(255,255,255,0.4)',
-            paddleMonthlyId: 'pri_VISION_MONTHLY',
-            paddleYearlyId: 'pri_VISION_YEARLY'
+            paddleMonthlyId: 'pri_01kn4dep97bz8y918f6h7c3asf',
+            paddleYearlyId: 'pri_01kn4dg601ncy38gdaz9dny4dk'
         }
     ];
 
