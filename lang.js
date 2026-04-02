@@ -17,7 +17,10 @@ window.dict = {
         vendorNetwork: "VENDOR NETWORK", architect: "ARCHITECT", contractor: "CONTRACTOR", electrician: "ELECTRICIAN", hvac: "HVAC / MECHANICAL", plumber: "PLUMBER", metal: "METAL WORKSHOP", upholstery: "UPHOLSTERY", painter: "PAINTER", construction: "CONSTRUCTION", carpenter: "CARPENTER", furniture: "FURNITURE STORE", getQuote: "GET QUOTE",
         board1: "BOARD 1", board2: "BOARD 2", board3: "BOARD 3", round: "ROUND", square: "SQUARE", schema: "SCHEMA", downloadBoard: "DOWNLOAD BOARD",
         putProduct: "UPLOAD PRODUCT", createTexture: "GENERATE TEXTURE", createPresentation: "CREATE PRESENTATION",
-        upscaleWaitTitle: "8K RENDER IN PROGRESS...", upscaleWaitDesc: "Please wait, refining micro-details..."
+        upscaleWaitTitle: "8K RENDER IN PROGRESS...", upscaleWaitDesc: "Please wait, refining micro-details...",
+        redeemCoupon: "REDEEM COUPON",
+        promptBuilder: "PROMPT BUILDER",
+        askAdeull: "ASK ADEULL",
     },
     'TR': {
         subtitle: "Mimari Çekirdek Zekası", login: "Giriş Yap", email: "E-POSTA ADRESİ", password: "ŞİFRE", orLogin: "Veya Şununla Giriş Yap",
@@ -34,7 +37,10 @@ window.dict = {
         vendorNetwork: "ÜRETİCİ AĞI", architect: "MİMAR", contractor: "MÜTEAHHİT", electrician: "ELEKTRİKÇİ", hvac: "MEKANİK / İKLİMLENDİRME", plumber: "TESİSATÇI", metal: "METAL ATÖLYESİ", upholstery: "DÖŞEMECİ", painter: "BOYACI", construction: "İNŞAAT", carpenter: "MARANGOZ", furniture: "MOBİLYA MAĞAZASI", getQuote: "FİYAT AL",
         board1: "BORD 1", board2: "BORD 2", board3: "BORD 3", round: "YUVARLAK", square: "KARE", schema: "ŞEMA", downloadBoard: "PAFTAYI İNDİR",
         putProduct: "ÜRÜN KOY", createTexture: "TEXTURE OLUŞTUR", createPresentation: "SUNUM OLUŞTUR",
-        upscaleWaitTitle: "8K RENDER ALINIYOR...", upscaleWaitDesc: "Lütfen bekleyiniz, detaylar işleniyor..."
+        upscaleWaitTitle: "8K RENDER ALINIYOR...", upscaleWaitDesc: "Lütfen bekleyiniz, detaylar işleniyor...",
+        redeemCoupon: "KUPON GİR",
+        promptBuilder: "PROMPT OLUŞTUR",
+        askAdeull: "ADEULL'A SOR",
     },
     'ES': {
         subtitle: "Inteligencia Central Arquitectónica", login: "Iniciar Sesión", email: "CORREO ELECTRÓNICO", password: "CONTRASEÑA", orLogin: "O entrar con",
@@ -51,7 +57,10 @@ window.dict = {
         vendorNetwork: "RED DE VENDEDORES", architect: "ARQUITECTO", contractor: "CONTRATISTA", electrician: "ELECTRICISTA", hvac: "CLIMATIZACIÓN", plumber: "FONTANERO", metal: "TALLER METAL", upholstery: "TAPICERÍA", painter: "PINTOR", construction: "CONSTRUCTION", carpenter: "CARPINTERO", furniture: "MUEBLERÍA", getQuote: "COTIZAR",
         board1: "TABLERO 1", board2: "TABLERO 2", board3: "TABLERO 3", round: "REDONDO", square: "CUADRADO", schema: "ESQUEMA", downloadBoard: "DESCARGAR BORD",
         putProduct: "CARGAR PRODUCTO", createTexture: "CREAR TEXTURA", createPresentation: "CREAR PRESENTACIÓN",
-        upscaleWaitTitle: "RENDER 8K EN PROGRESO...", upscaleWaitDesc: "Por favor espere..."
+        upscaleWaitTitle: "RENDER 8K EN PROGRESO...", upscaleWaitDesc: "Por favor espere...",
+        redeemCoupon: "CANJEAR CUPÓN",
+        promptBuilder: "CREAR PROMPT",
+        askAdeull: "PREGUNTAR A ADEULL",
     },
     'DE': {
         subtitle: "Architektonische Kernintelligenz", login: "Anmelden", email: "E-MAIL", password: "PASSWORT", orLogin: "Oder anmelden mit",
@@ -68,7 +77,10 @@ window.dict = {
         vendorNetwork: "HÄNDLERNETZWERK", architect: "ARCHITEKT", contractor: "BAUNTERNEHMER", electrician: "ELEKTRIKER", hvac: "KLIMAANLAGE", plumber: "INSTALLATEUR", metal: "METALLWERKSTATT", upholstery: "POLSTEREI", painter: "MALER", construction: "BAU", carpenter: "ZIMMERMANN", furniture: "MÖBELHAUS", getQuote: "ANGEBOT",
         board1: "BOARD 1", board2: "BOARD 2", board3: "BOARD 3", round: "RUND", square: "QUADRAT", schema: "SCHEMA", downloadBoard: "BOARD HERUNTERLADEN",
         putProduct: "PRODUKT LADEN", createTexture: "TEXTUR ERSTELLEN", createPresentation: "PRÄSENTATION ERSTELLEN",
-        upscaleWaitTitle: "8K RENDER IN ARBEIT...", upscaleWaitDesc: "Bitte warten..."
+        upscaleWaitTitle: "8K RENDER IN ARBEIT...", upscaleWaitDesc: "Bitte warten...",
+        redeemCoupon: "GUTSCHEIN EINLÖSEN",
+        promptBuilder: "PROMPT ERSTELLEN",
+        askAdeull: "ADEULL FRAGEN",
     },
     'FR': {
         subtitle: "Intelligence Architecturale", login: "Connexion", email: "E-MAIL", password: "MOT DE PASSE", orLogin: "Ou se connecter avec",
@@ -85,7 +97,10 @@ window.dict = {
         vendorNetwork: "RÉSEAU VENDEURS", architect: "ARCHITECTE", contractor: "ENTREPRENEUR", electrician: "ÉLECTRICIEN", hvac: "CVC", plumber: "PLOMBIER", metal: "ATELIER MÉTAL", upholstery: "TAPISSERIE", painter: "PEINTRE", construction: "CONSTRUCTION", carpenter: "MENUISIER", furniture: "MAGASIN MEUBLES", getQuote: "DEVIS",
         board1: "PLANCHE 1", board2: "PLANCHE 2", board3: "PLANCHE 3", round: "ROND", square: "CARRÉ", schema: "SCHÉMA", downloadBoard: "TÉLÉCHARGER PLANCHE",
         putProduct: "CHARGER PRODUIT", createTexture: "GÉNÉRER TEXTURE", createPresentation: "CRÉER PRÉSENTATION",
-        upscaleWaitTitle: "RENDU 8K EN COURS...", upscaleWaitDesc: "Veuillez patienter..."
+        upscaleWaitTitle: "RENDU 8K EN COURS...", upscaleWaitDesc: "Veuillez patienter...",
+        redeemCoupon: "UTILISER COUPON",
+        promptBuilder: "CRÉER PROMPT",
+        askAdeull: "DEMANDER À ADEULL",
     },
     'PT': {
         subtitle: "Inteligência Arquitetônica", login: "Entrar", email: "E-MAIL", password: "SENHA", orLogin: "Ou entrar com",
@@ -102,7 +117,10 @@ window.dict = {
         vendorNetwork: "REDE DE FORNECEDORES", architect: "ARQUITETO", contractor: "EMPREITEIRO", electrician: "ELETRICISTA", hvac: "AVAC", plumber: "ENCANADOR", metal: "SERRALHERIA", upholstery: "ESTOFARIA", painter: "PINTOR", construction: "CONSTRUÇÃO", carpenter: "MARCENEIRO", furniture: "LOJA MÓVEIS", getQuote: "ORÇAMENTO",
         board1: "PRANCHA 1", board2: "PRANCHA 2", board3: "PRANCHA 3", round: "REDONDO", square: "QUADRADO", schema: "ESQUEMA", downloadBoard: "BAIXAR PRANCHA",
         putProduct: "CARREGAR PRODUTO", createTexture: "GERAR TEXTURA", createPresentation: "CRIAR APRESENTAÇÃO",
-        upscaleWaitTitle: "RENDER 8K EM ANDAMENTO...", upscaleWaitDesc: "Por favor, aguarde..."
+        upscaleWaitTitle: "RENDER 8K EM ANDAMENTO...", upscaleWaitDesc: "Por favor, aguarde...",
+        redeemCoupon: "RESGATAR CUPOM",
+        promptBuilder: "CRIAR PROMPT",
+        askAdeull: "PERGUNTAR AO ADEULL",
     },
     'ID': {
         subtitle: "Kecerdasan Arsitektur", login: "Masuk", email: "EMAIL", password: "KATA SANDI", orLogin: "Atau masuk dengan",
@@ -119,7 +137,10 @@ window.dict = {
         vendorNetwork: "JARINGAN VENDOR", architect: "ARSITEK", contractor: "KONTRAKTOR", electrician: "TEKNISI LISTRIK", hvac: "HVAC", plumber: "TUKANG PIPA", metal: "BENGKEL LOGAM", upholstery: "JOK KURSI", painter: "TUKANG CAT", construction: "KONSTRUKSI", carpenter: "TUKANG KAYU", furniture: "TOKO MEBEL", getQuote: "PENAWARAN",
         board1: "PAPAN 1", board2: "PAPAN 2", board3: "PAPAN 3", round: "BULAT", square: "PERSEGI", schema: "SKEMA", downloadBoard: "UNDUH PAPAN",
         putProduct: "UNGGAH PRODUK", createTexture: "BUAT TEXTURE", createPresentation: "BUAT PRESENTASI",
-        upscaleWaitTitle: "8K RENDER SEDANG DIPROSES...", upscaleWaitDesc: "Mohon tunggu..."
+        upscaleWaitTitle: "8K RENDER SEDANG DIPROSES...", upscaleWaitDesc: "Mohon tunggu...",
+        redeemCoupon: "TUKAR KUPON",
+        promptBuilder: "BUAT PROMPT",
+        askAdeull: "TANYA ADEULL",
     },
     'HI': {
         subtitle: "वास्तु इंटेलिजेंस", login: "लॉग इन करें", email: "ईमेल", password: "पासवर्ड", orLogin: "या इसके साथ लॉग इन करें",
@@ -136,7 +157,10 @@ window.dict = {
         vendorNetwork: "विक्रेता नेटवर्क", architect: "वास्तुकार", contractor: "ठेकेदार", electrician: "इलेक्ट्रीशियन", hvac: "एचवीएसी", plumber: "प्लम्बर", metal: "धातु कार्यशाला", upholstery: "असबाब", painter: "पेंटर", construction: "निर्माण", carpenter: "बढ़ई", furniture: "फर्नीचर स्टोर", getQuote: "उद्धरण प्राप्त करें",
         board1: "बोर्ड 1", board2: "बोर्ड 2", board3: "बोर्ड 3", round: "गोल", square: "वर्ग", schema: "योजना", downloadBoard: "डाउनलोड करें",
         putProduct: "उत्पाद अपलोड करें", createTexture: "टेक्सचर बनाएं", createPresentation: "प्रस्तुति बनाएं",
-        upscaleWaitTitle: "8K रेंडर प्रगति पर...", upscaleWaitDesc: "कृपया प्रतीक्षा करें..."
+        upscaleWaitTitle: "8K रेंडर प्रगति पर...", upscaleWaitDesc: "कृपया प्रतीक्षा करें...",
+        redeemCoupon: "कूपन रिडीम",
+        promptBuilder: "प्रॉम्प्ट बनाएं",
+        askAdeull: "ADEULL से पूछें",
     },
     'AR': {
         subtitle: "الذكاء المعماري", login: "دخول", email: "البريد الإلكتروني", password: "كلمة المرور", orLogin: "أو الدخول عبر",
@@ -153,7 +177,10 @@ window.dict = {
         vendorNetwork: "شبكة الموردين", architect: "مهندس", contractor: "مقاول", electrician: "كهربائي", hvac: "تكييف", plumber: "سباك", metal: "ورشة معادن", upholstery: "تنجيد", painter: "دهان", construction: "بناء", carpenter: "نجار", furniture: "متجر أثاث", getQuote: "احصل على عرض",
         board1: "لوحة 1", board2: "لوحة 2", board3: "لوحة 3", round: "دائري", square: "مربع", schema: "مخطط", downloadBoard: "تحميل اللوحة",
         putProduct: "تحميل المنتج", createTexture: "إنشاء نسيج", createPresentation: "إنشاء عرض",
-        upscaleWaitTitle: "جاري تقديم 8K...", upscaleWaitDesc: "أرجو الإنتظار..."
+        upscaleWaitTitle: "جاري تقديم 8K...", upscaleWaitDesc: "أرجو الإنتظار...",
+        redeemCoupon: "استرداد القسيمة",
+        promptBuilder: "إنشاء الأمر",
+        askAdeull: "اسأل ADEULL",
     },
     'IT': {
         subtitle: "Intelligenza Architettonica", login: "Accedi", email: "EMAIL", password: "PASSWORD", orLogin: "O accedi con",
@@ -170,7 +197,10 @@ window.dict = {
         vendorNetwork: "RETE FORNITORI", architect: "ARCHITETTO", contractor: "APPALTATORE", electrician: "ELETTRICISTA", hvac: "CLIMATIZZAZIONE", plumber: "IDRAULICO", metal: "OFFICINA METALLI", upholstery: "TAPPEZZERIA", painter: "PITTORE", construction: "COSTRUZIONE", carpenter: "FALEGNAME", furniture: "NEGOZIO MOBILI", getQuote: "RICHIEDI PREVENTIVO",
         board1: "TAVOLA 1", board2: "TAVOLA 2", board3: "TAVOLA 3", round: "ROTONDO", square: "QUADRATO", schema: "SCHEMA", downloadBoard: "SCARICA TAVOLA",
         putProduct: "CARICA PRODOTTO", createTexture: "GENERA TEXTURE", createPresentation: "CREA PRESENTAZIONE",
-        upscaleWaitTitle: "RENDER 8K IN CORSO...", upscaleWaitDesc: "Attendere prego..."
+        upscaleWaitTitle: "RENDER 8K IN CORSO...", upscaleWaitDesc: "Attendere prego...",
+        redeemCoupon: "RISCATTA COUPON",
+        promptBuilder: "CREA PROMPT",
+        askAdeull: "CHIEDI A ADEULL",
     }
 };
 

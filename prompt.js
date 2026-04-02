@@ -298,4 +298,116 @@
         }
     };
 
+    // ============================================================
+    // ADEULL CHAT — Canlı sohbet asistanı
+    // ============================================================
+    window.openAdeullChat = function() {
+        if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
+        var L = getL();
+
+        var existing = document.getElementById('adeullChatOverlay');
+        if (existing) existing.remove();
+
+        var overlay = document.createElement('div');
+        overlay.id = 'adeullChatOverlay';
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.95);backdrop-filter:blur(30px);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;transition:opacity 0.3s ease;';
+
+        overlay.innerHTML =
+            '<div style="width:100%;max-width:480px;height:80vh;max-height:600px;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,0.08);border-radius:20px;overflow:hidden;background:rgba(0,0,0,0.8);">' +
+
+            '<div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.06);">' +
+            '<h2 style="font-size:12px;font-weight:700;letter-spacing:0.3em;color:#fff;text-transform:uppercase;margin:0;">ADEULL AI</h2>' +
+            '<button onclick="closeAdeullChat()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:20px;cursor:pointer;">✕</button>' +
+            '</div>' +
+
+            '<div id="chatMessages" style="flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:12px;">' +
+            '<div style="background:rgba(255,255,255,0.05);border-radius:12px 12px 12px 4px;padding:12px 14px;max-width:85%;align-self:flex-start;">' +
+            '<p style="font-size:10px;color:rgba(255,255,255,0.7);line-height:1.6;margin:0;letter-spacing:0.02em;">' +
+            (L.title === 'PROMPT OLUŞTURUCU' ?
+            'Merhaba! Ben ADEULL AI asistanıyım. Size menüler, render alma, sunum oluşturma veya mimari vizyon konularında yardımcı olabilirim. Ne sormak istersiniz?' :
+            'Hello! I am the ADEULL AI assistant. I can help you with menus, rendering, presentations, and architectural vision. What would you like to know?') +
+            '</p></div></div>' +
+
+            '<div style="padding:12px 16px;border-top:1px solid rgba(255,255,255,0.06);display:flex;gap:8px;">' +
+            '<input type="text" id="chatInput" placeholder="' + (L.title === 'PROMPT OLUŞTURUCU' ? 'Mesajınızı yazın...' : 'Type your message...') + '" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;color:#fff;outline:none;font-size:10px;letter-spacing:0.03em;font-family:inherit;box-sizing:border-box;" onkeypress="if(event.key===\'Enter\')sendChatMessage()">' +
+            '<button onclick="sendChatMessage()" style="background:rgba(255,255,255,0.9);color:#000;border:none;border-radius:12px;padding:12px 16px;font-size:9px;font-weight:700;letter-spacing:0.15em;cursor:pointer;font-family:inherit;">→</button>' +
+            '</div>' +
+
+            '</div>';
+
+        document.body.appendChild(overlay);
+        setTimeout(function() { overlay.style.opacity = '1'; }, 10);
+    };
+
+    window.closeAdeullChat = function() {
+        var overlay = document.getElementById('adeullChatOverlay');
+        if (overlay) {
+            overlay.style.opacity = '0';
+            setTimeout(function() { overlay.remove(); }, 300);
+        }
+    };
+
+    window.sendChatMessage = async function() {
+        var input = document.getElementById('chatInput');
+        var messages = document.getElementById('chatMessages');
+        if (!input || !messages) return;
+        var text = input.value.trim();
+        if (!text) return;
+        input.value = '';
+
+        // Kullanıcı mesajı
+        var userMsg = document.createElement('div');
+        userMsg.style.cssText = 'background:rgba(255,255,255,0.1);border-radius:12px 12px 4px 12px;padding:12px 14px;max-width:85%;align-self:flex-end;';
+        userMsg.innerHTML = '<p style="font-size:10px;color:rgba(255,255,255,0.9);line-height:1.6;margin:0;">' + text.replace(/</g,'&lt;') + '</p>';
+        messages.appendChild(userMsg);
+        messages.scrollTop = messages.scrollHeight;
+
+        // Yükleniyor
+        var loadingMsg = document.createElement('div');
+        loadingMsg.style.cssText = 'background:rgba(255,255,255,0.05);border-radius:12px 12px 12px 4px;padding:12px 14px;max-width:85%;align-self:flex-start;';
+        loadingMsg.innerHTML = '<p style="font-size:10px;color:rgba(255,255,255,0.4);margin:0;letter-spacing:0.1em;">...</p>';
+        messages.appendChild(loadingMsg);
+        messages.scrollTop = messages.scrollHeight;
+
+        try {
+            var sessionData = window.supabaseClient ? await window.supabaseClient.auth.getSession() : null;
+            var authToken = (sessionData && sessionData.data && sessionData.data.session) ? sessionData.data.session.access_token : '';
+            var activeLang = (document.getElementById('activeCode') || {}).innerText || 'EN';
+
+            var response = await fetch(window.CORE_ENGINE_V2, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'chat',
+                    prompt: text,
+                    language: activeLang,
+                    user_token: authToken,
+                    user_id: window.currentUserId || 'guest'
+                })
+            });
+
+            var data = await response.json();
+            var result = Array.isArray(data) ? data[0] : data;
+            var reply = '';
+
+            if (result.output) reply = result.output;
+            else if (result.candidates && result.candidates[0]) {
+                var parts = result.candidates[0].content.parts;
+                for (var i = 0; i < parts.length; i++) {
+                    if (parts[i].text) reply = parts[i].text;
+                }
+            }
+
+            loadingMsg.innerHTML = '<p style="font-size:10px;color:rgba(255,255,255,0.7);line-height:1.6;margin:0;letter-spacing:0.02em;">' + (reply || 'Sorry, I could not process your request.').replace(/</g,'&lt;').replace(/\n/g,'<br>') + '</p>';
+        } catch(e) {
+            loadingMsg.innerHTML = '<p style="font-size:10px;color:rgba(255,100,100,0.7);margin:0;">Connection error. Please try again.</p>';
+        }
+        messages.scrollTop = messages.scrollHeight;
+    };
+
+    // ESC ile chat kapat
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('adeullChatOverlay')) closeAdeullChat();
+    });
+
 })();
