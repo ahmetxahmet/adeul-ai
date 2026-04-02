@@ -98,7 +98,11 @@
 
     // ESC ile kapat
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && _pbOverlay) closePromptBuilder();
+        if (e.key === 'Escape') {
+            if (document.getElementById('adeullChatOverlay')) closeAdeullChat();
+            else if (document.getElementById('couponOverlay')) closeCouponModal();
+            else if (_pbOverlay) closePromptBuilder();
+        }
     });
 
     // ============================================================
