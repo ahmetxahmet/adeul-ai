@@ -168,9 +168,10 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 <button onclick="enterDashboard('PRESENTATION')" data-i18n="presentation" class="menu-item text-left focus:outline-none !text-blue-200 hover:!">PRESENTATION</button>
 </nav>
 </div>
-<button onclick="activateFreeTrial();" class="mt-16 px-8 lg:px-12 py-4 glass-panel rounded-full text-[0.6rem] lg:text-[0.7rem] font-bold tracking-[0.5em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer relative z-10" data-i18n="freetrial">
-Start Free Trial
-</button>
+<div class="mt-12 flex flex-col lg:flex-row gap-3 relative z-10">
+<button onclick="openCouponModal()" class="px-8 lg:px-10 py-4 glass-panel rounded-full text-[0.55rem] lg:text-[0.65rem] font-bold tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer">REDEEM COUPON</button>
+<button onclick="openPromptBuilder()" class="px-8 lg:px-10 py-4 glass-panel rounded-full text-[0.55rem] lg:text-[0.65rem] font-bold tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer">PROMPT BUILDER</button>
+</div>
 </div>
  
 <div id="dashboard" class="absolute inset-0 flex flex-col lg:flex-row p-4 lg:p-8 gap-4 lg:gap-8 text-white z-10 bg-black/80 pt-20 lg:pt-24 overflow-y-auto lg:overflow-hidden">
@@ -577,5 +578,6 @@ if(dashTitle) observer.observe(dashTitle, {childList: true, characterData: true,
 </script>
 <script src="bugtracker.js"></script>
 <script src="dashboard.js"></script>
+<script src="prompt.js"></script>
 </body>
 </html>
