@@ -266,7 +266,8 @@ async function simulateAPIConnection(btnId, is8K = false) {
     const originalText = btn.innerHTML;
     const promptInput = document.getElementById('promptArea');
     const userPrompt = promptInput && promptInput.value.trim() !== "" ? promptInput.value : "Modern architectural design";
-    
+    const cleanPrompt = userPrompt.replace(/\"/g, '\\"').replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/\t/g, ' ');
+
     const activeLangCodeElement = document.getElementById('activeCode');
     const activeLangCode = activeLangCodeElement ? activeLangCodeElement.innerText : 'EN';
 
@@ -308,7 +309,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
 
     const payload = {
         action: 'generate',  
-        prompt: userPrompt,
+        prompt: cleanPrompt,
         isSketch: isSketchMode,
         sketchData: theSketchImage,
         images: window.uploadedBase64,
