@@ -241,10 +241,12 @@ async function ADEULL_UPSCALE(imageUrl) {
             });
         }
 
+        const sessionData = window.supabaseClient ? await window.supabaseClient.auth.getSession() : null;
+        const authToken = sessionData?.data?.session?.access_token || '';
         const response = await fetch(window.CORE_UPSCALE, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ image: finalImage })
+            body: JSON.stringify({ image: finalImage, user_token: authToken })
         });
         
         if (!response.ok) throw new Error("Core Engine is not responding!");
