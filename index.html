@@ -14,7 +14,7 @@
  
 <audio id="hoverSound" src="https://actions.google.com/sounds/v1/ui/button_click.ogg" preload="auto"></audio>
  
-<div id="loginScreen" class="absolute inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md px-4" style="display:none!important;opacity:0;">
+<div id="loginScreen" class="absolute inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md px-4">
 <div class="w-full max-w-[28rem] glass-panel rounded-[2.5rem] p-8 lg:p-12 flex flex-col items-center shadow-2xl relative overflow-hidden">
 <h2 class="text-4xl lg:text-5xl font-extrabold tracking-[0.3em] text-white mb-2 uppercase relative z-10">ADEULL</h2>
 <p class="text-[0.5rem] lg:text-[0.6rem] tracking-[0.4em] text-white/40 uppercase mb-10 text-center relative z-10" data-i18n="subtitle">Architectural Core Intelligence</p>
@@ -358,6 +358,9 @@ function applyUserData(userData) {
     setTimeout(() => {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('appContent').classList.add('active');
+        document.getElementById('appContent').style.display = 'block';
+        const landing = document.getElementById('landing');
+        if (landing) landing.classList.remove('hidden');
     }, 800);
 }
  
