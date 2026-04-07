@@ -312,6 +312,13 @@ window.deductCredit = deductCredit;
 function skipLogin() {
     const loginScreen = document.getElementById('loginScreen');
     if (loginScreen) loginScreen.style.display = 'none';
+    document.getElementById('appContent').classList.add('active');
+    const landing = document.getElementById('landing');
+    if (landing) {
+        landing.style.display = 'flex';
+        landing.style.visibility = 'visible';
+        landing.style.opacity = '1';
+    }
 }
 
 function showLogin() {
