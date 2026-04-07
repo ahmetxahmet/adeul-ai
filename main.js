@@ -229,6 +229,10 @@ function b64toBlob(b64Data, contentType='', sliceSize=512) {
 }
 
 async function ADEULL_UPSCALE(imageUrl) {
+    if (!window.currentUserId || window.currentUserId === 'guest') {
+        alert('Platform launching soon. Contact info@adeull.com for early access.');
+        return;
+    }
     try {
         let finalImage = imageUrl;
         if (imageUrl.startsWith('blob:')) {
@@ -261,6 +265,10 @@ async function ADEULL_UPSCALE(imageUrl) {
 
 async function simulateAPIConnection(btnId, is8K = false) {
     playSound();
+    if (!window.currentUserId || window.currentUserId === 'guest') {
+        alert('Platform launching soon. Contact info@adeull.com for early access.');
+        return;
+    }
     const btn = document.getElementById(btnId);
     if (!btn || btn.disabled) return;
     btn.disabled = true;

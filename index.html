@@ -8,50 +8,9 @@
 <link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-#comingSoonOverlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9998;
-    background: rgba(0,0,0,0.85);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 1s ease;
-    pointer-events: none;
-}
-#comingSoonText {
-    font-size: clamp(1.5rem, 5vw, 3.5rem);
-    font-weight: 800;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.15);
-    transition: color 0.6s ease;
-    text-align: center;
-    padding: 0 2rem;
-}
-#comingSoonText.bright {
-    color: rgba(255,255,255,0.95);
-}
-#adeulLogo {
-    font-size: clamp(2rem, 8vw, 6rem);
-    font-weight: 900;
-    letter-spacing: 0.5em;
-    color: white;
-    margin-bottom: 2rem;
-    text-transform: uppercase;
-}
 </style>
 </head>
 <body>
- 
-<!-- COMING SOON OVERLAY -->
-<div id="comingSoonOverlay">
-    <div id="adeulLogo">ADEULL</div>
-    <div id="comingSoonText">COMING SOON</div>
-</div>
  
 <audio id="hoverSound" src="https://actions.google.com/sounds/v1/ui/button_click.ogg" preload="auto"></audio>
  
@@ -349,51 +308,6 @@ window.deductCredit = deductCredit;
  
  
 <script>
-const comingSoonPhrases = [
-    "COMING SOON",
-    "YAKINDA",
-    "MUY PRONTO",
-    "BALD VERFÜGBAR",
-    "BIENTÔT DISPONIBLE",
-    "EM BREVE",
-    "SEGERA HADIR",
-    "जल्द आ रहा है",
-    "قريباً",
-    "PROSSIMAMENTE"
-];
- 
-let phraseIndex = 0;
-let comingSoonInterval = null;
- 
-function startComingSoonAnimation() {
-    const overlay = document.getElementById('comingSoonOverlay');
-    const text = document.getElementById('comingSoonText');
-    overlay.style.opacity = '1';
-    overlay.style.pointerEvents = 'auto';
- 
-    comingSoonInterval = setInterval(() => {
-        text.classList.remove('bright');
-        text.style.opacity = '0';
-        setTimeout(() => {
-            phraseIndex = (phraseIndex + 1) % comingSoonPhrases.length;
-            text.innerText = comingSoonPhrases[phraseIndex];
-            text.style.opacity = '1';
-            text.classList.add('bright');
-            setTimeout(() => text.classList.remove('bright'), 400);
-        }, 600);
-    }, 1800);
- 
-    setTimeout(() => {
-        clearInterval(comingSoonInterval);
-        overlay.style.opacity = '0';
-        overlay.style.pointerEvents = 'none';
-        setTimeout(() => {
-            overlay.style.display = 'none';
-            showLogin();
-        }, 1000);
-    }, 8000);
-}
- 
 function showLogin() {
     const loginScreen = document.getElementById('loginScreen');
     loginScreen.style.removeProperty('display');
@@ -403,7 +317,7 @@ function showLogin() {
 }
  
 window.addEventListener('load', () => {
-    startComingSoonAnimation();
+    showLogin();
 });
  
 function handleLoginAdvanced(event) {
