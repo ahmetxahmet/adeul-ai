@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</style>
 </head>
 <body>
  
@@ -39,6 +38,7 @@
 <span class="text-lg">⊞</span> <span class="text-[0.65rem] font-bold tracking-widest uppercase">Office</span>
 </button>
 <p class="text-[0.5rem] text-white/30 tracking-widest uppercase mt-6 relative z-10">Contact: <a href="mailto:info@adeull.com" class="hover:text-white/60 transition">info@adeull.com</a></p>
+</div>
 </div>
 </div>
 
@@ -494,6 +494,7 @@ const observer = new MutationObserver(function() {
 const dashTitle = document.getElementById('dashboardTitle');
 if(dashTitle) observer.observe(dashTitle, {childList: true, characterData: true, subtree: true});
 </script>
+</div>
 <script src="bugtracker.js"></script>
 <script src="dashboard.js"></script>
 <script src="prompt.js"></script>
