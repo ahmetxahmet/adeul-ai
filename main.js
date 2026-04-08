@@ -273,6 +273,22 @@ async function simulateAPIConnection(btnId, is8K = false) {
     if (!btn || btn.disabled) return;
     btn.disabled = true;
 
+    const currentMenu = document.getElementById('dashboardTitle').getAttribute('data-raw-title');
+    const hasScene = window.uploadedBase64 && window.uploadedBase64['boxScene'];
+    const hasItem = window.uploadedBase64 && window.uploadedBase64['boxItem'];
+
+    if ((currentMenu === 'INTERIOR' || currentMenu === 'EXTERIOR' || currentMenu === 'ARCHITECTURE') && hasScene && !hasItem) {
+        alert('INTERIOR/EXTERIOR requires both a SCENE and an ITEM image. If you only have one image and want to visualize a product inside a space, please use the DESIGN menu instead — it works with single images.');
+        btn.disabled = false;
+        return;
+    }
+
+    if ((currentMenu === 'INTERIOR' || currentMenu === 'EXTERIOR' || currentMenu === 'ARCHITECTURE') && !hasScene && hasItem) {
+        alert('INTERIOR/EXTERIOR requires a SCENE image first. Please upload a scene, or use the DESIGN menu if you only have a single product image.');
+        btn.disabled = false;
+        return;
+    }
+
     const originalText = btn.innerHTML;
     const promptInput = document.getElementById('promptArea');
     const userPrompt = promptInput && promptInput.value.trim() !== "" ? promptInput.value : "Modern architectural design";
