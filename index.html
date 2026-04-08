@@ -201,8 +201,8 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 </div>
 <textarea id="promptArea" data-i18n-ph="promptPh" placeholder="Describe your architectural vision..." class="w-full h-20 lg:h-24 bg-white/10 border border-white/20 rounded-xl p-3 lg:p-4 text-white outline-none focus:bg-white/20 resize-none mb-4 text-[0.6rem] lg:text-[0.65rem]"></textarea>
 <div class="flex flex-row gap-2 w-full mb-4 lg:mb-0" id="generateBtnRow">
-<button id="generateBtnNormal" onclick="simulateAPIConnection('generateBtnNormal', false)" class="flex-1 bg-white/5 border border-white/20 text-white font-extrabold tracking-widest py-4 lg:py-5 rounded-xl hover:bg-white/10 transition shadow-lg uppercase text-[0.65rem] lg:text-sm">GENERATE</button>
-<button id="generateBtn8K" onclick="simulateAPIConnection('generateBtn8K', true)" class="flex-1 bg-white/5 border border-white/20 text-white font-extrabold tracking-widest py-4 lg:py-5 rounded-xl hover:bg-white/10 transition shadow-lg uppercase text-[0.65rem] lg:text-sm flex items-center justify-center gap-2">GENERATE <span class="text-yellow-400">8K</span></button>
+<button id="generateBtnNormal" onclick="simulateAPIConnection('generateBtnNormal', false)" class="flex-1 bg-white/5 border border-white/20 text-white font-extrabold tracking-widest py-4 lg:py-5 rounded-xl hover:bg-white/10 transition shadow-lg uppercase text-[0.65rem] lg:text-sm"><span data-i18n="generate">GENERATE</span></button>
+<button id="generateBtn8K" onclick="simulateAPIConnection('generateBtn8K', true)" class="flex-1 bg-white/5 border border-white/20 text-white font-extrabold tracking-widest py-4 lg:py-5 rounded-xl hover:bg-white/10 transition shadow-lg uppercase text-[0.65rem] lg:text-sm flex items-center justify-center gap-2"><span data-i18n="generate">GENERATE</span> <span class="text-yellow-400">8K</span></button>
 </div>
 </div>
 </div>
@@ -699,6 +699,19 @@ function applyVendorTranslations() {
   if (landingBtn) landingBtn.innerText = t.becomeVendor;
 }
 
+window.vendorCategoryTranslations = {
+  'EN': {'ARCHITECT': 'ARCHITECT', 'CONTRACTOR': 'CONTRACTOR', 'ELECTRICIAN': 'ELECTRICIAN', 'HVAC': 'HVAC / MECHANICAL', 'PLUMBER': 'PLUMBER', 'METAL WORKSHOP': 'METAL WORKSHOP', 'UPHOLSTERY': 'UPHOLSTERY', 'PAINTER': 'PAINTER', 'CONSTRUCTION': 'CONSTRUCTION', 'CARPENTER': 'CARPENTER', 'FURNITURE STORE': 'FURNITURE STORE', '_noVendors': 'No vendors yet'},
+  'TR': {'ARCHITECT': 'MİMAR', 'CONTRACTOR': 'MÜTEAHHİT', 'ELECTRICIAN': 'ELEKTRİKÇİ', 'HVAC': 'İKLİMLENDİRME', 'PLUMBER': 'TESİSATÇI', 'METAL WORKSHOP': 'METAL ATÖLYESİ', 'UPHOLSTERY': 'DÖŞEMECI', 'PAINTER': 'BOYACI', 'CONSTRUCTION': 'İNŞAAT', 'CARPENTER': 'MARANGOZ', 'FURNITURE STORE': 'MOBİLYA MAĞAZASI', '_noVendors': 'Henüz tedarikçi yok'},
+  'ES': {'ARCHITECT': 'ARQUITECTO', 'CONTRACTOR': 'CONTRATISTA', 'ELECTRICIAN': 'ELECTRICISTA', 'HVAC': 'HVAC', 'PLUMBER': 'FONTANERO', 'METAL WORKSHOP': 'TALLER DE METAL', 'UPHOLSTERY': 'TAPICERÍA', 'PAINTER': 'PINTOR', 'CONSTRUCTION': 'CONSTRUCCIÓN', 'CARPENTER': 'CARPINTERO', 'FURNITURE STORE': 'TIENDA DE MUEBLES', '_noVendors': 'Sin proveedores'},
+  'DE': {'ARCHITECT': 'ARCHITEKT', 'CONTRACTOR': 'BAUUNTERNEHMER', 'ELECTRICIAN': 'ELEKTRIKER', 'HVAC': 'HLK', 'PLUMBER': 'KLEMPNER', 'METAL WORKSHOP': 'METALLWERKSTATT', 'UPHOLSTERY': 'POLSTEREI', 'PAINTER': 'MALER', 'CONSTRUCTION': 'BAU', 'CARPENTER': 'TISCHLER', 'FURNITURE STORE': 'MÖBELGESCHÄFT', '_noVendors': 'Keine Anbieter'},
+  'FR': {'ARCHITECT': 'ARCHITECTE', 'CONTRACTOR': 'ENTREPRENEUR', 'ELECTRICIAN': 'ÉLECTRICIEN', 'HVAC': 'CVC', 'PLUMBER': 'PLOMBIER', 'METAL WORKSHOP': 'ATELIER MÉTAL', 'UPHOLSTERY': 'TAPISSERIE', 'PAINTER': 'PEINTRE', 'CONSTRUCTION': 'CONSTRUCTION', 'CARPENTER': 'MENUISIER', 'FURNITURE STORE': 'MAGASIN DE MEUBLES', '_noVendors': 'Aucun fournisseur'},
+  'PT': {'ARCHITECT': 'ARQUITETO', 'CONTRACTOR': 'EMPREITEIRO', 'ELECTRICIAN': 'ELETRICISTA', 'HVAC': 'AVAC', 'PLUMBER': 'ENCANADOR', 'METAL WORKSHOP': 'OFICINA METÁLICA', 'UPHOLSTERY': 'ESTOFAMENTO', 'PAINTER': 'PINTOR', 'CONSTRUCTION': 'CONSTRUÇÃO', 'CARPENTER': 'CARPINTEIRO', 'FURNITURE STORE': 'LOJA DE MÓVEIS', '_noVendors': 'Sem fornecedores'},
+  'ID': {'ARCHITECT': 'ARSITEK', 'CONTRACTOR': 'KONTRAKTOR', 'ELECTRICIAN': 'TUKANG LISTRIK', 'HVAC': 'HVAC', 'PLUMBER': 'TUKANG LEDENG', 'METAL WORKSHOP': 'BENGKEL LOGAM', 'UPHOLSTERY': 'PELAPIS', 'PAINTER': 'TUKANG CAT', 'CONSTRUCTION': 'KONSTRUKSI', 'CARPENTER': 'TUKANG KAYU', 'FURNITURE STORE': 'TOKO FURNITUR', '_noVendors': 'Belum ada vendor'},
+  'HI': {'ARCHITECT': 'वास्तुकार', 'CONTRACTOR': 'ठेकेदार', 'ELECTRICIAN': 'इलेक्ट्रीशियन', 'HVAC': 'HVAC', 'PLUMBER': 'प्लंबर', 'METAL WORKSHOP': 'धातु कार्यशाला', 'UPHOLSTERY': 'असबाब', 'PAINTER': 'पेंटर', 'CONSTRUCTION': 'निर्माण', 'CARPENTER': 'बढ़ई', 'FURNITURE STORE': 'फर्नीचर स्टोर', '_noVendors': 'कोई विक्रेता नहीं'},
+  'AR': {'ARCHITECT': 'مهندس معماري', 'CONTRACTOR': 'مقاول', 'ELECTRICIAN': 'كهربائي', 'HVAC': 'تكييف', 'PLUMBER': 'سباك', 'METAL WORKSHOP': 'ورشة معادن', 'UPHOLSTERY': 'تنجيد', 'PAINTER': 'دهان', 'CONSTRUCTION': 'إنشاءات', 'CARPENTER': 'نجار', 'FURNITURE STORE': 'متجر أثاث', '_noVendors': 'لا يوجد موردون'},
+  'IT': {'ARCHITECT': 'ARCHITETTO', 'CONTRACTOR': 'APPALTATORE', 'ELECTRICIAN': 'ELETTRICISTA', 'HVAC': 'HVAC', 'PLUMBER': 'IDRAULICO', 'METAL WORKSHOP': 'OFFICINA METALLI', 'UPHOLSTERY': 'TAPPEZZERIA', 'PAINTER': 'PITTORE', 'CONSTRUCTION': 'COSTRUZIONE', 'CARPENTER': 'FALEGNAME', 'FURNITURE STORE': 'NEGOZIO DI MOBILI', '_noVendors': 'Nessun fornitore'}
+};
+
 async function loadVendors() {
   if(!window.supabaseClient) return;
   const list = document.getElementById('vendorList');
@@ -727,6 +740,9 @@ async function loadVendors() {
       });
     }
 
+    const _lc = (document.getElementById('activeCode') || {}).innerText || 'EN';
+    const _tr = (window.vendorCategoryTranslations && window.vendorCategoryTranslations[_lc]) || window.vendorCategoryTranslations['EN'];
+
     let html = '';
     ALL_CATEGORIES.forEach(cat => {
       const vendors = grouped[cat];
@@ -734,12 +750,12 @@ async function loadVendors() {
 
       html += `<li class="mt-3 first:mt-0">
         <div class="flex justify-between items-center text-white/50 text-[0.6rem] tracking-[0.3em] uppercase mb-2 px-2 font-bold">
-          <span>${cat}</span>
+          <span>${_tr[cat] || cat}</span>
           <span class="text-white/30">${count}</span>
         </div>`;
 
       if(count === 0) {
-        html += `<div class="border border-white/5 rounded-xl p-3 text-white/20 text-center text-[0.55rem] tracking-widest uppercase">No vendors yet</div>`;
+        html += `<div class="border border-white/5 rounded-xl p-3 text-white/20 text-center text-[0.55rem] tracking-widest uppercase">${_tr._noVendors || 'No vendors yet'}</div>`;
       } else {
         vendors.forEach(v => {
           const safeCompany = (v.company_name || '').replace(/'/g, "\\'");

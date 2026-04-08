@@ -173,8 +173,8 @@
     // DİL DESTEĞİ
     // ============================================================
     var dashLang = {
-        'EN': { billing: 'BILLING', myAccount: 'MY ACCOUNT', renders: 'RENDERS', monthly: 'MONTHLY', yearly: 'YEARLY', save: 'SAVE', perMonth: '/MO', perYear: '/YR', rendersLabel: 'RENDERS', renders8kLabel: '8K RENDERS', weeklyLabel: 'WEEKLY LIMIT', subscribe: 'SUBSCRIBE', currentPlan: 'CURRENT PLAN', comingSoon: 'COMING SOON', comingSoonSub: 'This feature is under development.', profile: 'PROFILE', email: 'EMAIL', plan: 'PLAN', memberSince: 'MEMBER SINCE', changePw: 'CHANGE PASSWORD', currentPw: 'CURRENT PASSWORD', newPw: 'NEW PASSWORD', confirmPw: 'CONFIRM PASSWORD', updateProfile: 'UPDATE PROFILE', yourRenders: 'YOUR RENDERS', noRenders: 'No renders yet. Start creating!', back: 'BACK' },
-        'TR': { billing: 'FATURALANDIRMA', myAccount: 'HESABIM', renders: 'RENDERLAR', monthly: 'AYLIK', yearly: 'YILLIK', save: 'TASARRUF', perMonth: '/AY', perYear: '/YIL', rendersLabel: 'RENDER', renders8kLabel: '8K RENDER', weeklyLabel: 'HAFTALIK LİMİT', subscribe: 'ABONE OL', currentPlan: 'MEVCUT PLAN', comingSoon: 'YAKINDA', comingSoonSub: 'Bu özellik geliştirme aşamasında.', profile: 'PROFİL', email: 'E-POSTA', plan: 'PLAN', memberSince: 'ÜYELİK TARİHİ', changePw: 'ŞİFRE DEĞİŞTİR', currentPw: 'MEVCUT ŞİFRE', newPw: 'YENİ ŞİFRE', confirmPw: 'ŞİFRE TEKRAR', updateProfile: 'PROFİLİ GÜNCELLE', yourRenders: 'RENDERLARINIZ', noRenders: 'Henüz render yok. Oluşturmaya başlayın!', back: 'GERİ' }
+        'EN': { billing: 'BILLING', myAccount: 'MY ACCOUNT', renders: 'RENDERS', monthly: 'MONTHLY', yearly: 'YEARLY', save: 'SAVE', perMonth: '/MO', perYear: '/YR', rendersLabel: 'RENDERS', renders8kLabel: '8K RENDERS', weeklyLabel: 'WEEKLY LIMIT', subscribe: 'SUBSCRIBE', currentPlan: 'CURRENT PLAN', comingSoon: 'COMING SOON', comingSoonSub: 'This feature is under development.', profile: 'PROFILE', email: 'EMAIL', plan: 'PLAN', memberSince: 'MEMBER SINCE', changePw: 'CHANGE PASSWORD', currentPw: 'CURRENT PASSWORD', newPw: 'NEW PASSWORD', confirmPw: 'CONFIRM PASSWORD', updateProfile: 'UPDATE PROFILE', yourRenders: 'YOUR RENDERS', noRenders: 'No renders yet. Start creating!', back: 'BACK', viewAllRenders: 'VIEW ALL RENDERS →', welcomeBack: 'WELCOME BACK', total: 'TOTAL', thisMonth: 'THIS MONTH', today: 'TODAY', dashboardTitle: 'DASHBOARD' },
+        'TR': { billing: 'FATURALANDIRMA', myAccount: 'HESABIM', renders: 'RENDERLAR', monthly: 'AYLIK', yearly: 'YILLIK', save: 'TASARRUF', perMonth: '/AY', perYear: '/YIL', rendersLabel: 'RENDER', renders8kLabel: '8K RENDER', weeklyLabel: 'HAFTALIK LİMİT', subscribe: 'ABONE OL', currentPlan: 'MEVCUT PLAN', comingSoon: 'YAKINDA', comingSoonSub: 'Bu özellik geliştirme aşamasında.', profile: 'PROFİL', email: 'E-POSTA', plan: 'PLAN', memberSince: 'ÜYELİK TARİHİ', changePw: 'ŞİFRE DEĞİŞTİR', currentPw: 'MEVCUT ŞİFRE', newPw: 'YENİ ŞİFRE', confirmPw: 'ŞİFRE TEKRAR', updateProfile: 'PROFİLİ GÜNCELLE', yourRenders: 'RENDERLARINIZ', noRenders: 'Henüz render yok. Oluşturmaya başlayın!', back: 'GERİ', viewAllRenders: 'TÜM RENDERLARI GÖR →', welcomeBack: 'TEKRAR HOŞGELDİN', total: 'TOPLAM', thisMonth: 'BU AY', today: 'BUGÜN', dashboardTitle: 'PANEL' }
     };
 
     function getDashLang() {
@@ -531,11 +531,11 @@
 
         var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">' +
             '<button onclick="closeDashPage()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:9px;font-weight:700;letter-spacing:0.2em;cursor:pointer;text-transform:uppercase;font-family:inherit;padding:6px 0;">← ' + L.back + '</button>' +
-            '<h2 style="font-size:14px;font-weight:700;letter-spacing:0.3em;color:rgba(255,255,255,0.8);text-transform:uppercase;margin:0;">DASHBOARD</h2>' +
+            '<h2 style="font-size:14px;font-weight:700;letter-spacing:0.3em;color:rgba(255,255,255,0.8);text-transform:uppercase;margin:0;">' + L.dashboardTitle + '</h2>' +
             '<div style="width:50px;"></div></div>';
 
         html += '<div style="text-align:center;margin-bottom:20px;">' +
-            '<div style="font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:4px;">WELCOME BACK</div>' +
+            '<div style="font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:4px;">' + L.welcomeBack + '</div>' +
             '<div style="font-size:14px;color:#fff;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;">' + userName + '</div>' +
             '</div>';
 
@@ -554,7 +554,7 @@
             '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.3);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;">Loading stats...</div>' +
             '</div>';
 
-        html += '<button onclick="showRendersPage()" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;color:rgba(255,255,255,0.6);font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(255,255,255,0.08)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.04)\'">VIEW ALL RENDERS →</button>';
+        html += '<button onclick="showRendersPage()" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;color:rgba(255,255,255,0.6);font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(255,255,255,0.08)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.04)\'">' + L.viewAllRenders + '</button>';
 
         showDashPage(html, 'dashboard');
 
@@ -567,15 +567,15 @@
                         '<div style="display:flex;gap:8px;">' +
                         '<div style="flex:1;text-align:center;padding:12px 6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">' +
                         '<div style="font-size:16px;font-weight:700;color:#fff;">' + (stats.total || 0) + '</div>' +
-                        '<div style="font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;">TOTAL</div>' +
+                        '<div style="font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;">' + L.total + '</div>' +
                         '</div>' +
                         '<div style="flex:1;text-align:center;padding:12px 6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">' +
                         '<div style="font-size:16px;font-weight:700;color:#fff;">' + (stats.this_month || 0) + '</div>' +
-                        '<div style="font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;">THIS MONTH</div>' +
+                        '<div style="font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;">' + L.thisMonth + '</div>' +
                         '</div>' +
                         '<div style="flex:1;text-align:center;padding:12px 6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">' +
                         '<div style="font-size:16px;font-weight:700;color:#fff;">' + (stats.today || 0) + '</div>' +
-                        '<div style="font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;">TODAY</div>' +
+                        '<div style="font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;">' + L.today + '</div>' +
                         '</div>' +
                         '</div>';
                     var statsEl = document.getElementById('dashStatsContainer');
