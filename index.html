@@ -504,11 +504,11 @@ if(dashTitle) observer.observe(dashTitle, {childList: true, characterData: true,
 <div id="vendorFormModal" style="display:none;" class="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-md px-4 py-8 overflow-y-auto">
   <div class="w-full max-w-[36rem] glass-panel rounded-[2.5rem] p-8 lg:p-12 flex flex-col gap-5 relative shadow-2xl my-auto">
     <button onclick="closeVendorForm()" class="absolute top-6 right-6 text-white/60 hover:text-white text-2xl z-10 bg-black/40 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-md">✕</button>
-    <h2 class="text-2xl font-extrabold tracking-[0.25em] text-white uppercase text-center mb-2">BECOME A VENDOR</h2>
-    <p class="text-[0.55rem] text-white/40 tracking-widest uppercase text-center mb-4">Join the ADEULL vendor network</p>
-    <input id="vf_company" type="text" placeholder="COMPANY NAME *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-    <select id="vf_category" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-      <option value="" disabled selected class="bg-black">CATEGORY *</option>
+    <h3 class="text-2xl font-extrabold text-white tracking-[0.2em] uppercase mb-2 border-b border-white/10 pb-4" id="vendorFormTitle">BECOME A VENDOR</h3>
+    <p class="text-[0.6rem] tracking-widest text-white/40 uppercase mb-6" id="vendorFormSubtitle">Join our vendor network and get connected with clients worldwide</p>
+    <input id="vendorCompany" type="text" placeholder="COMPANY NAME *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <select id="vendorCategory" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+      <option value="" disabled selected class="bg-black">SELECT CATEGORY *</option>
       <option value="furniture" class="bg-black">Furniture</option>
       <option value="lighting" class="bg-black">Lighting</option>
       <option value="materials" class="bg-black">Materials & Surfaces</option>
@@ -517,35 +517,91 @@ if(dashTitle) observer.observe(dashTitle, {childList: true, characterData: true,
       <option value="landscaping" class="bg-black">Landscaping</option>
       <option value="other" class="bg-black">Other</option>
     </select>
-    <textarea id="vf_description" placeholder="COMPANY DESCRIPTION *" rows="3" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase resize-none"></textarea>
-    <input id="vf_email" type="email" placeholder="BUSINESS EMAIL *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-    <input id="vf_phone" type="tel" placeholder="PHONE NUMBER" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-    <input id="vf_whatsapp" type="tel" placeholder="WHATSAPP NUMBER" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-    <input id="vf_website" type="url" placeholder="WEBSITE URL" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-    <input id="vf_country" type="text" placeholder="COUNTRY *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-    <input id="vf_city" type="text" placeholder="CITY *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
-    <button onclick="submitVendorForm()" class="w-full bg-white text-black font-extrabold py-5 rounded-2xl tracking-[0.2em] hover:bg-gray-200 transition uppercase mt-2">SUBMIT APPLICATION</button>
+    <textarea id="vendorDescription" placeholder="BRIEF DESCRIPTION OF YOUR SERVICES..." rows="3" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase resize-none"></textarea>
+    <input id="vendorEmail" type="email" placeholder="EMAIL *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <input id="vendorPhone" type="tel" placeholder="PHONE" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <input id="vendorWhatsapp" type="tel" placeholder="WHATSAPP (+COUNTRY CODE)" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <input id="vendorWebsite" type="url" placeholder="WEBSITE (OPTIONAL)" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <input id="vendorCountry" type="text" placeholder="COUNTRY *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <input id="vendorCity" type="text" placeholder="CITY *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <button id="vendorSubmitBtn" onclick="submitVendorForm()" class="w-full bg-white text-black font-extrabold py-5 rounded-2xl tracking-[0.2em] hover:bg-gray-200 transition uppercase mt-2">SUBMIT APPLICATION</button>
+    <p id="vendorFormWarning" class="text-center text-[0.55rem] tracking-widest text-white/40 uppercase">⚠ Your application will be reviewed by our team before being published</p>
     <p id="vf_msg" class="text-center text-xs tracking-widest text-white/50 min-h-[1rem]"></p>
   </div>
 </div>
 
 <script>
+window.vendorTranslations = {
+  'EN': { title: 'BECOME A VENDOR', subtitle: 'Join our vendor network and get connected with clients worldwide', company: 'COMPANY NAME *', selectCat: 'SELECT CATEGORY *', desc: 'BRIEF DESCRIPTION OF YOUR SERVICES...', email: 'EMAIL *', phone: 'PHONE', whatsapp: 'WHATSAPP (+COUNTRY CODE)', website: 'WEBSITE (OPTIONAL)', country: 'COUNTRY *', city: 'CITY *', submit: 'SUBMIT APPLICATION', warning: '⚠ Your application will be reviewed by our team before being published', becomeVendor: 'BECOME A VENDOR', successMsg: '✓ Application submitted! Our team will review it within 1-3 business days.', loginFirst: 'Please login first to apply as a vendor.' },
+  'TR': { title: 'TEDARİKÇİ OL', subtitle: 'Tedarikçi ağımıza katılın ve dünya çapında müşterilerle bağlantı kurun', company: 'FİRMA ADI *', selectCat: 'KATEGORİ SEÇİN *', desc: 'HİZMETLERİNİZİN KISA AÇIKLAMASI...', email: 'E-POSTA *', phone: 'TELEFON', whatsapp: 'WHATSAPP (+ÜLKE KODU)', website: 'WEB SİTESİ (İSTEĞE BAĞLI)', country: 'ÜLKE *', city: 'ŞEHİR *', submit: 'BAŞVURUYU GÖNDER', warning: '⚠ Başvurunuz yayınlanmadan önce ekibimiz tarafından incelenecektir', becomeVendor: 'TEDARİKÇİ OL', successMsg: '✓ Başvuru gönderildi! Ekibimiz 1-3 iş günü içinde inceleyecek.', loginFirst: 'Lütfen önce tedarikçi başvurusu için giriş yapın.' },
+  'ES': { title: 'CONVIÉRTETE EN PROVEEDOR', subtitle: 'Únete a nuestra red de proveedores y conéctate con clientes en todo el mundo', company: 'NOMBRE DE LA EMPRESA *', selectCat: 'SELECCIONAR CATEGORÍA *', desc: 'BREVE DESCRIPCIÓN DE SUS SERVICIOS...', email: 'EMAIL *', phone: 'TELÉFONO', whatsapp: 'WHATSAPP (+CÓDIGO DE PAÍS)', website: 'SITIO WEB (OPCIONAL)', country: 'PAÍS *', city: 'CIUDAD *', submit: 'ENVIAR SOLICITUD', warning: '⚠ Su solicitud será revisada por nuestro equipo antes de ser publicada', becomeVendor: 'CONVIÉRTETE EN PROVEEDOR', successMsg: '✓ ¡Solicitud enviada! Nuestro equipo la revisará en 1-3 días hábiles.', loginFirst: 'Por favor inicie sesión primero para postularse como proveedor.' },
+  'DE': { title: 'ANBIETER WERDEN', subtitle: 'Treten Sie unserem Anbieternetzwerk bei und verbinden Sie sich mit Kunden weltweit', company: 'FIRMENNAME *', selectCat: 'KATEGORIE AUSWÄHLEN *', desc: 'KURZE BESCHREIBUNG IHRER DIENSTLEISTUNGEN...', email: 'E-MAIL *', phone: 'TELEFON', whatsapp: 'WHATSAPP (+LÄNDERCODE)', website: 'WEBSITE (OPTIONAL)', country: 'LAND *', city: 'STADT *', submit: 'BEWERBUNG EINREICHEN', warning: '⚠ Ihre Bewerbung wird vor der Veröffentlichung von unserem Team überprüft', becomeVendor: 'ANBIETER WERDEN', successMsg: '✓ Bewerbung eingereicht! Unser Team wird sie innerhalb von 1-3 Werktagen überprüfen.', loginFirst: 'Bitte melden Sie sich zuerst an, um sich als Anbieter zu bewerben.' },
+  'FR': { title: 'DEVENIR FOURNISSEUR', subtitle: 'Rejoignez notre réseau de fournisseurs et connectez-vous avec des clients du monde entier', company: "NOM DE L'ENTREPRISE *", selectCat: 'SÉLECTIONNER UNE CATÉGORIE *', desc: 'BRÈVE DESCRIPTION DE VOS SERVICES...', email: 'EMAIL *', phone: 'TÉLÉPHONE', whatsapp: 'WHATSAPP (+CODE PAYS)', website: 'SITE WEB (OPTIONNEL)', country: 'PAYS *', city: 'VILLE *', submit: 'SOUMETTRE LA CANDIDATURE', warning: "⚠ Votre candidature sera examinée par notre équipe avant d'être publiée", becomeVendor: 'DEVENIR FOURNISSEUR', successMsg: "✓ Candidature soumise! Notre équipe l'examinera dans 1-3 jours ouvrables.", loginFirst: "Veuillez vous connecter d'abord pour postuler comme fournisseur." },
+  'PT': { title: 'SEJA UM FORNECEDOR', subtitle: 'Junte-se à nossa rede de fornecedores e conecte-se com clientes em todo o mundo', company: 'NOME DA EMPRESA *', selectCat: 'SELECIONAR CATEGORIA *', desc: 'BREVE DESCRIÇÃO DE SEUS SERVIÇOS...', email: 'EMAIL *', phone: 'TELEFONE', whatsapp: 'WHATSAPP (+CÓDIGO DO PAÍS)', website: 'SITE (OPCIONAL)', country: 'PAÍS *', city: 'CIDADE *', submit: 'ENVIAR INSCRIÇÃO', warning: '⚠ Sua inscrição será analisada por nossa equipe antes de ser publicada', becomeVendor: 'SEJA UM FORNECEDOR', successMsg: '✓ Inscrição enviada! Nossa equipe analisará em 1-3 dias úteis.', loginFirst: 'Faça login primeiro para se inscrever como fornecedor.' },
+  'ID': { title: 'JADI VENDOR', subtitle: 'Bergabunglah dengan jaringan vendor kami dan terhubung dengan klien di seluruh dunia', company: 'NAMA PERUSAHAAN *', selectCat: 'PILIH KATEGORI *', desc: 'DESKRIPSI SINGKAT LAYANAN ANDA...', email: 'EMAIL *', phone: 'TELEPON', whatsapp: 'WHATSAPP (+KODE NEGARA)', website: 'WEBSITE (OPSIONAL)', country: 'NEGARA *', city: 'KOTA *', submit: 'KIRIM APLIKASI', warning: '⚠ Aplikasi Anda akan ditinjau oleh tim kami sebelum dipublikasikan', becomeVendor: 'JADI VENDOR', successMsg: '✓ Aplikasi dikirim! Tim kami akan meninjau dalam 1-3 hari kerja.', loginFirst: 'Silakan login dulu untuk mendaftar sebagai vendor.' },
+  'HI': { title: 'विक्रेता बनें', subtitle: 'हमारे विक्रेता नेटवर्क से जुड़ें और दुनिया भर के ग्राहकों से जुड़ें', company: 'कंपनी का नाम *', selectCat: 'श्रेणी चुनें *', desc: 'अपनी सेवाओं का संक्षिप्त विवरण...', email: 'ईमेल *', phone: 'फोन', whatsapp: 'व्हाट्सएप (+देश कोड)', website: 'वेबसाइट (वैकल्पिक)', country: 'देश *', city: 'शहर *', submit: 'आवेदन जमा करें', warning: '⚠ प्रकाशित होने से पहले आपके आवेदन की हमारी टीम द्वारा समीक्षा की जाएगी', becomeVendor: 'विक्रेता बनें', successMsg: '✓ आवेदन जमा! हमारी टीम 1-3 कार्य दिवसों में समीक्षा करेगी।', loginFirst: 'कृपया विक्रेता के रूप में आवेदन करने के लिए पहले लॉगिन करें।' },
+  'AR': { title: 'كن بائعًا', subtitle: 'انضم إلى شبكة البائعين لدينا وتواصل مع العملاء في جميع أنحاء العالم', company: 'اسم الشركة *', selectCat: 'اختر الفئة *', desc: 'وصف موجز لخدماتك...', email: 'البريد الإلكتروني *', phone: 'الهاتف', whatsapp: 'واتساب (+رمز البلد)', website: 'الموقع الإلكتروني (اختياري)', country: 'البلد *', city: 'المدينة *', submit: 'إرسال الطلب', warning: '⚠ سيتم مراجعة طلبك من قبل فريقنا قبل نشره', becomeVendor: 'كن بائعًا', successMsg: '✓ تم إرسال الطلب! سيقوم فريقنا بمراجعته خلال 1-3 أيام عمل.', loginFirst: 'يرجى تسجيل الدخول أولاً للتقدم كبائع.' },
+  'IT': { title: 'DIVENTA UN FORNITORE', subtitle: 'Unisciti alla nostra rete di fornitori e connettiti con clienti in tutto il mondo', company: 'NOME AZIENDA *', selectCat: 'SELEZIONA CATEGORIA *', desc: 'BREVE DESCRIZIONE DEI TUOI SERVIZI...', email: 'EMAIL *', phone: 'TELEFONO', whatsapp: 'WHATSAPP (+PREFISSO PAESE)', website: 'SITO WEB (OPZIONALE)', country: 'PAESE *', city: 'CITTÀ *', submit: 'INVIA CANDIDATURA', warning: '⚠ La tua candidatura sarà esaminata dal nostro team prima di essere pubblicata', becomeVendor: 'DIVENTA UN FORNITORE', successMsg: '✓ Candidatura inviata! Il nostro team la esaminerà entro 1-3 giorni lavorativi.', loginFirst: 'Effettua prima il login per candidarti come fornitore.' }
+};
+
+function applyVendorTranslations() {
+  const code = (document.getElementById('activeCode') || {}).innerText || 'EN';
+  const t = window.vendorTranslations[code] || window.vendorTranslations['EN'];
+  const title = document.getElementById('vendorFormTitle');
+  if (title) title.innerText = t.title;
+  const subtitle = document.getElementById('vendorFormSubtitle');
+  if (subtitle) subtitle.innerText = t.subtitle;
+  const company = document.getElementById('vendorCompany');
+  if (company) company.placeholder = t.company;
+  const catSelect = document.getElementById('vendorCategory');
+  if (catSelect && catSelect.options.length > 0) catSelect.options[0].text = t.selectCat;
+  const desc = document.getElementById('vendorDescription');
+  if (desc) desc.placeholder = t.desc;
+  const email = document.getElementById('vendorEmail');
+  if (email) email.placeholder = t.email;
+  const phone = document.getElementById('vendorPhone');
+  if (phone) phone.placeholder = t.phone;
+  const wa = document.getElementById('vendorWhatsapp');
+  if (wa) wa.placeholder = t.whatsapp;
+  const web = document.getElementById('vendorWebsite');
+  if (web) web.placeholder = t.website;
+  const country = document.getElementById('vendorCountry');
+  if (country) country.placeholder = t.country;
+  const city = document.getElementById('vendorCity');
+  if (city) city.placeholder = t.city;
+  const warnEl = document.getElementById('vendorFormWarning');
+  if (warnEl) warnEl.innerText = t.warning;
+  const submitBtn = document.getElementById('vendorSubmitBtn');
+  if (submitBtn) submitBtn.innerText = t.submit;
+  const landingBtn = document.querySelector('[data-i18n="becomeVendor"]');
+  if (landingBtn) landingBtn.innerText = t.becomeVendor;
+}
+
 function openVendorForm() {
+  const code = (document.getElementById('activeCode') || {}).innerText || 'EN';
+  const t = window.vendorTranslations[code] || window.vendorTranslations['EN'];
+  if (!window.currentUserId || window.currentUserId === 'guest') {
+    alert(t.loginFirst);
+    return;
+  }
+  applyVendorTranslations();
   document.getElementById('vendorFormModal').style.display = 'flex';
 }
 function closeVendorForm() {
   document.getElementById('vendorFormModal').style.display = 'none';
 }
 async function submitVendorForm() {
-  const company = document.getElementById('vf_company').value.trim();
-  const category = document.getElementById('vf_category').value;
-  const description = document.getElementById('vf_description').value.trim();
-  const email = document.getElementById('vf_email').value.trim();
-  const phone = document.getElementById('vf_phone').value.trim();
-  const whatsapp = document.getElementById('vf_whatsapp').value.trim();
-  const website = document.getElementById('vf_website').value.trim();
-  const country = document.getElementById('vf_country').value.trim();
-  const city = document.getElementById('vf_city').value.trim();
+  const code = (document.getElementById('activeCode') || {}).innerText || 'EN';
+  const t = window.vendorTranslations[code] || window.vendorTranslations['EN'];
+  const company = document.getElementById('vendorCompany').value.trim();
+  const category = document.getElementById('vendorCategory').value;
+  const description = document.getElementById('vendorDescription').value.trim();
+  const email = document.getElementById('vendorEmail').value.trim();
+  const phone = document.getElementById('vendorPhone').value.trim();
+  const whatsapp = document.getElementById('vendorWhatsapp').value.trim();
+  const website = document.getElementById('vendorWebsite').value.trim();
+  const country = document.getElementById('vendorCountry').value.trim();
+  const city = document.getElementById('vendorCity').value.trim();
   const msg = document.getElementById('vf_msg');
 
   if (!company || !category || !description || !email || !country || !city) {
@@ -572,9 +628,9 @@ async function submitVendorForm() {
       approved: false
     }]);
     if (error) throw error;
-    msg.textContent = 'Application submitted! We will review and contact you soon.';
+    msg.textContent = t.successMsg;
     msg.style.color = '#4ade80';
-    ['vf_company','vf_category','vf_description','vf_email','vf_phone','vf_whatsapp','vf_website','vf_country','vf_city'].forEach(id => {
+    ['vendorCompany','vendorCategory','vendorDescription','vendorEmail','vendorPhone','vendorWhatsapp','vendorWebsite','vendorCountry','vendorCity'].forEach(id => {
       const el = document.getElementById(id);
       if (el.tagName === 'SELECT') el.selectedIndex = 0; else el.value = '';
     });
