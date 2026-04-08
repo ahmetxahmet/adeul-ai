@@ -277,14 +277,59 @@ async function simulateAPIConnection(btnId, is8K = false) {
     const hasScene = window.uploadedBase64 && window.uploadedBase64['boxScene'];
     const hasItem = window.uploadedBase64 && window.uploadedBase64['boxItem'];
 
+    const _langCode = (document.getElementById('activeCode') || {}).innerText || 'EN';
+    const _warnings = {
+        'EN': {
+            missingItem: 'This menu requires both a SCENE and an ITEM image. If you only have one image, please use the DESIGN menu instead — it works with single images.',
+            missingScene: 'This menu requires a SCENE image first. Please upload a scene, or use the DESIGN menu if you only have a single image.'
+        },
+        'TR': {
+            missingItem: 'Bu menü için hem SAHNE hem de ÜRÜN görseli gerekli. Tek görseliniz varsa lütfen DESIGN menüsünü kullanın — tek görselle çalışır.',
+            missingScene: 'Bu menü için önce bir SAHNE görseli gerekli. Lütfen sahne yükleyin veya tek görseliniz varsa DESIGN menüsünü kullanın.'
+        },
+        'ES': {
+            missingItem: 'Este menú requiere una imagen de ESCENA y una de OBJETO. Si solo tiene una imagen, use el menú DESIGN — funciona con una sola imagen.',
+            missingScene: 'Este menú requiere una imagen de ESCENA primero. Suba una escena o use el menú DESIGN si solo tiene una imagen.'
+        },
+        'DE': {
+            missingItem: 'Dieses Menü benötigt sowohl ein SZENEN- als auch ein OBJEKT-Bild. Wenn Sie nur ein Bild haben, verwenden Sie bitte das DESIGN-Menü.',
+            missingScene: 'Dieses Menü benötigt zuerst ein SZENEN-Bild. Bitte laden Sie eine Szene hoch oder verwenden Sie das DESIGN-Menü.'
+        },
+        'FR': {
+            missingItem: 'Ce menu nécessite une image de SCÈNE et une image d\'OBJET. Si vous n\'avez qu\'une seule image, utilisez le menu DESIGN.',
+            missingScene: 'Ce menu nécessite d\'abord une image de SCÈNE. Téléchargez une scène ou utilisez le menu DESIGN.'
+        },
+        'PT': {
+            missingItem: 'Este menu requer uma imagem de CENA e uma de ITEM. Se você tem apenas uma imagem, use o menu DESIGN.',
+            missingScene: 'Este menu requer uma imagem de CENA primeiro. Envie uma cena ou use o menu DESIGN.'
+        },
+        'ID': {
+            missingItem: 'Menu ini membutuhkan gambar SCENE dan ITEM. Jika hanya punya satu gambar, gunakan menu DESIGN.',
+            missingScene: 'Menu ini membutuhkan gambar SCENE terlebih dahulu. Unggah scene atau gunakan menu DESIGN.'
+        },
+        'HI': {
+            missingItem: 'इस मेनू के लिए SCENE और ITEM दोनों छवियां आवश्यक हैं। यदि केवल एक छवि है, तो DESIGN मेनू का उपयोग करें।',
+            missingScene: 'इस मेनू के लिए पहले SCENE छवि आवश्यक है। कृपया एक scene अपलोड करें।'
+        },
+        'AR': {
+            missingItem: 'تتطلب هذه القائمة صورة المشهد والعنصر معًا. إذا كان لديك صورة واحدة فقط، استخدم قائمة DESIGN.',
+            missingScene: 'تتطلب هذه القائمة صورة مشهد أولاً. يرجى تحميل مشهد أو استخدام قائمة DESIGN.'
+        },
+        'IT': {
+            missingItem: 'Questo menu richiede un\'immagine di SCENA e una di OGGETTO. Se hai solo un\'immagine, usa il menu DESIGN.',
+            missingScene: 'Questo menu richiede prima un\'immagine di SCENA. Carica una scena o usa il menu DESIGN.'
+        }
+    };
+    const _L = _warnings[_langCode] || _warnings['EN'];
+
     if ((currentMenu === 'INTERIOR' || currentMenu === 'EXTERIOR' || currentMenu === 'ARCHITECTURE') && hasScene && !hasItem) {
-        alert('INTERIOR/EXTERIOR requires both a SCENE and an ITEM image. If you only have one image and want to visualize a product inside a space, please use the DESIGN menu instead — it works with single images.');
+        alert(_L.missingItem);
         btn.disabled = false;
         return;
     }
 
     if ((currentMenu === 'INTERIOR' || currentMenu === 'EXTERIOR' || currentMenu === 'ARCHITECTURE') && !hasScene && hasItem) {
-        alert('INTERIOR/EXTERIOR requires a SCENE image first. Please upload a scene, or use the DESIGN menu if you only have a single product image.');
+        alert(_L.missingScene);
         btn.disabled = false;
         return;
     }
