@@ -487,6 +487,107 @@
     };
 
     // ============================================================
+    // DASHBOARD OVERVIEW SAYFASI
+    // ============================================================
+    window.showDashboardOverview = async function() {
+        var L = getDashLang();
+        var userName = (document.getElementById('panelUserName') || {}).innerText || 'User';
+        var userCredits = (document.getElementById('panelCreditDisplay') || {}).innerText || '0';
+        var userPlan = (document.getElementById('panelUserPlan') || {}).innerText || 'FREE';
+
+        var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">' +
+            '<button onclick="closeDashPage()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:9px;font-weight:700;letter-spacing:0.2em;cursor:pointer;text-transform:uppercase;font-family:inherit;padding:6px 0;">← ' + L.back + '</button>' +
+            '<h2 style="font-size:14px;font-weight:700;letter-spacing:0.3em;color:rgba(255,255,255,0.8);text-transform:uppercase;margin:0;">DASHBOARD</h2>' +
+            '<div style="width:50px;"></div></div>';
+
+        html += '<div style="text-align:center;margin-bottom:20px;">' +
+            '<div style="font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:4px;">WELCOME BACK</div>' +
+            '<div style="font-size:14px;color:#fff;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;">' + userName + '</div>' +
+            '</div>';
+
+        html += '<div style="display:flex;gap:8px;margin-bottom:16px;">' +
+            '<div style="flex:1;text-align:center;padding:14px 8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">' +
+            '<div style="font-size:20px;font-weight:700;color:#fff;">' + userCredits + ' <span style="font-size:12px;color:rgba(255,200,0,0.7);">⚡</span></div>' +
+            '<div style="font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;">CREDITS</div>' +
+            '</div>' +
+            '<div style="flex:1;text-align:center;padding:14px 8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">' +
+            '<div style="font-size:12px;font-weight:700;color:rgba(100,255,100,0.8);padding-top:4px;">' + userPlan + '</div>' +
+            '<div style="font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:0.15em;text-transform:uppercase;margin-top:6px;">CURRENT PLAN</div>' +
+            '</div>' +
+            '</div>';
+
+        html += '<div id="dashStatsContainer" style="margin-bottom:16px;">' +
+            '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.3);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;">Loading stats...</div>' +
+            '</div>';
+
+        html += '<div style="font-size:8px;font-weight:700;letter-spacing:0.25em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06);">RECENT RENDERS</div>' +
+            '<div id="dashRecentRenders" style="display:flex;flex-direction:column;gap:8px;">' +
+            '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.3);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;">Loading...</div>' +
+            '</div>';
+
+        showDashPage(html, 'dashboard');
+
+        if(window.supabaseClient && window.currentUserId) {
+            try {
+                var statsRes = await window.supabaseClient.rpc('get_render_stats', { p_user_id: window.currentUserId });
+                var stats = statsRes.data;
+                if(stats) {
+                    var statsHtml =
+                        '<div style="display:flex;gap:8px;">' +
+                        '<div style="flex:1;text-align:center;padding:12px 6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">' +
+                        '<div style="font-size:16px;font-weight:700;color:#fff;">' + (stats.total || 0) + '</div>' +
+                        '<div style="font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;">TOTAL</div>' +
+                        '</div>' +
+                        '<div style="flex:1;text-align:center;padding:12px 6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">' +
+                        '<div style="font-size:16px;font-weight:700;color:#fff;">' + (stats.this_month || 0) + '</div>' +
+                        '<div style="font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;">THIS MONTH</div>' +
+                        '</div>' +
+                        '<div style="flex:1;text-align:center;padding:12px 6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;">' +
+                        '<div style="font-size:16px;font-weight:700;color:#fff;">' + (stats.today || 0) + '</div>' +
+                        '<div style="font-size:7px;color:rgba(255,255,255,0.25);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;">TODAY</div>' +
+                        '</div>' +
+                        '</div>';
+                    var statsEl = document.getElementById('dashStatsContainer');
+                    if(statsEl) statsEl.innerHTML = statsHtml;
+                }
+
+                var rendersRes = await window.supabaseClient
+                    .from('renders')
+                    .select('*')
+                    .eq('user_id', window.currentUserId)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+                var renders = rendersRes.data;
+
+                var listEl = document.getElementById('dashRecentRenders');
+                if(listEl) {
+                    if(!renders || renders.length === 0) {
+                        listEl.innerHTML = '<div style="text-align:center;padding:30px 20px;color:rgba(255,255,255,0.2);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;">No renders yet. Start creating!</div>';
+                    } else {
+                        var rhtml = '';
+                        renders.forEach(function(r) {
+                            var date = new Date(r.created_at).toLocaleDateString();
+                            var badge = r.is_8k
+                                ? '<span style="font-size:6px;background:rgba(255,200,0,0.2);color:rgba(255,200,0,0.8);padding:2px 6px;border-radius:4px;letter-spacing:0.1em;">8K</span>'
+                                : '<span style="font-size:6px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:2px 6px;border-radius:4px;letter-spacing:0.1em;">4K</span>';
+                            rhtml += '<div style="padding:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;">' +
+                                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
+                                '<span style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.15em;text-transform:uppercase;">' + r.menu_type + '</span>' +
+                                badge + '</div>' +
+                                '<div style="font-size:7px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;">' + date + ' · ' + (r.credits_used || 1) + ' credits</div>' +
+                                (r.prompt ? '<div style="font-size:7px;color:rgba(255,255,255,0.3);margin-top:4px;font-style:italic;">' + r.prompt.substring(0, 60) + (r.prompt.length > 60 ? '...' : '') + '</div>' : '') +
+                                '</div>';
+                        });
+                        listEl.innerHTML = rhtml;
+                    }
+                }
+            } catch(e) {
+                console.error('Dashboard data load error:', e);
+            }
+        }
+    };
+
+    // ============================================================
     // COMING SOON SAYFASI — diğer tüm menüler
     // ============================================================
     window.showComingSoonPage = function(pageName) {
@@ -537,7 +638,7 @@
                 } else if (key === 'settings' || text.indexOf('SETTINGS') > -1 || text.indexOf('AYARLAR') > -1) {
                     showComingSoonPage('SETTINGS');
                 } else if (key === 'dashboard_menu' || text.indexOf('DASHBOARD') > -1) {
-                    showComingSoonPage('DASHBOARD');
+                    showDashboardOverview();
                 } else if (key === 'projects' || text.indexOf('PROJECTS') > -1) {
                     showComingSoonPage('PROJECTS');
                 } else if (key === 'assets' || text.indexOf('ASSETS') > -1) {
