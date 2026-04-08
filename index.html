@@ -131,6 +131,7 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 <button onclick="openCouponModal()" class="px-8 lg:px-10 py-4 glass-panel rounded-full text-[0.55rem] lg:text-[0.65rem] font-bold tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer"><span data-i18n="redeemCoupon">REDEEM COUPON</span></button>
 <button onclick="openPromptBuilder()" class="px-8 lg:px-10 py-4 glass-panel rounded-full text-[0.55rem] lg:text-[0.65rem] font-bold tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer"><span data-i18n="promptBuilder">PROMPT BUILDER</span></button>
 <button onclick="openAdeullChat()" class="px-8 lg:px-10 py-4 glass-panel rounded-full text-[0.55rem] lg:text-[0.65rem] font-bold tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer"><span data-i18n="askAdeull">ASK ADEULL</span></button>
+<button onclick="openVendorForm()" class="px-8 lg:px-10 py-4 glass-panel rounded-full text-[0.55rem] lg:text-[0.65rem] font-bold tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer"><span data-i18n="becomeVendor">BECOME A VENDOR</span></button>
 </div>
 </div>
  
@@ -498,5 +499,90 @@ if(dashTitle) observer.observe(dashTitle, {childList: true, characterData: true,
 <script src="bugtracker.js"></script>
 <script src="dashboard.js"></script>
 <script src="prompt.js"></script>
+
+<!-- Vendor Form Modal -->
+<div id="vendorFormModal" style="display:none;" class="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 backdrop-blur-md px-4 py-8 overflow-y-auto">
+  <div class="w-full max-w-[36rem] glass-panel rounded-[2.5rem] p-8 lg:p-12 flex flex-col gap-5 relative shadow-2xl my-auto">
+    <button onclick="closeVendorForm()" class="absolute top-6 right-6 text-white/60 hover:text-white text-2xl z-10 bg-black/40 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-md">✕</button>
+    <h2 class="text-2xl font-extrabold tracking-[0.25em] text-white uppercase text-center mb-2">BECOME A VENDOR</h2>
+    <p class="text-[0.55rem] text-white/40 tracking-widest uppercase text-center mb-4">Join the ADEULL vendor network</p>
+    <input id="vf_company" type="text" placeholder="COMPANY NAME *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <select id="vf_category" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+      <option value="" disabled selected class="bg-black">CATEGORY *</option>
+      <option value="furniture" class="bg-black">Furniture</option>
+      <option value="lighting" class="bg-black">Lighting</option>
+      <option value="materials" class="bg-black">Materials & Surfaces</option>
+      <option value="decor" class="bg-black">Decor & Accessories</option>
+      <option value="construction" class="bg-black">Construction</option>
+      <option value="landscaping" class="bg-black">Landscaping</option>
+      <option value="other" class="bg-black">Other</option>
+    </select>
+    <textarea id="vf_description" placeholder="COMPANY DESCRIPTION *" rows="3" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase resize-none"></textarea>
+    <input id="vf_email" type="email" placeholder="BUSINESS EMAIL *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <input id="vf_phone" type="tel" placeholder="PHONE NUMBER" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <input id="vf_whatsapp" type="tel" placeholder="WHATSAPP NUMBER" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <input id="vf_website" type="url" placeholder="WEBSITE URL" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <input id="vf_country" type="text" placeholder="COUNTRY *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <input id="vf_city" type="text" placeholder="CITY *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <button onclick="submitVendorForm()" class="w-full bg-white text-black font-extrabold py-5 rounded-2xl tracking-[0.2em] hover:bg-gray-200 transition uppercase mt-2">SUBMIT APPLICATION</button>
+    <p id="vf_msg" class="text-center text-xs tracking-widest text-white/50 min-h-[1rem]"></p>
+  </div>
+</div>
+
+<script>
+function openVendorForm() {
+  document.getElementById('vendorFormModal').style.display = 'flex';
+}
+function closeVendorForm() {
+  document.getElementById('vendorFormModal').style.display = 'none';
+}
+async function submitVendorForm() {
+  const company = document.getElementById('vf_company').value.trim();
+  const category = document.getElementById('vf_category').value;
+  const description = document.getElementById('vf_description').value.trim();
+  const email = document.getElementById('vf_email').value.trim();
+  const phone = document.getElementById('vf_phone').value.trim();
+  const whatsapp = document.getElementById('vf_whatsapp').value.trim();
+  const website = document.getElementById('vf_website').value.trim();
+  const country = document.getElementById('vf_country').value.trim();
+  const city = document.getElementById('vf_city').value.trim();
+  const msg = document.getElementById('vf_msg');
+
+  if (!company || !category || !description || !email || !country || !city) {
+    msg.textContent = 'Please fill in all required fields.';
+    msg.style.color = '#f87171';
+    return;
+  }
+
+  msg.textContent = 'Submitting...';
+  msg.style.color = 'rgba(255,255,255,0.5)';
+
+  try {
+    const { error } = await window.supabase.from('vendors').insert([{
+      user_id: window.currentUserId || null,
+      company_name: company,
+      category: category,
+      description: description,
+      email: email,
+      phone: phone || null,
+      whatsapp: whatsapp || null,
+      website: website || null,
+      country: country,
+      city: city,
+      approved: false
+    }]);
+    if (error) throw error;
+    msg.textContent = 'Application submitted! We will review and contact you soon.';
+    msg.style.color = '#4ade80';
+    ['vf_company','vf_category','vf_description','vf_email','vf_phone','vf_whatsapp','vf_website','vf_country','vf_city'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el.tagName === 'SELECT') el.selectedIndex = 0; else el.value = '';
+    });
+  } catch(e) {
+    msg.textContent = 'Error: ' + (e.message || 'Could not submit. Try again.');
+    msg.style.color = '#f87171';
+  }
+}
+</script>
 </body>
 </html>
