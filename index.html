@@ -213,18 +213,8 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 <h3 class="text-lg lg:text-xl font-bold tracking-widest uppercase" data-i18n="vendorNetwork">VENDOR NETWORK</h3>
 <button onclick="exitDashboard()" class="text-2xl hover:text-red-400 transition hidden lg:block">✕</button>
 </div>
-<ul class="flex flex-col gap-2 lg:gap-3 text-sm pr-1 lg:pr-2 pb-4 uppercase text-[0.65rem] lg:text-xs font-bold">
-<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer"><span class="font-bold tracking-widest" data-i18n="architect">ARCHITECT</span><button onclick="openQuoteModal('ARCHITECT')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button></li>
-<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer"><span class="font-bold tracking-widest" data-i18n="contractor">CONTRACTOR</span><button onclick="openQuoteModal('CONTRACTOR')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button></li>
-<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer"><span class="font-bold tracking-widest" data-i18n="electrician">ELECTRICIAN</span><button onclick="openQuoteModal('ELECTRICIAN')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button></li>
-<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer"><span class="font-bold tracking-widest" data-i18n="hvac">HVAC / MECHANICAL</span><button onclick="openQuoteModal('HVAC')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button></li>
-<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer"><span class="font-bold tracking-widest" data-i18n="plumber">PLUMBER</span><button onclick="openQuoteModal('PLUMBER')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button></li>
-<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer text-green-200"><span class="font-bold tracking-widest" data-i18n="metal">METAL WORKSHOP</span><button onclick="openQuoteModal('METAL WORKSHOP')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase text-white" data-i18n="getQuote">GET QUOTE</button></li>
-<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer"><span class="font-bold tracking-widest" data-i18n="upholstery">UPHOLSTERY</span><button onclick="openQuoteModal('UPHOLSTERY')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button></li>
-<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer"><span class="font-bold tracking-widest" data-i18n="painter">PAINTER</span><button onclick="openQuoteModal('PAINTER')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button></li>
-<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer"><span class="font-bold tracking-widest" data-i18n="construction">CONSTRUCTION</span><button onclick="openQuoteModal('CONSTRUCTION')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button></li>
-<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer"><span class="font-bold tracking-widest" data-i18n="carpenter">CARPENTER</span><button onclick="openQuoteModal('CARPENTER')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button></li>
-<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer font-bold italic"><span class="font-bold tracking-widest" data-i18n="furniture">FURNITURE STORE</span><button onclick="openQuoteModal('FURNITURE STORE')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase" data-i18n="getQuote">GET QUOTE</button></li>
+<ul id="vendorList" class="flex flex-col gap-2 lg:gap-3 text-sm pr-1 lg:pr-2 pb-4 uppercase text-[0.65rem] lg:text-xs font-bold">
+  <li class="text-white/30 text-center py-4 text-[0.6rem] tracking-widest uppercase">Loading vendors...</li>
 </ul>
 </div>
 </div>
@@ -576,6 +566,65 @@ function applyVendorTranslations() {
   const landingBtn = document.querySelector('[data-i18n="becomeVendor"]');
   if (landingBtn) landingBtn.innerText = t.becomeVendor;
 }
+
+async function loadVendors() {
+  if(!window.supabase) return;
+  const list = document.getElementById('vendorList');
+  if(!list) return;
+  try {
+    const { data, error } = await window.supabase
+      .from('vendors')
+      .select('*')
+      .eq('approved', true)
+      .order('featured', { ascending: false })
+      .order('created_at', { ascending: false });
+    if(error) throw error;
+    if(!data || data.length === 0) {
+      list.innerHTML = '<li class="text-white/30 text-center py-6 text-[0.6rem] tracking-widest uppercase">No vendors yet. Be the first — click "Become a Vendor"</li>';
+      return;
+    }
+    const grouped = {};
+    data.forEach(v => {
+      if(!grouped[v.category]) grouped[v.category] = [];
+      grouped[v.category].push(v);
+    });
+    let html = '';
+    Object.keys(grouped).forEach(cat => {
+      html += `<li class="text-white/40 text-[0.55rem] tracking-[0.3em] uppercase mt-3 mb-1 px-2">${cat}</li>`;
+      grouped[cat].forEach(v => {
+        const safeCompany = (v.company_name || '').replace(/'/g, "\\'");
+        const phoneBtn = v.whatsapp ? `<button onclick="contactVendor('whatsapp','${v.whatsapp}','${safeCompany}')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-green-500/20 hover:bg-green-500/40 px-2 lg:px-3 py-1.5 rounded transition uppercase">WHATSAPP</button>` : '';
+        const emailBtn = v.email ? `<button onclick="contactVendor('email','${v.email}','${safeCompany}')" class="text-[0.55rem] lg:text-[0.6rem] font-bold bg-white/20 hover:bg-white/40 px-2 lg:px-3 py-1.5 rounded transition uppercase ml-1">EMAIL</button>` : '';
+        html += `<li class="flex justify-between items-center border border-white/10 rounded-xl p-2 lg:p-3 hover:bg-white/10 cursor-pointer">
+          <div class="flex-1 min-w-0">
+            <div class="font-bold tracking-widest truncate">${v.company_name}</div>
+            <div class="text-[0.5rem] opacity-50 tracking-wider">${v.city || ''}${v.city && v.country ? ', ' : ''}${v.country || ''}</div>
+          </div>
+          <div class="flex gap-1 flex-shrink-0">${phoneBtn}${emailBtn}</div>
+        </li>`;
+      });
+    });
+    list.innerHTML = html;
+  } catch(e) {
+    console.error('Vendor load error:', e);
+    list.innerHTML = '<li class="text-red-400/60 text-center py-4 text-[0.6rem] tracking-widest uppercase">Error loading vendors</li>';
+  }
+}
+
+function contactVendor(method, value, companyName) {
+  if(method === 'whatsapp') {
+    const cleanNum = value.replace(/\D/g, '');
+    window.open('https://wa.me/' + cleanNum + '?text=' + encodeURIComponent('Hello ' + companyName + ', I found you via ADEULL AI and would like to request a quote.'), '_blank');
+  } else if(method === 'email') {
+    window.open('mailto:' + value + '?subject=' + encodeURIComponent('Quote Request via ADEULL AI') + '&body=' + encodeURIComponent('Hello ' + companyName + ',\n\nI found your company via ADEULL AI and would like to request a quote for my project.\n\nBest regards'), '_blank');
+  }
+}
+
+const _originalEnterDashboard = window.enterDashboard;
+window.enterDashboard = function(menuName) {
+  if(typeof _originalEnterDashboard === 'function') _originalEnterDashboard(menuName);
+  loadVendors();
+};
 
 function openVendorForm() {
   const code = (document.getElementById('activeCode') || {}).innerText || 'EN';
