@@ -343,7 +343,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
     const activeLangCode = activeLangCodeElement ? activeLangCodeElement.innerText : 'EN';
 
     if(window.deductCredit) {
-        const ok = await window.deductCredit(is8K ? '8K_RENDER' : 'NORMAL_RENDER', is8K ? 4 : 1);
+        const ok = await window.deductCredit(is8K ? '8K_RENDER' : 'NORMAL_RENDER', is8K ? 10 : 1);
         if(!ok) { btn.disabled = false; return; }
     }
     btn.innerHTML = is8K ? '8K RENDER IN PROGRESS...' : 'ADEULL AI GENERATING...';
