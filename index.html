@@ -568,11 +568,11 @@ function applyVendorTranslations() {
 }
 
 async function loadVendors() {
-  if(!window.supabase) return;
+  if(!window.supabaseClient) return;
   const list = document.getElementById('vendorList');
   if(!list) return;
   try {
-    const { data, error } = await window.supabase
+    const { data, error } = await window.supabaseClient
       .from('vendors')
       .select('*')
       .eq('approved', true)
@@ -663,7 +663,7 @@ async function submitVendorForm() {
   msg.style.color = 'rgba(255,255,255,0.5)';
 
   try {
-    const { error } = await window.supabase.from('vendors').insert([{
+    const { error } = await window.supabaseClient.from('vendors').insert([{
       user_id: window.currentUserId || null,
       company_name: company,
       category: category,
