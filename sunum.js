@@ -273,6 +273,24 @@
             window._sunumActiveBoardType = 1;
             renderBoard(analysis, langCode, textureBase64, 1);
 
+            // Render geçmişine kaydet
+            if(window.currentUserId && window.supabaseClient) {
+                try {
+                    const _promptText = (document.getElementById('promptArea') || {}).value || '';
+                    const _ratio = window.selectedRatio || '16:9';
+                    await window.supabaseClient.from('renders').insert([{
+                        user_id: window.currentUserId,
+                        menu_type: 'PRESENTATION',
+                        is_8k: false,
+                        prompt: _promptText.substring(0, 500),
+                        aspect_ratio: _ratio,
+                        credits_used: 1
+                    }]);
+                } catch(e) {
+                    console.warn('Render history save failed:', e);
+                }
+            }
+
         } catch (error) {
             console.error('Sunum Error:', error);
             alert(lang.error);

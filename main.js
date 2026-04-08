@@ -445,7 +445,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
                 }
 
                 if (is8K) {
-                    toggleUpscaleLoader(true); 
+                    toggleUpscaleLoader(true);
                     btn.innerHTML = '8K RENDER ALINIYOR...';
                     try {
                         const upscaledUrl = await ADEULL_UPSCALE(finalImage);
@@ -456,7 +456,26 @@ async function simulateAPIConnection(btnId, is8K = false) {
                     } catch (upscaleError) {
                         console.log("8K Upscale failed, keeping original render.", upscaleError);
                     } finally {
-                        toggleUpscaleLoader(false); 
+                        toggleUpscaleLoader(false);
+                    }
+                }
+
+                // Render geçmişine kaydet
+                if(window.currentUserId && window.supabaseClient) {
+                    try {
+                        const _menuTitle = document.getElementById('dashboardTitle').getAttribute('data-raw-title') || 'UNKNOWN';
+                        const _promptText = (document.getElementById('promptArea') || {}).value || '';
+                        const _ratio = window.selectedRatio || '16:9';
+                        await window.supabaseClient.from('renders').insert([{
+                            user_id: window.currentUserId,
+                            menu_type: _menuTitle,
+                            is_8k: is8K,
+                            prompt: _promptText.substring(0, 500),
+                            aspect_ratio: _ratio,
+                            credits_used: is8K ? 10 : 1
+                        }]);
+                    } catch(e) {
+                        console.warn('Render history save failed:', e);
                     }
                 }
             }
