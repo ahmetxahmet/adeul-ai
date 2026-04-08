@@ -463,27 +463,61 @@
     // ============================================================
     // RENDERS SAYFASI — placeholder, Supabase entegrasyonu sonra
     // ============================================================
-    window.showRendersPage = function() {
+    window.showRendersPage = async function() {
         var L = getDashLang();
 
-        var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">' +
-            '<button onclick="closeDashPage()" style="background:none;border:none;color:rgba(255,255,255,0.4);' +
-            'font-size:9px;font-weight:700;letter-spacing:0.2em;cursor:pointer;text-transform:uppercase;' +
-            'font-family:inherit;padding:6px 0;transition:color 0.2s;" onmouseenter="this.style.color=\'#fff\'" ' +
-            'onmouseleave="this.style.color=\'rgba(255,255,255,0.4)\'">← ' + L.back + '</button>' +
-            '<h2 style="font-size:14px;font-weight:700;letter-spacing:0.3em;color:rgba(255,255,255,0.8);' +
-            'text-transform:uppercase;margin:0;">' + L.yourRenders + '</h2>' +
+        var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">' +
+            '<button onclick="closeDashPage()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:9px;font-weight:700;letter-spacing:0.2em;cursor:pointer;text-transform:uppercase;font-family:inherit;padding:6px 0;">← ' + L.back + '</button>' +
+            '<h2 style="font-size:14px;font-weight:700;letter-spacing:0.3em;color:rgba(255,255,255,0.8);text-transform:uppercase;margin:0;">' + L.yourRenders + '</h2>' +
             '<div style="width:50px;"></div></div>';
 
-        // Placeholder galeri
-        html += '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;' +
-            'padding:40px 20px;text-align:center;">' +
-            '<div style="font-size:32px;margin-bottom:12px;opacity:0.2;">🖼️</div>' +
-            '<p style="font-size:9px;letter-spacing:0.2em;color:rgba(255,255,255,0.2);text-transform:uppercase;">' +
-            L.noRenders + '</p>' +
+        html += '<div id="rendersListContainer" style="display:flex;flex-direction:column;gap:10px;">' +
+            '<div style="text-align:center;padding:40px 20px;color:rgba(255,255,255,0.3);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;">Loading renders...</div>' +
             '</div>';
 
         showDashPage(html, 'renders');
+
+        if(window.supabaseClient && window.currentUserId) {
+            try {
+                var res = await window.supabaseClient
+                    .from('renders')
+                    .select('*')
+                    .eq('user_id', window.currentUserId)
+                    .order('created_at', { ascending: false })
+                    .limit(50);
+                var renders = res.data;
+                var err = res.error;
+
+                var container = document.getElementById('rendersListContainer');
+                if(!container) return;
+                if(err) throw err;
+
+                if(!renders || renders.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;padding:60px 20px;"><div style="font-size:40px;margin-bottom:12px;opacity:0.15;">🖼️</div><p style="font-size:9px;letter-spacing:0.2em;color:rgba(255,255,255,0.2);text-transform:uppercase;">' + L.noRenders + '</p></div>';
+                    return;
+                }
+
+                var rhtml = '';
+                renders.forEach(function(r) {
+                    var date = new Date(r.created_at).toLocaleString();
+                    var badge = r.is_8k
+                        ? '<span style="font-size:6px;background:rgba(255,200,0,0.2);color:rgba(255,200,0,0.8);padding:3px 7px;border-radius:4px;letter-spacing:0.1em;font-weight:700;">8K</span>'
+                        : '<span style="font-size:6px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:3px 7px;border-radius:4px;letter-spacing:0.1em;font-weight:700;">4K</span>';
+                    rhtml += '<div style="padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;cursor:pointer;" onmouseover="this.style.background=\'rgba(255,255,255,0.05)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.03)\'">' +
+                        '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">' +
+                        '<span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:0.15em;text-transform:uppercase;">' + r.menu_type + '</span>' +
+                        badge + '</div>' +
+                        '<div style="font-size:7px;color:rgba(255,255,255,0.35);letter-spacing:0.1em;margin-bottom:4px;">' + date + ' · ' + (r.credits_used || 1) + ' credits · ' + (r.aspect_ratio || '16:9') + '</div>' +
+                        (r.prompt ? '<div style="font-size:8px;color:rgba(255,255,255,0.5);margin-top:6px;font-style:italic;line-height:1.4;">' + r.prompt.substring(0, 120) + (r.prompt.length > 120 ? '...' : '') + '</div>' : '') +
+                        '</div>';
+                });
+                container.innerHTML = rhtml;
+            } catch(e) {
+                console.error(e);
+                var container = document.getElementById('rendersListContainer');
+                if(container) container.innerHTML = '<div style="text-align:center;padding:40px;color:rgba(255,80,80,0.6);font-size:9px;">Error loading renders</div>';
+            }
+        }
     };
 
     // ============================================================
@@ -520,10 +554,7 @@
             '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.3);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;">Loading stats...</div>' +
             '</div>';
 
-        html += '<div style="font-size:8px;font-weight:700;letter-spacing:0.25em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.06);">RECENT RENDERS</div>' +
-            '<div id="dashRecentRenders" style="display:flex;flex-direction:column;gap:8px;">' +
-            '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.3);font-size:9px;letter-spacing:0.2em;text-transform:uppercase;">Loading...</div>' +
-            '</div>';
+        html += '<button onclick="showRendersPage()" style="width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px;color:rgba(255,255,255,0.6);font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background=\'rgba(255,255,255,0.08)\'" onmouseout="this.style.background=\'rgba(255,255,255,0.04)\'">VIEW ALL RENDERS →</button>';
 
         showDashPage(html, 'dashboard');
 
@@ -549,37 +580,6 @@
                         '</div>';
                     var statsEl = document.getElementById('dashStatsContainer');
                     if(statsEl) statsEl.innerHTML = statsHtml;
-                }
-
-                var rendersRes = await window.supabaseClient
-                    .from('renders')
-                    .select('*')
-                    .eq('user_id', window.currentUserId)
-                    .order('created_at', { ascending: false })
-                    .limit(5);
-                var renders = rendersRes.data;
-
-                var listEl = document.getElementById('dashRecentRenders');
-                if(listEl) {
-                    if(!renders || renders.length === 0) {
-                        listEl.innerHTML = '<div style="text-align:center;padding:30px 20px;color:rgba(255,255,255,0.2);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;">No renders yet. Start creating!</div>';
-                    } else {
-                        var rhtml = '';
-                        renders.forEach(function(r) {
-                            var date = new Date(r.created_at).toLocaleDateString();
-                            var badge = r.is_8k
-                                ? '<span style="font-size:6px;background:rgba(255,200,0,0.2);color:rgba(255,200,0,0.8);padding:2px 6px;border-radius:4px;letter-spacing:0.1em;">8K</span>'
-                                : '<span style="font-size:6px;background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);padding:2px 6px;border-radius:4px;letter-spacing:0.1em;">4K</span>';
-                            rhtml += '<div style="padding:10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;">' +
-                                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
-                                '<span style="font-size:9px;font-weight:700;color:rgba(255,255,255,0.7);letter-spacing:0.15em;text-transform:uppercase;">' + r.menu_type + '</span>' +
-                                badge + '</div>' +
-                                '<div style="font-size:7px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;">' + date + ' · ' + (r.credits_used || 1) + ' credits</div>' +
-                                (r.prompt ? '<div style="font-size:7px;color:rgba(255,255,255,0.3);margin-top:4px;font-style:italic;">' + r.prompt.substring(0, 60) + (r.prompt.length > 60 ? '...' : '') + '</div>' : '') +
-                                '</div>';
-                        });
-                        listEl.innerHTML = rhtml;
-                    }
                 }
             } catch(e) {
                 console.error('Dashboard data load error:', e);
@@ -643,10 +643,6 @@
                     showComingSoonPage('PROJECTS');
                 } else if (key === 'assets' || text.indexOf('ASSETS') > -1) {
                     showComingSoonPage('ASSETS');
-                } else if (key === 'workflows' || text.indexOf('WORKFLOWS') > -1) {
-                    showComingSoonPage('WORKFLOWS');
-                } else if (key === 'feed' || text.indexOf('FEED') > -1) {
-                    showComingSoonPage('FEED');
                 } else if (key === 'invite' || text.indexOf('INVITE') > -1) {
                     showComingSoonPage('INVITE TEAM');
                 }
