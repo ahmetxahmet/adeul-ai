@@ -258,4 +258,8 @@ function selectLang(code, flag) {
             }
         }
     }
+
+    if (window._activeDashPage === 'billing' && typeof window.showBillingPage === 'function') {
+        window.showBillingPage();
+    }
 }
