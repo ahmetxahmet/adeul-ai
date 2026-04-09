@@ -230,7 +230,13 @@ function b64toBlob(b64Data, contentType='', sliceSize=512) {
 
 async function ADEULL_UPSCALE(imageUrl) {
     if (!window.currentUserId || window.currentUserId === 'guest') {
-        alert('Platform launching soon. Contact info@adeull.com for early access.');
+        alert('Please login or sign up to use ADEULL AI.');
+        return;
+    }
+    const _upscaleCreditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
+    const _upscaleCredits = parseInt(_upscaleCreditText.replace(/[^0-9]/g, '')) || 0;
+    if (_upscaleCredits < 10) {
+        alert('Insufficient credits. You need 10 credits for 8K render.\n\nPlease redeem a coupon or upgrade your plan from the BILLING menu.');
         return;
     }
     try {
@@ -266,7 +272,14 @@ async function ADEULL_UPSCALE(imageUrl) {
 async function simulateAPIConnection(btnId, is8K = false) {
     playSound();
     if (!window.currentUserId || window.currentUserId === 'guest') {
-        alert('Platform launching soon. Contact info@adeull.com for early access.');
+        alert('Please login or sign up to use ADEULL AI.');
+        return;
+    }
+    const creditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
+    const currentCredits = parseInt(creditText.replace(/[^0-9]/g, '')) || 0;
+    const requiredCredits = is8K ? 10 : 1;
+    if (currentCredits < requiredCredits) {
+        alert('Insufficient credits. You need ' + requiredCredits + ' credits for this render.\n\nPlease redeem a coupon or upgrade your plan from the BILLING menu.');
         return;
     }
     const btn = document.getElementById(btnId);

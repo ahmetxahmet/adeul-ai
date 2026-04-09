@@ -258,47 +258,31 @@
     };
 
     window.redeemCoupon = async function() {
-        var L = getL();
         var code = (document.getElementById('couponInput') || {}).value.trim().toUpperCase();
-        if (!code) return;
+        if(!code) { alert('Please enter a coupon code'); return; }
+        if(!window.currentUserId || !window.supabaseClient) {
+            alert('Please login first');
+            return;
+        }
 
         try {
-            if (window.supabaseClient) {
-                var { data, error } = await window.supabaseClient
-                    .from('coupons')
-                    .select('*')
-                    .eq('code', code)
-                    .eq('used', false)
-                    .single();
+            var res = await window.supabaseClient.rpc('redeem_coupon', { p_code: code });
+            var data = res.data;
+            var error = res.error;
+            if(error) throw error;
 
-                if (error || !data) {
-                    alert(L.couponError);
-                    return;
-                }
-
-                // Kuponu kullanıldı olarak işaretle
-                await window.supabaseClient
-                    .from('coupons')
-                    .update({ used: true, used_by: window.currentUserId || 'unknown', used_at: new Date().toISOString() })
-                    .eq('id', data.id);
-
-                // Kredi ekle
-                if (window.currentUserId) {
-                    await window.supabaseClient.rpc('add_credits', { p_amount: data.credits || 5 });
-                }
-
-                // UI güncelle
-                var currentCredits = parseInt((document.getElementById('topCreditDisplay').innerText || '0').replace(/,/g, '')) || 0;
-                var newCredits = currentCredits + (data.credits || 5);
-                document.getElementById('topCreditDisplay').innerText = newCredits.toLocaleString();
-                document.getElementById('panelCreditDisplay').innerText = newCredits.toLocaleString();
-
-                alert(L.couponSuccess + ' +' + (data.credits || 5) + ' credits');
-                closeCouponModal();
+            if(data && data.success) {
+                alert('✓ Success! ' + data.credits_added + ' credits added to your account.');
+                var creditEl = document.getElementById('topCreditDisplay');
+                var panelEl = document.getElementById('panelCreditDisplay');
+                if(creditEl) creditEl.innerText = data.new_credits.toLocaleString();
+                if(panelEl) panelEl.innerText = data.new_credits.toLocaleString();
+                if(typeof closeCouponModal === 'function') closeCouponModal();
+            } else {
+                alert('❌ ' + (data && data.message ? data.message : 'Invalid coupon'));
             }
-        } catch (e) {
-            console.error('Coupon error:', e);
-            alert(L.couponError);
+        } catch(e) {
+            alert('Error: ' + e.message);
         }
     };
 
