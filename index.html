@@ -598,6 +598,11 @@ if(dashTitle) observer.observe(dashTitle, {childList: true, characterData: true,
       <option value="METAL WORKSHOP" class="bg-black">METAL WORKSHOP</option>
       <option value="UPHOLSTERY" class="bg-black">UPHOLSTERY</option>
       <option value="CONSTRUCTION" class="bg-black">CONSTRUCTION</option>
+      <option value="CONTRACTOR" class="bg-black">CONTRACTOR</option>
+      <option value="ELECTRICIAN" class="bg-black">ELECTRICIAN</option>
+      <option value="HVAC" class="bg-black">HVAC</option>
+      <option value="PLUMBER" class="bg-black">PLUMBER</option>
+      <option value="PAINTER" class="bg-black">PAINTER</option>
     </select>
     <textarea id="vendorDescription" placeholder="BRIEF DESCRIPTION OF YOUR SERVICES..." rows="3" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase resize-none"></textarea>
     <input id="vendorEmail" type="email" placeholder="EMAIL *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
@@ -870,16 +875,16 @@ function applyVendorTranslations() {
 }
 
 window.vendorCategoryTranslations = {
-  'EN': {'ARCHITECT': 'ARCHITECT', 'ENGINEER': 'ENGINEER', 'FURNITURE STORE': 'FURNITURE STORE', 'CARPENTER': 'CARPENTER', 'METAL WORKSHOP': 'METAL WORKSHOP', 'UPHOLSTERY': 'UPHOLSTERY', 'CONSTRUCTION': 'CONSTRUCTION', '_noVendors': 'No contacts yet'},
-  'TR': {'ARCHITECT': 'MİMAR', 'ENGINEER': 'MÜHENDİS', 'FURNITURE STORE': 'MOBİLYA MAĞAZASI', 'CARPENTER': 'MARANGOZ', 'METAL WORKSHOP': 'METAL ATÖLYESİ', 'UPHOLSTERY': 'DÖŞEMECI', 'CONSTRUCTION': 'İNŞAAT', '_noVendors': 'Henüz kişi yok'},
-  'ES': {'ARCHITECT': 'ARQUITECTO', 'ENGINEER': 'INGENIERO', 'FURNITURE STORE': 'TIENDA DE MUEBLES', 'CARPENTER': 'CARPINTERO', 'METAL WORKSHOP': 'TALLER DE METAL', 'UPHOLSTERY': 'TAPICERÍA', 'CONSTRUCTION': 'CONSTRUCCIÓN', '_noVendors': 'Sin contactos'},
-  'DE': {'ARCHITECT': 'ARCHITEKT', 'ENGINEER': 'INGENIEUR', 'FURNITURE STORE': 'MÖBELGESCHÄFT', 'CARPENTER': 'TISCHLER', 'METAL WORKSHOP': 'METALLWERKSTATT', 'UPHOLSTERY': 'POLSTEREI', 'CONSTRUCTION': 'BAU', '_noVendors': 'Keine Kontakte'},
-  'FR': {'ARCHITECT': 'ARCHITECTE', 'ENGINEER': 'INGÉNIEUR', 'FURNITURE STORE': 'MAGASIN DE MEUBLES', 'CARPENTER': 'MENUISIER', 'METAL WORKSHOP': 'ATELIER MÉTAL', 'UPHOLSTERY': 'TAPISSERIE', 'CONSTRUCTION': 'CONSTRUCTION', '_noVendors': 'Aucun contact'},
-  'PT': {'ARCHITECT': 'ARQUITETO', 'ENGINEER': 'ENGENHEIRO', 'FURNITURE STORE': 'LOJA DE MÓVEIS', 'CARPENTER': 'CARPINTEIRO', 'METAL WORKSHOP': 'OFICINA METÁLICA', 'UPHOLSTERY': 'ESTOFAMENTO', 'CONSTRUCTION': 'CONSTRUÇÃO', '_noVendors': 'Sem contatos'},
-  'ID': {'ARCHITECT': 'ARSITEK', 'ENGINEER': 'INSINYUR', 'FURNITURE STORE': 'TOKO FURNITUR', 'CARPENTER': 'TUKANG KAYU', 'METAL WORKSHOP': 'BENGKEL LOGAM', 'UPHOLSTERY': 'PELAPIS', 'CONSTRUCTION': 'KONSTRUKSI', '_noVendors': 'Belum ada kontak'},
-  'RU': {'ARCHITECT': 'АРХИТЕКТОР', 'ENGINEER': 'ИНЖЕНЕР', 'FURNITURE STORE': 'МЕБЕЛЬНЫЙ МАГАЗИН', 'CARPENTER': 'ПЛОТНИК', 'METAL WORKSHOP': 'МЕТАЛЛООБРАБОТКА', 'UPHOLSTERY': 'ОБИВКА', 'CONSTRUCTION': 'СТРОИТЕЛЬСТВО', '_noVendors': 'Пока нет контактов'},
-  'AR': {'ARCHITECT': 'مهندس معماري', 'ENGINEER': 'مهندس', 'FURNITURE STORE': 'متجر أثاث', 'CARPENTER': 'نجار', 'METAL WORKSHOP': 'ورشة معادن', 'UPHOLSTERY': 'تنجيد', 'CONSTRUCTION': 'إنشاءات', '_noVendors': 'لا توجد جهات اتصال'},
-  'IT': {'ARCHITECT': 'ARCHITETTO', 'ENGINEER': 'INGEGNERE', 'FURNITURE STORE': 'NEGOZIO DI MOBILI', 'CARPENTER': 'FALEGNAME', 'METAL WORKSHOP': 'OFFICINA METALLI', 'UPHOLSTERY': 'TAPPEZZERIA', 'CONSTRUCTION': 'COSTRUZIONE', '_noVendors': 'Nessun contatto'}
+  'EN': {'ARCHITECT': 'ARCHITECT', 'ENGINEER': 'ENGINEER', 'FURNITURE STORE': 'FURNITURE STORE', 'CARPENTER': 'CARPENTER', 'METAL WORKSHOP': 'METAL WORKSHOP', 'UPHOLSTERY': 'UPHOLSTERY', 'CONSTRUCTION': 'CONSTRUCTION', 'CONTRACTOR': 'CONTRACTOR', 'ELECTRICIAN': 'ELECTRICIAN', 'HVAC': 'HVAC / MECHANICAL', 'PLUMBER': 'PLUMBER', 'PAINTER': 'PAINTER', '_noVendors': 'No contacts yet'},
+  'TR': {'ARCHITECT': 'MİMAR', 'ENGINEER': 'MÜHENDİS', 'FURNITURE STORE': 'MOBİLYA MAĞAZASI', 'CARPENTER': 'MARANGOZ', 'METAL WORKSHOP': 'METAL ATÖLYESİ', 'UPHOLSTERY': 'DÖŞEMECI', 'CONSTRUCTION': 'İNŞAAT', 'CONTRACTOR': 'MÜTEAHHİT', 'ELECTRICIAN': 'ELEKTRİKÇİ', 'HVAC': 'İKLİMLENDİRME', 'PLUMBER': 'TESİSATÇI', 'PAINTER': 'BOYACI', '_noVendors': 'Henüz kişi yok'},
+  'ES': {'ARCHITECT': 'ARQUITECTO', 'ENGINEER': 'INGENIERO', 'FURNITURE STORE': 'TIENDA DE MUEBLES', 'CARPENTER': 'CARPINTERO', 'METAL WORKSHOP': 'TALLER DE METAL', 'UPHOLSTERY': 'TAPICERÍA', 'CONSTRUCTION': 'CONSTRUCCIÓN', 'CONTRACTOR': 'CONTRATISTA', 'ELECTRICIAN': 'ELECTRICISTA', 'HVAC': 'HVAC', 'PLUMBER': 'FONTANERO', 'PAINTER': 'PINTOR', '_noVendors': 'Sin contactos'},
+  'DE': {'ARCHITECT': 'ARCHITEKT', 'ENGINEER': 'INGENIEUR', 'FURNITURE STORE': 'MÖBELGESCHÄFT', 'CARPENTER': 'TISCHLER', 'METAL WORKSHOP': 'METALLWERKSTATT', 'UPHOLSTERY': 'POLSTEREI', 'CONSTRUCTION': 'BAU', 'CONTRACTOR': 'BAUUNTERNEHMER', 'ELECTRICIAN': 'ELEKTRIKER', 'HVAC': 'HLK', 'PLUMBER': 'KLEMPNER', 'PAINTER': 'MALER', '_noVendors': 'Keine Kontakte'},
+  'FR': {'ARCHITECT': 'ARCHITECTE', 'ENGINEER': 'INGÉNIEUR', 'FURNITURE STORE': 'MAGASIN DE MEUBLES', 'CARPENTER': 'MENUISIER', 'METAL WORKSHOP': 'ATELIER MÉTAL', 'UPHOLSTERY': 'TAPISSERIE', 'CONSTRUCTION': 'CONSTRUCTION', 'CONTRACTOR': 'ENTREPRENEUR', 'ELECTRICIAN': 'ÉLECTRICIEN', 'HVAC': 'CVC', 'PLUMBER': 'PLOMBIER', 'PAINTER': 'PEINTRE', '_noVendors': 'Aucun contact'},
+  'PT': {'ARCHITECT': 'ARQUITETO', 'ENGINEER': 'ENGENHEIRO', 'FURNITURE STORE': 'LOJA DE MÓVEIS', 'CARPENTER': 'CARPINTEIRO', 'METAL WORKSHOP': 'OFICINA METÁLICA', 'UPHOLSTERY': 'ESTOFAMENTO', 'CONSTRUCTION': 'CONSTRUÇÃO', 'CONTRACTOR': 'EMPREITEIRO', 'ELECTRICIAN': 'ELETRICISTA', 'HVAC': 'AVAC', 'PLUMBER': 'ENCANADOR', 'PAINTER': 'PINTOR', '_noVendors': 'Sem contatos'},
+  'ID': {'ARCHITECT': 'ARSITEK', 'ENGINEER': 'INSINYUR', 'FURNITURE STORE': 'TOKO FURNITUR', 'CARPENTER': 'TUKANG KAYU', 'METAL WORKSHOP': 'BENGKEL LOGAM', 'UPHOLSTERY': 'PELAPIS', 'CONSTRUCTION': 'KONSTRUKSI', 'CONTRACTOR': 'KONTRAKTOR', 'ELECTRICIAN': 'TUKANG LISTRIK', 'HVAC': 'HVAC', 'PLUMBER': 'TUKANG LEDENG', 'PAINTER': 'TUKANG CAT', '_noVendors': 'Belum ada kontak'},
+  'RU': {'ARCHITECT': 'АРХИТЕКТОР', 'ENGINEER': 'ИНЖЕНЕР', 'FURNITURE STORE': 'МЕБЕЛЬНЫЙ МАГАЗИН', 'CARPENTER': 'ПЛОТНИК', 'METAL WORKSHOP': 'МЕТАЛЛООБРАБОТКА', 'UPHOLSTERY': 'ОБИВКА', 'CONSTRUCTION': 'СТРОИТЕЛЬСТВО', 'CONTRACTOR': 'ПОДРЯДЧИК', 'ELECTRICIAN': 'ЭЛЕКТРИК', 'HVAC': 'ОВК', 'PLUMBER': 'САНТЕХНИК', 'PAINTER': 'МАЛЯР', '_noVendors': 'Пока нет контактов'},
+  'AR': {'ARCHITECT': 'مهندس معماري', 'ENGINEER': 'مهندس', 'FURNITURE STORE': 'متجر أثاث', 'CARPENTER': 'نجار', 'METAL WORKSHOP': 'ورشة معادن', 'UPHOLSTERY': 'تنجيد', 'CONSTRUCTION': 'إنشاءات', 'CONTRACTOR': 'مقاول', 'ELECTRICIAN': 'كهربائي', 'HVAC': 'تكييف', 'PLUMBER': 'سباك', 'PAINTER': 'دهان', '_noVendors': 'لا توجد جهات اتصال'},
+  'IT': {'ARCHITECT': 'ARCHITETTO', 'ENGINEER': 'INGEGNERE', 'FURNITURE STORE': 'NEGOZIO DI MOBILI', 'CARPENTER': 'FALEGNAME', 'METAL WORKSHOP': 'OFFICINA METALLI', 'UPHOLSTERY': 'TAPPEZZERIA', 'CONSTRUCTION': 'COSTRUZIONE', 'CONTRACTOR': 'APPALTATORE', 'ELECTRICIAN': 'ELETTRICISTA', 'HVAC': 'HVAC', 'PLUMBER': 'IDRAULICO', 'PAINTER': 'PITTORE', '_noVendors': 'Nessun contatto'}
 };
 
 async function loadVendors() {
@@ -889,7 +894,8 @@ async function loadVendors() {
 
   const ALL_CATEGORIES = [
     'ARCHITECT','ENGINEER','FURNITURE STORE','CARPENTER',
-    'METAL WORKSHOP','UPHOLSTERY','CONSTRUCTION'
+    'METAL WORKSHOP','UPHOLSTERY','CONSTRUCTION',
+    'CONTRACTOR','ELECTRICIAN','HVAC','PLUMBER','PAINTER'
   ];
 
   try {
