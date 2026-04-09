@@ -92,73 +92,73 @@
     var planFeatures = {
         'EN': {
             student:  ['50 credits/month', 'Use as: 50 × 4K renders OR up to 5 × 8K renders', 'All design menus', 'Prompt Builder & Chat', 'Email support'],
-            standard: ['125 credits/month', 'Use as: 125 × 4K renders OR up to 12 × 8K renders', 'All design menus', 'Prompt Builder & Chat', 'Priority email support', 'Vendor Network access'],
-            pro:      ['300 credits/month', 'Use as: 300 × 4K renders OR up to 30 × 8K renders', 'All design menus', 'Prompt Builder & Chat', 'Priority support', 'Vendor Network access', 'Early feature access'],
-            ultra:    ['700 credits/month', 'Use as: 700 × 4K renders OR up to 70 × 8K renders', 'All design menus', 'Prompt Builder & Chat', 'Priority support', 'Vendor Network access', 'Early feature access'],
-            vision:   ['2000 credits/month', 'Use as: 2000 × 4K renders OR up to 200 × 8K renders', 'All design menus', 'Prompt Builder & Chat', 'Dedicated support', 'Vendor Network access', 'Early feature access']
+            standard: ['125 credits/month', 'Use as: 125 × 4K renders OR up to 12 × 8K renders', 'All design menus', 'Prompt Builder & Chat', 'Priority email support', 'Designer Directory access'],
+            pro:      ['300 credits/month', 'Use as: 300 × 4K renders OR up to 30 × 8K renders', 'All design menus', 'Prompt Builder & Chat', 'Priority support', 'Designer Directory access', 'Early feature access'],
+            ultra:    ['700 credits/month', 'Use as: 700 × 4K renders OR up to 70 × 8K renders', 'All design menus', 'Prompt Builder & Chat', 'Priority support', 'Designer Directory access', 'Early feature access'],
+            vision:   ['2000 credits/month', 'Use as: 2000 × 4K renders OR up to 200 × 8K renders', 'All design menus', 'Prompt Builder & Chat', 'Dedicated support', 'Designer Directory access', 'Early feature access']
         },
         'TR': {
             student:  ['50 kredi/ay', '50 × 4K render VEYA 5 × 8K render olarak kullanın', 'Tüm tasarım menüleri', 'Prompt Builder & Sohbet', 'E-posta desteği'],
-            standard: ['125 kredi/ay', '125 × 4K render VEYA 12 × 8K render olarak kullanın', 'Tüm tasarım menüleri', 'Prompt Builder & Sohbet', 'Öncelikli e-posta desteği', 'Tedarikçi Ağı erişimi'],
-            pro:      ['300 kredi/ay', '300 × 4K render VEYA 30 × 8K render olarak kullanın', 'Tüm tasarım menüleri', 'Prompt Builder & Sohbet', 'Öncelikli destek', 'Tedarikçi Ağı erişimi', 'Erken özellik erişimi'],
-            ultra:    ['700 kredi/ay', '700 × 4K render VEYA 70 × 8K render olarak kullanın', 'Tüm tasarım menüleri', 'Prompt Builder & Sohbet', 'Öncelikli destek', 'Tedarikçi Ağı erişimi', 'Erken özellik erişimi'],
-            vision:   ['2000 kredi/ay', '2000 × 4K render VEYA 200 × 8K render olarak kullanın', 'Tüm tasarım menüleri', 'Prompt Builder & Sohbet', 'Özel destek', 'Tedarikçi Ağı erişimi', 'Erken özellik erişimi']
+            standard: ['125 kredi/ay', '125 × 4K render VEYA 12 × 8K render olarak kullanın', 'Tüm tasarım menüleri', 'Prompt Builder & Sohbet', 'Öncelikli e-posta desteği', 'Tasarımcı Rehberi erişimi'],
+            pro:      ['300 kredi/ay', '300 × 4K render VEYA 30 × 8K render olarak kullanın', 'Tüm tasarım menüleri', 'Prompt Builder & Sohbet', 'Öncelikli destek', 'Tasarımcı Rehberi erişimi', 'Erken özellik erişimi'],
+            ultra:    ['700 kredi/ay', '700 × 4K render VEYA 70 × 8K render olarak kullanın', 'Tüm tasarım menüleri', 'Prompt Builder & Sohbet', 'Öncelikli destek', 'Tasarımcı Rehberi erişimi', 'Erken özellik erişimi'],
+            vision:   ['2000 kredi/ay', '2000 × 4K render VEYA 200 × 8K render olarak kullanın', 'Tüm tasarım menüleri', 'Prompt Builder & Sohbet', 'Özel destek', 'Tasarımcı Rehberi erişimi', 'Erken özellik erişimi']
         },
         'ES': {
             student:  ['50 créditos/mes', 'Usa como: 50 × renders 4K O hasta 5 × renders 8K', 'Todos los menús de diseño', 'Constructor de Prompts y Chat', 'Soporte por email'],
-            standard: ['125 créditos/mes', 'Usa como: 125 × renders 4K O hasta 12 × renders 8K', 'Todos los menús de diseño', 'Constructor de Prompts y Chat', 'Soporte email prioritario', 'Acceso a Red de Proveedores'],
-            pro:      ['300 créditos/mes', 'Usa como: 300 × renders 4K O hasta 30 × renders 8K', 'Todos los menús de diseño', 'Constructor de Prompts y Chat', 'Soporte prioritario', 'Acceso a Red de Proveedores', 'Acceso anticipado a funciones'],
-            ultra:    ['700 créditos/mes', 'Usa como: 700 × renders 4K O hasta 70 × renders 8K', 'Todos los menús de diseño', 'Constructor de Prompts y Chat', 'Soporte prioritario', 'Acceso a Red de Proveedores', 'Acceso anticipado a funciones'],
-            vision:   ['2000 créditos/mes', 'Usa como: 2000 × renders 4K O hasta 200 × renders 8K', 'Todos los menús de diseño', 'Constructor de Prompts y Chat', 'Soporte dedicado', 'Acceso a Red de Proveedores', 'Acceso anticipado a funciones']
+            standard: ['125 créditos/mes', 'Usa como: 125 × renders 4K O hasta 12 × renders 8K', 'Todos los menús de diseño', 'Constructor de Prompts y Chat', 'Soporte email prioritario', 'Acceso a Directorio de Diseñadores'],
+            pro:      ['300 créditos/mes', 'Usa como: 300 × renders 4K O hasta 30 × renders 8K', 'Todos los menús de diseño', 'Constructor de Prompts y Chat', 'Soporte prioritario', 'Acceso a Directorio de Diseñadores', 'Acceso anticipado a funciones'],
+            ultra:    ['700 créditos/mes', 'Usa como: 700 × renders 4K O hasta 70 × renders 8K', 'Todos los menús de diseño', 'Constructor de Prompts y Chat', 'Soporte prioritario', 'Acceso a Directorio de Diseñadores', 'Acceso anticipado a funciones'],
+            vision:   ['2000 créditos/mes', 'Usa como: 2000 × renders 4K O hasta 200 × renders 8K', 'Todos los menús de diseño', 'Constructor de Prompts y Chat', 'Soporte dedicado', 'Acceso a Directorio de Diseñadores', 'Acceso anticipado a funciones']
         },
         'DE': {
             student:  ['50 Credits/Monat', 'Verwende als: 50 × 4K Renders ODER bis zu 5 × 8K Renders', 'Alle Design-Menüs', 'Prompt Builder & Chat', 'E-Mail-Support'],
-            standard: ['125 Credits/Monat', 'Verwende als: 125 × 4K Renders ODER bis zu 12 × 8K Renders', 'Alle Design-Menüs', 'Prompt Builder & Chat', 'Prioritäts-E-Mail-Support', 'Zugang zum Lieferantennetzwerk'],
-            pro:      ['300 Credits/Monat', 'Verwende als: 300 × 4K Renders ODER bis zu 30 × 8K Renders', 'Alle Design-Menüs', 'Prompt Builder & Chat', 'Prioritätssupport', 'Zugang zum Lieferantennetzwerk', 'Früher Funktionszugang'],
-            ultra:    ['700 Credits/Monat', 'Verwende als: 700 × 4K Renders ODER bis zu 70 × 8K Renders', 'Alle Design-Menüs', 'Prompt Builder & Chat', 'Prioritätssupport', 'Zugang zum Lieferantennetzwerk', 'Früher Funktionszugang'],
-            vision:   ['2000 Credits/Monat', 'Verwende als: 2000 × 4K Renders ODER bis zu 200 × 8K Renders', 'Alle Design-Menüs', 'Prompt Builder & Chat', 'Dedizierter Support', 'Zugang zum Lieferantennetzwerk', 'Früher Funktionszugang']
+            standard: ['125 Credits/Monat', 'Verwende als: 125 × 4K Renders ODER bis zu 12 × 8K Renders', 'Alle Design-Menüs', 'Prompt Builder & Chat', 'Prioritäts-E-Mail-Support', 'Zugang zum Designer-Verzeichnis'],
+            pro:      ['300 Credits/Monat', 'Verwende als: 300 × 4K Renders ODER bis zu 30 × 8K Renders', 'Alle Design-Menüs', 'Prompt Builder & Chat', 'Prioritätssupport', 'Zugang zum Designer-Verzeichnis', 'Früher Funktionszugang'],
+            ultra:    ['700 Credits/Monat', 'Verwende als: 700 × 4K Renders ODER bis zu 70 × 8K Renders', 'Alle Design-Menüs', 'Prompt Builder & Chat', 'Prioritätssupport', 'Zugang zum Designer-Verzeichnis', 'Früher Funktionszugang'],
+            vision:   ['2000 Credits/Monat', 'Verwende als: 2000 × 4K Renders ODER bis zu 200 × 8K Renders', 'Alle Design-Menüs', 'Prompt Builder & Chat', 'Dedizierter Support', 'Zugang zum Designer-Verzeichnis', 'Früher Funktionszugang']
         },
         'FR': {
             student:  ['50 crédits/mois', "Utilisez comme: 50 × rendus 4K OU jusqu'à 5 × rendus 8K", 'Tous les menus design', 'Constructeur de Prompts & Chat', 'Support par email'],
-            standard: ['125 crédits/mois', "Utilisez comme: 125 × rendus 4K OU jusqu'à 12 × rendus 8K", 'Tous les menus design', 'Constructeur de Prompts & Chat', 'Support email prioritaire', 'Accès au Réseau Fournisseurs'],
-            pro:      ['300 crédits/mois', "Utilisez comme: 300 × rendus 4K OU jusqu'à 30 × rendus 8K", 'Tous les menus design', 'Constructeur de Prompts & Chat', 'Support prioritaire', 'Accès au Réseau Fournisseurs', 'Accès anticipé aux fonctionnalités'],
-            ultra:    ['700 crédits/mois', "Utilisez comme: 700 × rendus 4K OU jusqu'à 70 × rendus 8K", 'Tous les menus design', 'Constructeur de Prompts & Chat', 'Support prioritaire', 'Accès au Réseau Fournisseurs', 'Accès anticipé aux fonctionnalités'],
-            vision:   ['2000 crédits/mois', "Utilisez comme: 2000 × rendus 4K OU jusqu'à 200 × rendus 8K", 'Tous les menus design', 'Constructeur de Prompts & Chat', 'Support dédié', 'Accès au Réseau Fournisseurs', 'Accès anticipé aux fonctionnalités']
+            standard: ['125 crédits/mois', "Utilisez comme: 125 × rendus 4K OU jusqu'à 12 × rendus 8K", 'Tous les menus design', 'Constructeur de Prompts & Chat', 'Support email prioritaire', 'Accès à l\u0027Annuaire Designers'],
+            pro:      ['300 crédits/mois', "Utilisez comme: 300 × rendus 4K OU jusqu'à 30 × rendus 8K", 'Tous les menus design', 'Constructeur de Prompts & Chat', 'Support prioritaire', 'Accès à l\u0027Annuaire Designers', 'Accès anticipé aux fonctionnalités'],
+            ultra:    ['700 crédits/mois', "Utilisez comme: 700 × rendus 4K OU jusqu'à 70 × rendus 8K", 'Tous les menus design', 'Constructeur de Prompts & Chat', 'Support prioritaire', 'Accès à l\u0027Annuaire Designers', 'Accès anticipé aux fonctionnalités'],
+            vision:   ['2000 crédits/mois', "Utilisez comme: 2000 × rendus 4K OU jusqu'à 200 × rendus 8K", 'Tous les menus design', 'Constructeur de Prompts & Chat', 'Support dédié', 'Accès à l\u0027Annuaire Designers', 'Accès anticipé aux fonctionnalités']
         },
         'PT': {
             student:  ['50 créditos/mês', 'Use como: 50 × renders 4K OU até 5 × renders 8K', 'Todos os menus de design', 'Construtor de Prompts & Chat', 'Suporte por email'],
-            standard: ['125 créditos/mês', 'Use como: 125 × renders 4K OU até 12 × renders 8K', 'Todos os menus de design', 'Construtor de Prompts & Chat', 'Suporte email prioritário', 'Acesso à Rede de Fornecedores'],
-            pro:      ['300 créditos/mês', 'Use como: 300 × renders 4K OU até 30 × renders 8K', 'Todos os menus de design', 'Construtor de Prompts & Chat', 'Suporte prioritário', 'Acesso à Rede de Fornecedores', 'Acesso antecipado a recursos'],
-            ultra:    ['700 créditos/mês', 'Use como: 700 × renders 4K OU até 70 × renders 8K', 'Todos os menus de design', 'Construtor de Prompts & Chat', 'Suporte prioritário', 'Acesso à Rede de Fornecedores', 'Acesso antecipado a recursos'],
-            vision:   ['2000 créditos/mês', 'Use como: 2000 × renders 4K OU até 200 × renders 8K', 'Todos os menus de design', 'Construtor de Prompts & Chat', 'Suporte dedicado', 'Acesso à Rede de Fornecedores', 'Acesso antecipado a recursos']
+            standard: ['125 créditos/mês', 'Use como: 125 × renders 4K OU até 12 × renders 8K', 'Todos os menus de design', 'Construtor de Prompts & Chat', 'Suporte email prioritário', 'Acesso ao Diretório de Designers'],
+            pro:      ['300 créditos/mês', 'Use como: 300 × renders 4K OU até 30 × renders 8K', 'Todos os menus de design', 'Construtor de Prompts & Chat', 'Suporte prioritário', 'Acesso ao Diretório de Designers', 'Acesso antecipado a recursos'],
+            ultra:    ['700 créditos/mês', 'Use como: 700 × renders 4K OU até 70 × renders 8K', 'Todos os menus de design', 'Construtor de Prompts & Chat', 'Suporte prioritário', 'Acesso ao Diretório de Designers', 'Acesso antecipado a recursos'],
+            vision:   ['2000 créditos/mês', 'Use como: 2000 × renders 4K OU até 200 × renders 8K', 'Todos os menus de design', 'Construtor de Prompts & Chat', 'Suporte dedicado', 'Acesso ao Diretório de Designers', 'Acesso antecipado a recursos']
         },
         'ID': {
             student:  ['50 kredit/bulan', 'Gunakan sebagai: 50 × render 4K ATAU hingga 5 × render 8K', 'Semua menu desain', 'Pembuat Prompt & Obrolan', 'Dukungan email'],
-            standard: ['125 kredit/bulan', 'Gunakan sebagai: 125 × render 4K ATAU hingga 12 × render 8K', 'Semua menu desain', 'Pembuat Prompt & Obrolan', 'Dukungan email prioritas', 'Akses Jaringan Vendor'],
-            pro:      ['300 kredit/bulan', 'Gunakan sebagai: 300 × render 4K ATAU hingga 30 × render 8K', 'Semua menu desain', 'Pembuat Prompt & Obrolan', 'Dukungan prioritas', 'Akses Jaringan Vendor', 'Akses fitur awal'],
-            ultra:    ['700 kredit/bulan', 'Gunakan sebagai: 700 × render 4K ATAU hingga 70 × render 8K', 'Semua menu desain', 'Pembuat Prompt & Obrolan', 'Dukungan prioritas', 'Akses Jaringan Vendor', 'Akses fitur awal'],
-            vision:   ['2000 kredit/bulan', 'Gunakan sebagai: 2000 × render 4K ATAU hingga 200 × render 8K', 'Semua menu desain', 'Pembuat Prompt & Obrolan', 'Dukungan khusus', 'Akses Jaringan Vendor', 'Akses fitur awal']
+            standard: ['125 kredit/bulan', 'Gunakan sebagai: 125 × render 4K ATAU hingga 12 × render 8K', 'Semua menu desain', 'Pembuat Prompt & Obrolan', 'Dukungan email prioritas', 'Akses Direktori Desainer'],
+            pro:      ['300 kredit/bulan', 'Gunakan sebagai: 300 × render 4K ATAU hingga 30 × render 8K', 'Semua menu desain', 'Pembuat Prompt & Obrolan', 'Dukungan prioritas', 'Akses Direktori Desainer', 'Akses fitur awal'],
+            ultra:    ['700 kredit/bulan', 'Gunakan sebagai: 700 × render 4K ATAU hingga 70 × render 8K', 'Semua menu desain', 'Pembuat Prompt & Obrolan', 'Dukungan prioritas', 'Akses Direktori Desainer', 'Akses fitur awal'],
+            vision:   ['2000 kredit/bulan', 'Gunakan sebagai: 2000 × render 4K ATAU hingga 200 × render 8K', 'Semua menu desain', 'Pembuat Prompt & Obrolan', 'Dukungan khusus', 'Akses Direktori Desainer', 'Akses fitur awal']
         },
         'HI': {
             student:  ['50 क्रेडिट/माह', 'उपयोग करें: 50 × 4K रेंडर या 5 × 8K रेंडर तक', 'सभी डिज़ाइन मेनू', 'प्रॉम्प्ट बिल्डर और चैट', 'ईमेल सहायता'],
-            standard: ['125 क्रेडिट/माह', 'उपयोग करें: 125 × 4K रेंडर या 12 × 8K रेंडर तक', 'सभी डिज़ाइन मेनू', 'प्रॉम्प्ट बिल्डर और चैट', 'प्राथमिकता ईमेल सहायता', 'विक्रेता नेटवर्क एक्सेस'],
-            pro:      ['300 क्रेडिट/माह', 'उपयोग करें: 300 × 4K रेंडर या 30 × 8K रेंडर तक', 'सभी डिज़ाइन मेनू', 'प्रॉम्प्ट बिल्डर और चैट', 'प्राथमिकता सहायता', 'विक्रेता नेटवर्क एक्सेस', 'अर्ली फीचर एक्सेस'],
-            ultra:    ['700 क्रेडिट/माह', 'उपयोग करें: 700 × 4K रेंडर या 70 × 8K रेंडर तक', 'सभी डिज़ाइन मेनू', 'प्रॉम्प्ट बिल्डर और चैट', 'प्राथमिकता सहायता', 'विक्रेता नेटवर्क एक्सेस', 'अर्ली फीचर एक्सेस'],
-            vision:   ['2000 क्रेडिट/माह', 'उपयोग करें: 2000 × 4K रेंडर या 200 × 8K रेंडर तक', 'सभी डिज़ाइन मेनू', 'प्रॉम्प्ट बिल्डर और चैट', 'समर्पित सहायता', 'विक्रेता नेटवर्क एक्सेस', 'अर्ली फीचर एक्सेस']
+            standard: ['125 क्रेडिट/माह', 'उपयोग करें: 125 × 4K रेंडर या 12 × 8K रेंडर तक', 'सभी डिज़ाइन मेनू', 'प्रॉम्प्ट बिल्डर और चैट', 'प्राथमिकता ईमेल सहायता', 'डिज़ाइनर निर्देशिका एक्सेस'],
+            pro:      ['300 क्रेडिट/माह', 'उपयोग करें: 300 × 4K रेंडर या 30 × 8K रेंडर तक', 'सभी डिज़ाइन मेनू', 'प्रॉम्प्ट बिल्डर और चैट', 'प्राथमिकता सहायता', 'डिज़ाइनर निर्देशिका एक्सेस', 'अर्ली फीचर एक्सेस'],
+            ultra:    ['700 क्रेडिट/माह', 'उपयोग करें: 700 × 4K रेंडर या 70 × 8K रेंडर तक', 'सभी डिज़ाइन मेनू', 'प्रॉम्प्ट बिल्डर और चैट', 'प्राथमिकता सहायता', 'डिज़ाइनर निर्देशिका एक्सेस', 'अर्ली फीचर एक्सेस'],
+            vision:   ['2000 क्रेडिट/माह', 'उपयोग करें: 2000 × 4K रेंडर या 200 × 8K रेंडर तक', 'सभी डिज़ाइन मेनू', 'प्रॉम्प्ट बिल्डर और चैट', 'समर्पित सहायता', 'डिज़ाइनर निर्देशिका एक्सेस', 'अर्ली फीचर एक्सेस']
         },
         'AR': {
             student:  ['50 رصيد/شهر', 'استخدم كـ: 50 × عرض 4K أو حتى 5 × عرض 8K', 'جميع قوائم التصميم', 'منشئ الأوامر والدردشة', 'دعم البريد الإلكتروني'],
-            standard: ['125 رصيد/شهر', 'استخدم كـ: 125 × عرض 4K أو حتى 12 × عرض 8K', 'جميع قوائم التصميم', 'منشئ الأوامر والدردشة', 'دعم بريد إلكتروني ذو أولوية', 'الوصول إلى شبكة الموردين'],
-            pro:      ['300 رصيد/شهر', 'استخدم كـ: 300 × عرض 4K أو حتى 30 × عرض 8K', 'جميع قوائم التصميم', 'منشئ الأوامر والدردشة', 'دعم ذو أولوية', 'الوصول إلى شبكة الموردين', 'وصول مبكر للميزات'],
-            ultra:    ['700 رصيد/شهر', 'استخدم كـ: 700 × عرض 4K أو حتى 70 × عرض 8K', 'جميع قوائم التصميم', 'منشئ الأوامر والدردشة', 'دعم ذو أولوية', 'الوصول إلى شبكة الموردين', 'وصول مبكر للميزات'],
-            vision:   ['2000 رصيد/شهر', 'استخدم كـ: 2000 × عرض 4K أو حتى 200 × عرض 8K', 'جميع قوائم التصميم', 'منشئ الأوامر والدردشة', 'دعم مخصص', 'الوصول إلى شبكة الموردين', 'وصول مبكر للميزات']
+            standard: ['125 رصيد/شهر', 'استخدم كـ: 125 × عرض 4K أو حتى 12 × عرض 8K', 'جميع قوائم التصميم', 'منشئ الأوامر والدردشة', 'دعم بريد إلكتروني ذو أولوية', 'الوصول إلى دليل المصممين'],
+            pro:      ['300 رصيد/شهر', 'استخدم كـ: 300 × عرض 4K أو حتى 30 × عرض 8K', 'جميع قوائم التصميم', 'منشئ الأوامر والدردشة', 'دعم ذو أولوية', 'الوصول إلى دليل المصممين', 'وصول مبكر للميزات'],
+            ultra:    ['700 رصيد/شهر', 'استخدم كـ: 700 × عرض 4K أو حتى 70 × عرض 8K', 'جميع قوائم التصميم', 'منشئ الأوامر والدردشة', 'دعم ذو أولوية', 'الوصول إلى دليل المصممين', 'وصول مبكر للميزات'],
+            vision:   ['2000 رصيد/شهر', 'استخدم كـ: 2000 × عرض 4K أو حتى 200 × عرض 8K', 'جميع قوائم التصميم', 'منشئ الأوامر والدردشة', 'دعم مخصص', 'الوصول إلى دليل المصممين', 'وصول مبكر للميزات']
         },
         'IT': {
             student:  ['50 crediti/mese', 'Usa come: 50 × render 4K O fino a 5 × render 8K', 'Tutti i menu di design', 'Costruttore di Prompt & Chat', 'Supporto email'],
-            standard: ['125 crediti/mese', 'Usa come: 125 × render 4K O fino a 12 × render 8K', 'Tutti i menu di design', 'Costruttore di Prompt & Chat', 'Supporto email prioritario', 'Accesso alla Rete Fornitori'],
-            pro:      ['300 crediti/mese', 'Usa come: 300 × render 4K O fino a 30 × render 8K', 'Tutti i menu di design', 'Costruttore di Prompt & Chat', 'Supporto prioritario', 'Accesso alla Rete Fornitori', 'Accesso anticipato alle funzionalità'],
-            ultra:    ['700 crediti/mese', 'Usa come: 700 × render 4K O fino a 70 × render 8K', 'Tutti i menu di design', 'Costruttore di Prompt & Chat', 'Supporto prioritario', 'Accesso alla Rete Fornitori', 'Accesso anticipato alle funzionalità'],
-            vision:   ['2000 crediti/mese', 'Usa come: 2000 × render 4K O fino a 200 × render 8K', 'Tutti i menu di design', 'Costruttore di Prompt & Chat', 'Supporto dedicato', 'Accesso alla Rete Fornitori', 'Accesso anticipato alle funzionalità']
+            standard: ['125 crediti/mese', 'Usa come: 125 × render 4K O fino a 12 × render 8K', 'Tutti i menu di design', 'Costruttore di Prompt & Chat', 'Supporto email prioritario', 'Accesso alla Directory Designer'],
+            pro:      ['300 crediti/mese', 'Usa come: 300 × render 4K O fino a 30 × render 8K', 'Tutti i menu di design', 'Costruttore di Prompt & Chat', 'Supporto prioritario', 'Accesso alla Directory Designer', 'Accesso anticipato alle funzionalità'],
+            ultra:    ['700 crediti/mese', 'Usa come: 700 × render 4K O fino a 70 × render 8K', 'Tutti i menu di design', 'Costruttore di Prompt & Chat', 'Supporto prioritario', 'Accesso alla Directory Designer', 'Accesso anticipato alle funzionalità'],
+            vision:   ['2000 crediti/mese', 'Usa come: 2000 × render 4K O fino a 200 × render 8K', 'Tutti i menu di design', 'Costruttore di Prompt & Chat', 'Supporto dedicato', 'Accesso alla Directory Designer', 'Accesso anticipato alle funzionalità']
         }
     };
 
