@@ -495,14 +495,51 @@ if(dashTitle) observer.observe(dashTitle, {childList: true, characterData: true,
   <div class="w-full max-w-4xl glass-panel rounded-3xl p-6 lg:p-10 border border-white/10 relative shadow-2xl mt-4">
     <button onclick="closeAdminPanel()" class="absolute top-6 right-6 text-white/50 hover:text-white text-2xl">✕</button>
     <h3 class="text-2xl font-extrabold text-white tracking-[0.2em] uppercase mb-2 border-b border-white/10 pb-4">⚡ ADMIN PANEL</h3>
-    <p class="text-[0.6rem] tracking-widest text-white/40 uppercase mb-6">Manage vendor applications</p>
-    <div class="flex gap-2 mb-4 text-[0.6rem] tracking-widest uppercase">
-      <button onclick="filterVendors('all')" id="filterAll" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white font-bold">ALL</button>
-      <button onclick="filterVendors('pending')" id="filterPending" class="px-4 py-2 bg-yellow-500/10 hover:bg-yellow-500/20 rounded-xl text-yellow-300 font-bold">PENDING</button>
-      <button onclick="filterVendors('approved')" id="filterApproved" class="px-4 py-2 bg-green-500/10 hover:bg-green-500/20 rounded-xl text-green-300 font-bold">APPROVED</button>
+    <p class="text-[0.6rem] tracking-widest text-white/40 uppercase mb-4">Manage vendor applications</p>
+    <div class="flex gap-2 mb-4 text-[0.65rem] tracking-widest uppercase border-b border-white/10 pb-3">
+      <button onclick="switchAdminTab('vendors')" id="tabVendors" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white font-bold">VENDORS</button>
+      <button onclick="switchAdminTab('coupons')" id="tabCoupons" class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/50 font-bold">COUPONS</button>
     </div>
-    <div id="adminVendorList" class="flex flex-col gap-3 max-h-[70vh] overflow-y-auto pr-2">
-      <div class="text-white/30 text-center py-8 text-[0.7rem] tracking-widest uppercase">Loading...</div>
+    <div id="vendorsTab">
+      <div class="flex gap-2 mb-4 text-[0.6rem] tracking-widest uppercase">
+        <button onclick="filterVendors('all')" id="filterAll" class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white font-bold">ALL</button>
+        <button onclick="filterVendors('pending')" id="filterPending" class="px-4 py-2 bg-yellow-500/10 hover:bg-yellow-500/20 rounded-xl text-yellow-300 font-bold">PENDING</button>
+        <button onclick="filterVendors('approved')" id="filterApproved" class="px-4 py-2 bg-green-500/10 hover:bg-green-500/20 rounded-xl text-green-300 font-bold">APPROVED</button>
+      </div>
+      <div id="adminVendorList" class="flex flex-col gap-3 max-h-[70vh] overflow-y-auto pr-2">
+        <div class="text-white/30 text-center py-8 text-[0.7rem] tracking-widest uppercase">Loading...</div>
+      </div>
+    </div>
+    <div id="couponsTab" class="hidden">
+      <div class="border border-white/10 rounded-2xl p-5 mb-4">
+        <h4 class="text-white font-extrabold tracking-widest uppercase text-sm mb-4">CREATE COUPONS</h4>
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div>
+            <label class="text-[0.55rem] tracking-widest text-white/40 uppercase block mb-2">CREDITS AMOUNT</label>
+            <input type="number" id="couponCredits" value="10" min="1" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none text-[0.75rem] tracking-widest">
+          </div>
+          <div>
+            <label class="text-[0.55rem] tracking-widest text-white/40 uppercase block mb-2">QUANTITY</label>
+            <input type="number" id="couponQuantity" value="1" min="1" max="100" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none text-[0.75rem] tracking-widest">
+          </div>
+          <div>
+            <label class="text-[0.55rem] tracking-widest text-white/40 uppercase block mb-2">EXPIRES IN DAYS</label>
+            <input type="number" id="couponExpiryDays" value="30" min="1" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none text-[0.75rem] tracking-widest">
+          </div>
+          <div>
+            <label class="text-[0.55rem] tracking-widest text-white/40 uppercase block mb-2">PREFIX (OPTIONAL)</label>
+            <input type="text" id="couponPrefix" value="ADEULL" placeholder="ADEULL" class="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none text-[0.75rem] tracking-widest uppercase">
+          </div>
+        </div>
+        <button onclick="generateCoupons()" class="w-full bg-white text-black font-extrabold py-3 rounded-xl tracking-[0.2em] hover:bg-gray-200 transition uppercase text-[0.7rem]">⚡ GENERATE COUPONS</button>
+      </div>
+      <div class="flex justify-between items-center mb-3">
+        <h4 class="text-white/70 font-bold tracking-widest uppercase text-[0.7rem]">EXISTING COUPONS</h4>
+        <button onclick="loadCoupons()" class="text-[0.6rem] text-white/40 hover:text-white tracking-widest uppercase">↻ REFRESH</button>
+      </div>
+      <div id="couponsList" class="flex flex-col gap-2 max-h-[50vh] overflow-y-auto pr-2">
+        <div class="text-white/30 text-center py-6 text-[0.6rem] tracking-widest uppercase">Loading...</div>
+      </div>
     </div>
   </div>
 </div>
@@ -650,6 +687,101 @@ async function deleteVendor(id) {
     if(error) throw error;
     loadAdminVendors();
     if(typeof loadVendors === 'function') loadVendors();
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+function switchAdminTab(tab) {
+  document.getElementById('vendorsTab').classList.toggle('hidden', tab !== 'vendors');
+  document.getElementById('couponsTab').classList.toggle('hidden', tab !== 'coupons');
+  const tabV = document.getElementById('tabVendors');
+  const tabC = document.getElementById('tabCoupons');
+  if(tab === 'vendors') {
+    tabV.className = 'px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white font-bold';
+    tabC.className = 'px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/50 font-bold';
+  } else {
+    tabV.className = 'px-4 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-white/50 font-bold';
+    tabC.className = 'px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white font-bold';
+    loadCoupons();
+  }
+}
+
+function generateRandomCode(prefix) {
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  let code = prefix ? prefix.toUpperCase() + '-' : '';
+  for(let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  code += '-';
+  for(let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+async function generateCoupons() {
+  if(!window.isUserAdmin) { alert('Access denied'); return; }
+  const credits = parseInt(document.getElementById('couponCredits').value) || 10;
+  const quantity = parseInt(document.getElementById('couponQuantity').value) || 1;
+  const expiryDays = parseInt(document.getElementById('couponExpiryDays').value) || 30;
+  const prefix = (document.getElementById('couponPrefix').value || 'ADEULL').replace(/[^A-Z0-9]/gi, '');
+  if(quantity > 100) { alert('Maximum 100 coupons at once'); return; }
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + expiryDays);
+  const coupons = [];
+  for(let i = 0; i < quantity; i++) {
+    coupons.push({ code: generateRandomCode(prefix), credits: credits, used: false, expires_at: expiresAt.toISOString() });
+  }
+  try {
+    const { error } = await window.supabaseClient.from('coupons').insert(coupons).select();
+    if(error) throw error;
+    const codesList = coupons.map(c => c.code).join('\n');
+    const blob = new Blob(['ADEULL AI - Generated Coupons\n\nCredits: ' + credits + '\nQuantity: ' + quantity + '\nExpires: ' + expiresAt.toDateString() + '\n\nCODES:\n' + codesList], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'adeull-coupons-' + Date.now() + '.txt'; a.click();
+    URL.revokeObjectURL(url);
+    alert('✓ ' + quantity + ' coupon(s) created! Downloaded as text file.');
+    loadCoupons();
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+async function loadCoupons() {
+  if(!window.isUserAdmin) return;
+  const list = document.getElementById('couponsList');
+  if(!list) return;
+  list.innerHTML = '<div class="text-white/30 text-center py-6 text-[0.6rem] tracking-widest uppercase">Loading...</div>';
+  try {
+    const { data, error } = await window.supabaseClient
+      .from('coupons').select('*').order('created_at', { ascending: false }).limit(100);
+    if(error) throw error;
+    if(!data || data.length === 0) {
+      list.innerHTML = '<div class="text-white/30 text-center py-6 text-[0.6rem] tracking-widest uppercase">No coupons yet</div>';
+      return;
+    }
+    let html = '';
+    data.forEach(c => {
+      const expired = c.expires_at && new Date(c.expires_at) < new Date();
+      const status = c.used ? 'USED' : (expired ? 'EXPIRED' : 'ACTIVE');
+      const statusColor = c.used ? 'text-red-400/70' : (expired ? 'text-yellow-400/70' : 'text-green-400/70');
+      html += `<div class="border border-white/10 rounded-xl p-3 flex justify-between items-center gap-3">
+        <div class="flex-1 min-w-0">
+          <div class="text-white font-mono text-[0.75rem] font-bold tracking-widest">${c.code}</div>
+          <div class="text-[0.55rem] text-white/40 tracking-widest uppercase mt-1">${c.credits} credits · ${c.expires_at ? new Date(c.expires_at).toLocaleDateString() : 'no expiry'}</div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="${statusColor} text-[0.55rem] font-bold tracking-widest">${status}</span>
+          <button onclick="deleteCoupon('${c.id}')" class="text-red-400/70 hover:text-red-400 text-sm px-2">✕</button>
+        </div>
+      </div>`;
+    });
+    list.innerHTML = html;
+  } catch(e) {
+    list.innerHTML = '<div class="text-red-400/70 text-center py-6 text-[0.6rem] tracking-widest">Error loading</div>';
+  }
+}
+
+async function deleteCoupon(id) {
+  if(!confirm('Delete this coupon?')) return;
+  try {
+    const { error } = await window.supabaseClient.from('coupons').delete().eq('id', id);
+    if(error) throw error;
+    loadCoupons();
   } catch(e) { alert('Error: ' + e.message); }
 }
 
