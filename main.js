@@ -320,9 +320,9 @@ async function simulateAPIConnection(btnId, is8K = false) {
             missingItem: 'Menu ini membutuhkan gambar SCENE dan ITEM. Jika hanya punya satu gambar, gunakan menu DESIGN.',
             missingScene: 'Menu ini membutuhkan gambar SCENE terlebih dahulu. Unggah scene atau gunakan menu DESIGN.'
         },
-        'HI': {
-            missingItem: 'इस मेनू के लिए SCENE और ITEM दोनों छवियां आवश्यक हैं। यदि केवल एक छवि है, तो DESIGN मेनू का उपयोग करें।',
-            missingScene: 'इस मेनू के लिए पहले SCENE छवि आवश्यक है। कृपया एक scene अपलोड करें।'
+        'RU': {
+            missingItem: 'Это меню требует изображения СЦЕНЫ и ПРЕДМЕТА. Если у вас только одно изображение, используйте меню DESIGN.',
+            missingScene: 'Это меню сначала требует изображение СЦЕНЫ. Загрузите сцену или используйте меню DESIGN.'
         },
         'AR': {
             missingItem: 'تتطلب هذه القائمة صورة المشهد والعنصر معًا. إذا كان لديك صورة واحدة فقط، استخدم قائمة DESIGN.',

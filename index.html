@@ -67,7 +67,7 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 <button onclick="selectLang('FR', '🇫🇷')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇫🇷</span> FR</button>
 <button onclick="selectLang('PT', '🇧🇷')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇧🇷</span> PT</button>
 <button onclick="selectLang('ID', '🇮🇩')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇮🇩</span> ID</button>
-<button onclick="selectLang('HI', '🇮🇳')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇮🇳</span> HI</button>
+<button onclick="selectLang('RU', '🇷🇺')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇷🇺</span> RU</button>
 <button onclick="selectLang('AR', '🇦🇪')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇦🇪</span> AR</button>
 <button onclick="selectLang('IT', '🇮🇹')" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition text-left text-white/80"><span>🇮🇹</span> IT</button>
 </div>
@@ -591,13 +591,13 @@ if(dashTitle) observer.observe(dashTitle, {childList: true, characterData: true,
     <input id="vendorCompany" type="text" placeholder="COMPANY NAME *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
     <select id="vendorCategory" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
       <option value="" disabled selected class="bg-black">SELECT CATEGORY *</option>
-      <option value="furniture" class="bg-black">Furniture</option>
-      <option value="lighting" class="bg-black">Lighting</option>
-      <option value="materials" class="bg-black">Materials & Surfaces</option>
-      <option value="decor" class="bg-black">Decor & Accessories</option>
-      <option value="construction" class="bg-black">Construction</option>
-      <option value="landscaping" class="bg-black">Landscaping</option>
-      <option value="other" class="bg-black">Other</option>
+      <option value="ARCHITECT" class="bg-black">ARCHITECT</option>
+      <option value="ENGINEER" class="bg-black">ENGINEER</option>
+      <option value="FURNITURE STORE" class="bg-black">FURNITURE STORE</option>
+      <option value="CARPENTER" class="bg-black">CARPENTER</option>
+      <option value="METAL WORKSHOP" class="bg-black">METAL WORKSHOP</option>
+      <option value="UPHOLSTERY" class="bg-black">UPHOLSTERY</option>
+      <option value="CONSTRUCTION" class="bg-black">CONSTRUCTION</option>
     </select>
     <textarea id="vendorDescription" placeholder="BRIEF DESCRIPTION OF YOUR SERVICES..." rows="3" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase resize-none"></textarea>
     <input id="vendorEmail" type="email" placeholder="EMAIL *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
@@ -831,7 +831,7 @@ window.vendorTranslations = {
   'FR': { title: 'REJOINDRE LE RÉSEAU', subtitle: 'Rejoignez notre réseau de communication et connectez-vous avec des clients du monde entier', company: "NOM DE L'ENTREPRISE *", selectCat: 'SÉLECTIONNER UNE CATÉGORIE *', desc: 'BRÈVE DESCRIPTION DE VOS SERVICES...', email: 'EMAIL *', phone: 'TÉLÉPHONE', whatsapp: 'WHATSAPP (+CODE PAYS)', website: 'SITE WEB (OPTIONNEL)', country: 'PAYS *', city: 'VILLE *', submit: 'SOUMETTRE LA CANDIDATURE', warning: "⚠ Votre candidature sera examinée par notre équipe avant d'être publiée", becomeVendor: 'REJOINDRE LE RÉSEAU', successMsg: "✓ Candidature soumise! Notre équipe l'examinera dans 1-3 jours ouvrables.", loginFirst: 'Veuillez vous connecter d\'abord pour rejoindre le réseau.' },
   'PT': { title: 'JUNTAR-SE À REDE', subtitle: 'Junte-se à nossa rede de comunicação e conecte-se com clientes em todo o mundo', company: 'NOME DA EMPRESA *', selectCat: 'SELECIONAR CATEGORIA *', desc: 'BREVE DESCRIÇÃO DE SEUS SERVIÇOS...', email: 'EMAIL *', phone: 'TELEFONE', whatsapp: 'WHATSAPP (+CÓDIGO DO PAÍS)', website: 'SITE (OPCIONAL)', country: 'PAÍS *', city: 'CIDADE *', submit: 'ENVIAR INSCRIÇÃO', warning: '⚠ Sua inscrição será analisada por nossa equipe antes de ser publicada', becomeVendor: 'JUNTAR-SE À REDE', successMsg: '✓ Inscrição enviada! Nossa equipe analisará em 1-3 dias úteis.', loginFirst: 'Faça login primeiro para entrar na rede.' },
   'ID': { title: 'GABUNG JARINGAN', subtitle: 'Bergabunglah dengan jaringan komunikasi kami dan terhubung dengan klien di seluruh dunia', company: 'NAMA PERUSAHAAN *', selectCat: 'PILIH KATEGORI *', desc: 'DESKRIPSI SINGKAT LAYANAN ANDA...', email: 'EMAIL *', phone: 'TELEPON', whatsapp: 'WHATSAPP (+KODE NEGARA)', website: 'WEBSITE (OPSIONAL)', country: 'NEGARA *', city: 'KOTA *', submit: 'KIRIM APLIKASI', warning: '⚠ Aplikasi Anda akan ditinjau oleh tim kami sebelum dipublikasikan', becomeVendor: 'GABUNG JARINGAN', successMsg: '✓ Aplikasi dikirim! Tim kami akan meninjau dalam 1-3 hari kerja.', loginFirst: 'Silakan login dulu untuk bergabung ke jaringan.' },
-  'HI': { title: 'नेटवर्क में शामिल हों', subtitle: 'हमारे संचार नेटवर्क से जुड़ें और दुनिया भर के ग्राहकों से जुड़ें', company: 'कंपनी का नाम *', selectCat: 'श्रेणी चुनें *', desc: 'अपनी सेवाओं का संक्षिप्त विवरण...', email: 'ईमेल *', phone: 'फोन', whatsapp: 'व्हाट्सएप (+देश कोड)', website: 'वेबसाइट (वैकल्पिक)', country: 'देश *', city: 'शहर *', submit: 'आवेदन जमा करें', warning: '⚠ प्रकाशित होने से पहले आपके आवेदन की हमारी टीम द्वारा समीक्षा की जाएगी', becomeVendor: 'नेटवर्क में शामिल हों', successMsg: '✓ आवेदन जमा! हमारी टीम 1-3 कार्य दिवसों में समीक्षा करेगी।', loginFirst: 'कृपया नेटवर्क में शामिल होने के लिए पहले लॉगिन करें।' },
+  'RU': { title: 'ПРИСОЕДИНИТЬСЯ К СЕТИ', subtitle: 'Присоединяйтесь к нашей коммуникационной сети и связывайтесь с клиентами по всему миру', company: 'НАЗВАНИЕ КОМПАНИИ *', selectCat: 'ВЫБЕРИТЕ КАТЕГОРИЮ *', desc: 'КРАТКОЕ ОПИСАНИЕ ВАШИХ УСЛУГ...', email: 'EMAIL *', phone: 'ТЕЛЕФОН', whatsapp: 'WHATSAPP (+КОД СТРАНЫ)', website: 'ВЕБ-САЙТ (НЕОБЯЗАТЕЛЬНО)', country: 'СТРАНА *', city: 'ГОРОД *', submit: 'ОТПРАВИТЬ ЗАЯВКУ', warning: '⚠ Ваша заявка будет рассмотрена нашей командой перед публикацией', becomeVendor: 'ПРИСОЕДИНИТЬСЯ К СЕТИ', successMsg: '✓ Заявка отправлена! Наша команда рассмотрит её в течение 1-3 рабочих дней.', loginFirst: 'Пожалуйста, сначала войдите в систему, чтобы присоединиться к сети.' },
   'AR': { title: 'انضم إلى الشبكة', subtitle: 'انضم إلى شبكة الاتصال لدينا وتواصل مع العملاء في جميع أنحاء العالم', company: 'اسم الشركة *', selectCat: 'اختر الفئة *', desc: 'وصف موجز لخدماتك...', email: 'البريد الإلكتروني *', phone: 'الهاتف', whatsapp: 'واتساب (+رمز البلد)', website: 'الموقع الإلكتروني (اختياري)', country: 'البلد *', city: 'المدينة *', submit: 'إرسال الطلب', warning: '⚠ سيتم مراجعة طلبك من قبل فريقنا قبل نشره', becomeVendor: 'انضم إلى الشبكة', successMsg: '✓ تم إرسال الطلب! سيقوم فريقنا بمراجعته خلال 1-3 أيام عمل.', loginFirst: 'يرجى تسجيل الدخول أولاً للانضمام إلى الشبكة.' },
   'IT': { title: 'UNISCITI ALLA RETE', subtitle: 'Unisciti alla nostra rete di comunicazione e connettiti con clienti in tutto il mondo', company: 'NOME AZIENDA *', selectCat: 'SELEZIONA CATEGORIA *', desc: 'BREVE DESCRIZIONE DEI TUOI SERVIZI...', email: 'EMAIL *', phone: 'TELEFONO', whatsapp: 'WHATSAPP (+PREFISSO PAESE)', website: 'SITO WEB (OPZIONALE)', country: 'PAESE *', city: 'CITTÀ *', submit: 'INVIA CANDIDATURA', warning: '⚠ La tua candidatura sarà esaminata dal nostro team prima di essere pubblicata', becomeVendor: 'UNISCITI ALLA RETE', successMsg: '✓ Candidatura inviata! Il nostro team la esaminerà entro 1-3 giorni lavorativi.', loginFirst: 'Effettua prima il login per unirti alla rete.' }
 };
@@ -870,16 +870,16 @@ function applyVendorTranslations() {
 }
 
 window.vendorCategoryTranslations = {
-  'EN': {'ARCHITECT': 'ARCHITECT', 'CONTRACTOR': 'CONTRACTOR', 'ELECTRICIAN': 'ELECTRICIAN', 'HVAC': 'HVAC / MECHANICAL', 'PLUMBER': 'PLUMBER', 'METAL WORKSHOP': 'METAL WORKSHOP', 'UPHOLSTERY': 'UPHOLSTERY', 'PAINTER': 'PAINTER', 'CONSTRUCTION': 'CONSTRUCTION', 'CARPENTER': 'CARPENTER', 'FURNITURE STORE': 'FURNITURE STORE', '_noVendors': 'No contacts yet'},
-  'TR': {'ARCHITECT': 'MİMAR', 'CONTRACTOR': 'MÜTEAHHİT', 'ELECTRICIAN': 'ELEKTRİKÇİ', 'HVAC': 'İKLİMLENDİRME', 'PLUMBER': 'TESİSATÇI', 'METAL WORKSHOP': 'METAL ATÖLYESİ', 'UPHOLSTERY': 'DÖŞEMECI', 'PAINTER': 'BOYACI', 'CONSTRUCTION': 'İNŞAAT', 'CARPENTER': 'MARANGOZ', 'FURNITURE STORE': 'MOBİLYA MAĞAZASI', '_noVendors': 'Henüz kişi yok'},
-  'ES': {'ARCHITECT': 'ARQUITECTO', 'CONTRACTOR': 'CONTRATISTA', 'ELECTRICIAN': 'ELECTRICISTA', 'HVAC': 'HVAC', 'PLUMBER': 'FONTANERO', 'METAL WORKSHOP': 'TALLER DE METAL', 'UPHOLSTERY': 'TAPICERÍA', 'PAINTER': 'PINTOR', 'CONSTRUCTION': 'CONSTRUCCIÓN', 'CARPENTER': 'CARPINTERO', 'FURNITURE STORE': 'TIENDA DE MUEBLES', '_noVendors': 'Sin contactos'},
-  'DE': {'ARCHITECT': 'ARCHITEKT', 'CONTRACTOR': 'BAUUNTERNEHMER', 'ELECTRICIAN': 'ELEKTRIKER', 'HVAC': 'HLK', 'PLUMBER': 'KLEMPNER', 'METAL WORKSHOP': 'METALLWERKSTATT', 'UPHOLSTERY': 'POLSTEREI', 'PAINTER': 'MALER', 'CONSTRUCTION': 'BAU', 'CARPENTER': 'TISCHLER', 'FURNITURE STORE': 'MÖBELGESCHÄFT', '_noVendors': 'Keine Kontakte'},
-  'FR': {'ARCHITECT': 'ARCHITECTE', 'CONTRACTOR': 'ENTREPRENEUR', 'ELECTRICIAN': 'ÉLECTRICIEN', 'HVAC': 'CVC', 'PLUMBER': 'PLOMBIER', 'METAL WORKSHOP': 'ATELIER MÉTAL', 'UPHOLSTERY': 'TAPISSERIE', 'PAINTER': 'PEINTRE', 'CONSTRUCTION': 'CONSTRUCTION', 'CARPENTER': 'MENUISIER', 'FURNITURE STORE': 'MAGASIN DE MEUBLES', '_noVendors': 'Aucun contact'},
-  'PT': {'ARCHITECT': 'ARQUITETO', 'CONTRACTOR': 'EMPREITEIRO', 'ELECTRICIAN': 'ELETRICISTA', 'HVAC': 'AVAC', 'PLUMBER': 'ENCANADOR', 'METAL WORKSHOP': 'OFICINA METÁLICA', 'UPHOLSTERY': 'ESTOFAMENTO', 'PAINTER': 'PINTOR', 'CONSTRUCTION': 'CONSTRUÇÃO', 'CARPENTER': 'CARPINTEIRO', 'FURNITURE STORE': 'LOJA DE MÓVEIS', '_noVendors': 'Sem contatos'},
-  'ID': {'ARCHITECT': 'ARSITEK', 'CONTRACTOR': 'KONTRAKTOR', 'ELECTRICIAN': 'TUKANG LISTRIK', 'HVAC': 'HVAC', 'PLUMBER': 'TUKANG LEDENG', 'METAL WORKSHOP': 'BENGKEL LOGAM', 'UPHOLSTERY': 'PELAPIS', 'PAINTER': 'TUKANG CAT', 'CONSTRUCTION': 'KONSTRUKSI', 'CARPENTER': 'TUKANG KAYU', 'FURNITURE STORE': 'TOKO FURNITUR', '_noVendors': 'Belum ada kontak'},
-  'HI': {'ARCHITECT': 'वास्तुकार', 'CONTRACTOR': 'ठेकेदार', 'ELECTRICIAN': 'इलेक्ट्रीशियन', 'HVAC': 'HVAC', 'PLUMBER': 'प्लंबर', 'METAL WORKSHOP': 'धातु कार्यशाला', 'UPHOLSTERY': 'असबाब', 'PAINTER': 'पेंटर', 'CONSTRUCTION': 'निर्माण', 'CARPENTER': 'बढ़ई', 'FURNITURE STORE': 'फर्नीचर स्टोर', '_noVendors': 'कोई संपर्क नहीं'},
-  'AR': {'ARCHITECT': 'مهندس معماري', 'CONTRACTOR': 'مقاول', 'ELECTRICIAN': 'كهربائي', 'HVAC': 'تكييف', 'PLUMBER': 'سباك', 'METAL WORKSHOP': 'ورشة معادن', 'UPHOLSTERY': 'تنجيد', 'PAINTER': 'دهان', 'CONSTRUCTION': 'إنشاءات', 'CARPENTER': 'نجار', 'FURNITURE STORE': 'متجر أثاث', '_noVendors': 'لا توجد جهات اتصال'},
-  'IT': {'ARCHITECT': 'ARCHITETTO', 'CONTRACTOR': 'APPALTATORE', 'ELECTRICIAN': 'ELETTRICISTA', 'HVAC': 'HVAC', 'PLUMBER': 'IDRAULICO', 'METAL WORKSHOP': 'OFFICINA METALLI', 'UPHOLSTERY': 'TAPPEZZERIA', 'PAINTER': 'PITTORE', 'CONSTRUCTION': 'COSTRUZIONE', 'CARPENTER': 'FALEGNAME', 'FURNITURE STORE': 'NEGOZIO DI MOBILI', '_noVendors': 'Nessun contatto'}
+  'EN': {'ARCHITECT': 'ARCHITECT', 'ENGINEER': 'ENGINEER', 'FURNITURE STORE': 'FURNITURE STORE', 'CARPENTER': 'CARPENTER', 'METAL WORKSHOP': 'METAL WORKSHOP', 'UPHOLSTERY': 'UPHOLSTERY', 'CONSTRUCTION': 'CONSTRUCTION', '_noVendors': 'No contacts yet'},
+  'TR': {'ARCHITECT': 'MİMAR', 'ENGINEER': 'MÜHENDİS', 'FURNITURE STORE': 'MOBİLYA MAĞAZASI', 'CARPENTER': 'MARANGOZ', 'METAL WORKSHOP': 'METAL ATÖLYESİ', 'UPHOLSTERY': 'DÖŞEMECI', 'CONSTRUCTION': 'İNŞAAT', '_noVendors': 'Henüz kişi yok'},
+  'ES': {'ARCHITECT': 'ARQUITECTO', 'ENGINEER': 'INGENIERO', 'FURNITURE STORE': 'TIENDA DE MUEBLES', 'CARPENTER': 'CARPINTERO', 'METAL WORKSHOP': 'TALLER DE METAL', 'UPHOLSTERY': 'TAPICERÍA', 'CONSTRUCTION': 'CONSTRUCCIÓN', '_noVendors': 'Sin contactos'},
+  'DE': {'ARCHITECT': 'ARCHITEKT', 'ENGINEER': 'INGENIEUR', 'FURNITURE STORE': 'MÖBELGESCHÄFT', 'CARPENTER': 'TISCHLER', 'METAL WORKSHOP': 'METALLWERKSTATT', 'UPHOLSTERY': 'POLSTEREI', 'CONSTRUCTION': 'BAU', '_noVendors': 'Keine Kontakte'},
+  'FR': {'ARCHITECT': 'ARCHITECTE', 'ENGINEER': 'INGÉNIEUR', 'FURNITURE STORE': 'MAGASIN DE MEUBLES', 'CARPENTER': 'MENUISIER', 'METAL WORKSHOP': 'ATELIER MÉTAL', 'UPHOLSTERY': 'TAPISSERIE', 'CONSTRUCTION': 'CONSTRUCTION', '_noVendors': 'Aucun contact'},
+  'PT': {'ARCHITECT': 'ARQUITETO', 'ENGINEER': 'ENGENHEIRO', 'FURNITURE STORE': 'LOJA DE MÓVEIS', 'CARPENTER': 'CARPINTEIRO', 'METAL WORKSHOP': 'OFICINA METÁLICA', 'UPHOLSTERY': 'ESTOFAMENTO', 'CONSTRUCTION': 'CONSTRUÇÃO', '_noVendors': 'Sem contatos'},
+  'ID': {'ARCHITECT': 'ARSITEK', 'ENGINEER': 'INSINYUR', 'FURNITURE STORE': 'TOKO FURNITUR', 'CARPENTER': 'TUKANG KAYU', 'METAL WORKSHOP': 'BENGKEL LOGAM', 'UPHOLSTERY': 'PELAPIS', 'CONSTRUCTION': 'KONSTRUKSI', '_noVendors': 'Belum ada kontak'},
+  'RU': {'ARCHITECT': 'АРХИТЕКТОР', 'ENGINEER': 'ИНЖЕНЕР', 'FURNITURE STORE': 'МЕБЕЛЬНЫЙ МАГАЗИН', 'CARPENTER': 'ПЛОТНИК', 'METAL WORKSHOP': 'МЕТАЛЛООБРАБОТКА', 'UPHOLSTERY': 'ОБИВКА', 'CONSTRUCTION': 'СТРОИТЕЛЬСТВО', '_noVendors': 'Пока нет контактов'},
+  'AR': {'ARCHITECT': 'مهندس معماري', 'ENGINEER': 'مهندس', 'FURNITURE STORE': 'متجر أثاث', 'CARPENTER': 'نجار', 'METAL WORKSHOP': 'ورشة معادن', 'UPHOLSTERY': 'تنجيد', 'CONSTRUCTION': 'إنشاءات', '_noVendors': 'لا توجد جهات اتصال'},
+  'IT': {'ARCHITECT': 'ARCHITETTO', 'ENGINEER': 'INGEGNERE', 'FURNITURE STORE': 'NEGOZIO DI MOBILI', 'CARPENTER': 'FALEGNAME', 'METAL WORKSHOP': 'OFFICINA METALLI', 'UPHOLSTERY': 'TAPPEZZERIA', 'CONSTRUCTION': 'COSTRUZIONE', '_noVendors': 'Nessun contatto'}
 };
 
 async function loadVendors() {
@@ -888,8 +888,8 @@ async function loadVendors() {
   if(!list) return;
 
   const ALL_CATEGORIES = [
-    'ARCHITECT','CONTRACTOR','ELECTRICIAN','HVAC','PLUMBER',
-    'METAL WORKSHOP','UPHOLSTERY','PAINTER','CONSTRUCTION','CARPENTER','FURNITURE STORE'
+    'ARCHITECT','ENGINEER','FURNITURE STORE','CARPENTER',
+    'METAL WORKSHOP','UPHOLSTERY','CONSTRUCTION'
   ];
 
   try {
@@ -965,13 +965,28 @@ window.enterDashboard = function(menuName) {
   loadVendors();
 };
 
-function openVendorForm() {
+async function openVendorForm() {
   const code = (document.getElementById('activeCode') || {}).innerText || 'EN';
   const t = window.vendorTranslations[code] || window.vendorTranslations['EN'];
+
   if (!window.currentUserId || window.currentUserId === 'guest') {
     alert(t.loginFirst);
     return;
   }
+
+  // Plan limit kontrolü
+  try {
+    const { data, error } = await window.supabaseClient.rpc('check_vendor_limit');
+    if(error) throw error;
+
+    if(data && data.allowed === false) {
+      alert('⚠ ' + data.message + '\n\nCurrent plan: ' + (data.current_plan || 'FREE') + '\nListings used: ' + (data.current_count || 0) + '/' + (data.limit || 0));
+      return;
+    }
+  } catch(e) {
+    console.error('Limit check failed:', e);
+  }
+
   applyVendorTranslations();
   document.getElementById('vendorFormModal').style.display = 'flex';
 }
