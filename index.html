@@ -14,7 +14,7 @@
 <audio id="hoverSound" src="https://actions.google.com/sounds/v1/ui/button_click.ogg" preload="auto"></audio>
  
 <div id="loginScreen" class="absolute inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md px-4">
-<button onclick="document.getElementById('loginScreen').style.display='none';document.getElementById('appContent').classList.add('active');document.getElementById('appContent').style.display='block';document.getElementById('landing').classList.remove('hidden');document.getElementById('landing').style.display='flex';" class="absolute top-6 right-6 text-white/60 hover:text-white text-2xl z-[210] bg-black/40 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-md">✕</button>
+<button onclick="document.getElementById('loginScreen').style.display='none';document.getElementById('appContent').classList.add('active');document.getElementById('appContent').style.display='block';document.getElementById('landing').classList.remove('hidden');document.getElementById('landing').style.display='flex';document.getElementById('topCreditDisplay').innerText='0';document.getElementById('panelCreditDisplay').innerText='0';document.getElementById('panelUserName').innerText='GUEST';document.getElementById('panelUserPlan').innerText='PREVIEW MODE';" class="absolute top-6 right-6 text-white/60 hover:text-white text-2xl z-[210] bg-black/40 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-md">✕</button>
 <div class="w-full max-w-[28rem] glass-panel rounded-[2.5rem] p-8 lg:p-12 flex flex-col items-center shadow-2xl relative overflow-hidden">
 <h2 class="text-4xl lg:text-5xl font-extrabold tracking-[0.3em] text-white mb-2 uppercase relative z-10">ADEULL</h2>
 <p class="text-[0.5rem] lg:text-[0.6rem] tracking-[0.4em] text-white/40 uppercase mb-10 text-center relative z-10" data-i18n="subtitle">Architectural Core Intelligence</p>
@@ -23,6 +23,10 @@
 <input type="password" id="loginPassword" name="password" autocomplete="current-password" placeholder="PASSWORD" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
 <button type="submit" class="w-full bg-white text-black font-extrabold py-5 rounded-2xl tracking-[0.2em] hover:bg-gray-200 transition mt-4 uppercase">Login</button>
 </form>
+<p class="text-[0.55rem] tracking-widest text-white/40 uppercase mt-4 text-center relative z-10">
+  <span data-i18n="noAccount">DON'T HAVE AN ACCOUNT?</span>
+  <a href="#" onclick="event.preventDefault();toggleSignup();" class="text-white hover:text-white/80 font-bold ml-1" data-i18n="signUp">SIGN UP</a>
+</p>
 <div class="w-full flex items-center gap-4 my-8 relative z-10">
 <div class="h-[1px] bg-white/10 flex-1"></div>
 <span class="text-[0.5rem] text-white/30 tracking-widest uppercase">Or Login With</span>
@@ -310,27 +314,61 @@ window.addEventListener('load', () => {
     showLogin();
 });
  
+window._signupMode = false;
+
+function toggleSignup() {
+  window._signupMode = !window._signupMode;
+  const submitBtn = document.querySelector('#loginScreen form button[type="submit"]');
+  const linkText = document.querySelector('#loginScreen [data-i18n="noAccount"]');
+  const linkBtn = document.querySelector('#loginScreen [data-i18n="signUp"]');
+  if(window._signupMode) {
+    if(submitBtn) submitBtn.innerText = 'SIGN UP';
+    if(linkText) linkText.innerText = 'ALREADY HAVE AN ACCOUNT?';
+    if(linkBtn) linkBtn.innerText = 'LOGIN';
+  } else {
+    if(submitBtn) submitBtn.innerText = 'LOGIN';
+    if(linkText) linkText.innerText = "DON'T HAVE AN ACCOUNT?";
+    if(linkBtn) linkBtn.innerText = 'SIGN UP';
+  }
+}
+
 function handleLoginAdvanced(event) {
     event.preventDefault();
     if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
-    if(window.supabaseClient) {
+    if(!window.supabaseClient) { alert('System error'); return; }
+
+    if(window._signupMode) {
+        window.supabaseClient.auth.signUp({ email, password })
+        .then(({ data, error }) => {
+            if(error) { alert('❌ ' + error.message); return; }
+            if(data && data.user) {
+                window.supabaseClient.from('users').insert([{
+                    id: data.user.id,
+                    email: email,
+                    plan: 'FREE',
+                    credits: 0
+                }]).then(() => {
+                    alert('✓ Account created! Please check your email to verify.');
+                    toggleSignup();
+                });
+            }
+        });
+    } else {
         window.supabaseClient.auth.signInWithPassword({ email, password })
         .then(({ data, error }) => {
-            if(error) { alert("❌ Invalid login credentials!"); return; }
+            if(error) { alert('❌ Invalid login credentials!'); return; }
             window.supabaseClient.from('users').select('*').eq('email', email).single()
             .then(({ data: userData }) => {
                 if(userData) {
                     applyUserData({ name: userData.email, plan: userData.plan || 'FREE', credits: userData.credits || 0 });
                     window.currentUserId = userData.id;
                 } else {
-                    applyUserData({ name: email, plan: 'FREE', credits: 5 });
+                    applyUserData({ name: email, plan: 'FREE', credits: 0 });
                 }
             });
         });
-    } else {
-        alert("❌ Invalid login credentials!");
     }
 }
  
