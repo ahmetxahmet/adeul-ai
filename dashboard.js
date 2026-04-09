@@ -348,6 +348,11 @@
         var plan = PLANS.find(function(p) { return p.id === planId; });
         if (!plan) return;
 
+        // Paddle henüz onaylanmadı, kapalı
+        alert('🚀 Our payment system is launching soon!\n\nContact info@adeull.com for early access or to request a trial coupon.');
+        return;
+
+        // Aşağıdaki Paddle kodu Paddle onaylandıktan sonra aktif olacak
         var priceId = yearly ? plan.paddleYearlyId : plan.paddleMonthlyId;
 
         // Paddle checkout
