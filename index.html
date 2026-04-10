@@ -19,6 +19,46 @@
 <h2 class="text-4xl lg:text-5xl font-extrabold tracking-[0.3em] text-white mb-2 uppercase relative z-10">ADEULL</h2>
 <p class="text-[0.5rem] lg:text-[0.6rem] tracking-[0.4em] text-white/40 uppercase mb-10 text-center relative z-10" data-i18n="subtitle">Architectural Core Intelligence</p>
 <form class="w-full flex flex-col gap-5 relative z-10" onsubmit="handleLoginAdvanced(event)">
+  <div id="signupFields" style="display:none;" class="flex flex-col gap-5">
+    <input type="text" id="signupFullName" placeholder="FULL NAME" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <select id="signupCountry" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+      <option value="" class="bg-black">COUNTRY</option>
+      <option value="TR" class="bg-black">TÜRKİYE</option>
+      <option value="US" class="bg-black">UNITED STATES</option>
+      <option value="UK" class="bg-black">UNITED KINGDOM</option>
+      <option value="DE" class="bg-black">GERMANY</option>
+      <option value="FR" class="bg-black">FRANCE</option>
+      <option value="ES" class="bg-black">SPAIN</option>
+      <option value="IT" class="bg-black">ITALY</option>
+      <option value="PT" class="bg-black">PORTUGAL</option>
+      <option value="BR" class="bg-black">BRAZIL</option>
+      <option value="ID" class="bg-black">INDONESIA</option>
+      <option value="RU" class="bg-black">RUSSIA</option>
+      <option value="AE" class="bg-black">UAE</option>
+      <option value="SA" class="bg-black">SAUDI ARABIA</option>
+      <option value="IN" class="bg-black">INDIA</option>
+      <option value="OTHER" class="bg-black">OTHER</option>
+    </select>
+    <select id="signupProfession" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+      <option value="" class="bg-black">PROFESSION</option>
+      <option value="ARCHITECT" class="bg-black">ARCHITECT</option>
+      <option value="INTERIOR_DESIGNER" class="bg-black">INTERIOR DESIGNER</option>
+      <option value="STUDENT" class="bg-black">STUDENT</option>
+      <option value="REAL_ESTATE" class="bg-black">REAL ESTATE</option>
+      <option value="CONTRACTOR" class="bg-black">CONTRACTOR</option>
+      <option value="FREELANCER" class="bg-black">FREELANCER</option>
+      <option value="OTHER" class="bg-black">OTHER</option>
+    </select>
+    <select id="signupHowHeard" class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+      <option value="" class="bg-black">HOW DID YOU HEAR ABOUT US?</option>
+      <option value="GOOGLE" class="bg-black">GOOGLE SEARCH</option>
+      <option value="INSTAGRAM" class="bg-black">INSTAGRAM</option>
+      <option value="LINKEDIN" class="bg-black">LINKEDIN</option>
+      <option value="FRIEND" class="bg-black">FRIEND / COLLEAGUE</option>
+      <option value="BLOG" class="bg-black">BLOG / ARTICLE</option>
+      <option value="OTHER" class="bg-black">OTHER</option>
+    </select>
+  </div>
 <input type="email" id="loginEmail" name="email" autocomplete="username" placeholder="EMAIL ADDRESS" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
 <input type="password" id="loginPassword" name="password" autocomplete="current-password" placeholder="PASSWORD" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
 <button type="submit" class="w-full bg-white text-black font-extrabold py-5 rounded-2xl tracking-[0.2em] hover:bg-gray-200 transition mt-4 uppercase">Login</button>
@@ -321,14 +361,18 @@ function toggleSignup() {
   const submitBtn = document.querySelector('#loginScreen form button[type="submit"]');
   const linkText = document.querySelector('#loginScreen [data-i18n="noAccount"]');
   const linkBtn = document.querySelector('#loginScreen [data-i18n="signUp"]');
+  const signupFields = document.getElementById('signupFields');
+
   if(window._signupMode) {
     if(submitBtn) submitBtn.innerText = 'SIGN UP';
     if(linkText) linkText.innerText = 'ALREADY HAVE AN ACCOUNT?';
     if(linkBtn) linkBtn.innerText = 'LOGIN';
+    if(signupFields) signupFields.style.display = 'flex';
   } else {
     if(submitBtn) submitBtn.innerText = 'LOGIN';
     if(linkText) linkText.innerText = "DON'T HAVE AN ACCOUNT?";
     if(linkBtn) linkBtn.innerText = 'SIGN UP';
+    if(signupFields) signupFields.style.display = 'none';
   }
 }
 
@@ -340,19 +384,31 @@ function handleLoginAdvanced(event) {
     if(!window.supabaseClient) { alert('System error'); return; }
 
     if(window._signupMode) {
+        const fullName = document.getElementById('signupFullName').value.trim();
+        const country = document.getElementById('signupCountry').value;
+        const profession = document.getElementById('signupProfession').value;
+        const howHeard = document.getElementById('signupHowHeard').value;
+
+        if(!fullName || !country) {
+            alert('❌ Please fill Full Name and Country.');
+            return;
+        }
+
         window.supabaseClient.auth.signUp({ email, password })
         .then(({ data, error }) => {
             if(error) { alert('❌ ' + error.message); return; }
             if(data && data.user) {
-                window.supabaseClient.from('users').insert([{
-                    id: data.user.id,
-                    email: email,
-                    plan: 'FREE',
-                    credits: 0
-                }]).then(() => {
-                    alert('✓ Account created! Please check your email to verify.');
-                    toggleSignup();
-                });
+                setTimeout(() => {
+                    window.supabaseClient.from('users').update({
+                        full_name: fullName,
+                        country: country,
+                        profession: profession || null,
+                        how_heard: howHeard || null
+                    }).eq('id', data.user.id).then(() => {
+                        alert('✓ Account created! Please check your email to verify.');
+                        toggleSignup();
+                    });
+                }, 500);
             }
         });
     } else {
