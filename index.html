@@ -980,13 +980,20 @@ async function openVendorForm() {
     return;
   }
 
-  // Plan limit kontrolü
+  // Admin bypass — limit kontrolü atlanır
+  if(window.isUserAdmin === true) {
+    applyVendorTranslations();
+    document.getElementById('vendorFormModal').style.display = 'flex';
+    return;
+  }
+
+  // Plan limit kontrolü (sadece normal kullanıcılar)
   try {
     const { data, error } = await window.supabaseClient.rpc('check_vendor_limit');
     if(error) throw error;
 
     if(data && data.allowed === false) {
-      alert('⚠ ' + data.message + '\n\nCurrent plan: ' + (data.current_plan || 'FREE') + '\nListings used: ' + (data.current_count || 0) + '/' + (data.limit || 0));
+      alert('⚠ ' + data.message);
       return;
     }
   } catch(e) {
