@@ -570,6 +570,7 @@ document.addEventListener('click', function(e) {
 function showRenderScreen() {
     const overlay = document.getElementById('renderOverlay');
     if(overlay) { overlay.classList.remove('hidden'); overlay.classList.add('flex'); setTimeout(() => overlay.style.opacity = '1', 50); }
+    if(typeof resetAdjust === 'function') resetAdjust();
 }
 
 function closeRender() {
@@ -647,3 +648,92 @@ window.simulateAPIConnectionUnified = async function() {
         simulateAPIConnection('generateBtnUnified', is8K);
     }
 };
+
+function applyAdjust() {
+    const exp = parseInt(document.getElementById('adjExposure').value);
+    const con = parseInt(document.getElementById('adjContrast').value);
+    const sat = parseInt(document.getElementById('adjSaturation').value);
+    const warm = parseInt(document.getElementById('adjWarmth').value);
+    const sharp = parseInt(document.getElementById('adjSharpness').value);
+
+    document.getElementById('valExposure').innerText = exp;
+    document.getElementById('valContrast').innerText = con;
+    document.getElementById('valSaturation').innerText = sat;
+    document.getElementById('valWarmth').innerText = warm;
+    document.getElementById('valSharpness').innerText = sharp;
+
+    const brightness = 1 + (exp / 150);
+    const contrast = 1 + (con / 100);
+    const saturation = 1 + (sat / 100);
+    const hueShift = warm * 0.15;
+
+    const img = document.getElementById('renderImage');
+    if (img) {
+        img.style.filter = `brightness(${brightness}) contrast(${contrast}) saturate(${saturation}) hue-rotate(${hueShift}deg)`;
+    }
+}
+
+function resetAdjust() {
+    ['adjExposure','adjContrast','adjSaturation','adjWarmth','adjSharpness'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = 0;
+    });
+    applyAdjust();
+}
+
+function autoAdjust() {
+    document.getElementById('adjExposure').value = 8;
+    document.getElementById('adjContrast').value = 15;
+    document.getElementById('adjSaturation').value = 12;
+    document.getElementById('adjWarmth').value = 5;
+    document.getElementById('adjSharpness').value = 20;
+    applyAdjust();
+}
+
+async function saveRenderWithAdjust() {
+    const img = document.getElementById('renderImage');
+    if (!img || !img.src) return;
+
+    const exp = parseInt(document.getElementById('adjExposure').value);
+    const con = parseInt(document.getElementById('adjContrast').value);
+    const sat = parseInt(document.getElementById('adjSaturation').value);
+    const warm = parseInt(document.getElementById('adjWarmth').value);
+
+    const brightness = 1 + (exp / 150);
+    const contrast = 1 + (con / 100);
+    const saturation = 1 + (sat / 100);
+    const hueShift = warm * 0.15;
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const tempImg = new Image();
+    tempImg.crossOrigin = 'anonymous';
+    tempImg.onload = function() {
+        canvas.width = tempImg.naturalWidth;
+        canvas.height = tempImg.naturalHeight;
+
+        ctx.filter = `brightness(${brightness}) contrast(${contrast}) saturate(${saturation}) hue-rotate(${hueShift}deg)`;
+        ctx.drawImage(tempImg, 0, 0);
+
+        ctx.filter = 'none';
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle = '#ffffff';
+        const fontSize = Math.max(20, Math.floor(canvas.width / 60));
+        ctx.font = `bold ${fontSize}px Arial`;
+        const text = 'ADEULL AI';
+        const textWidth = ctx.measureText(text).width;
+        ctx.fillText(text, canvas.width - textWidth - 20, canvas.height - 20);
+        ctx.globalAlpha = 1;
+
+        canvas.toBlob(function(blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ADEULL_AI_${Date.now()}.png`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }, 'image/png', 0.95);
+    };
+    tempImg.src = img.src;
+}

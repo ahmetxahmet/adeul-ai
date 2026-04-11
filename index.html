@@ -268,13 +268,52 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 </div>
 </div>
  
-<div id="renderOverlay" class="absolute inset-0 bg-[#0a0a0a] z-[150] hidden flex-col transition-opacity duration-500 opacity-0 flex items-center justify-center p-4">
-<div id="renderImgContainer" class="relative w-full max-w-5xl h-[60vh] lg:h-[80vh] bg-black/90 p-2 lg:p-4 render-img-container flex items-center justify-center border border-white/10 rounded-2xl shadow-2xl overflow-hidden" ondblclick="toggleFullscreen('renderImgContainer')">
+<div id="renderOverlay" class="absolute inset-0 bg-[#0a0a0a] z-[150] hidden flex-col transition-opacity duration-500 opacity-0 flex items-center justify-center p-4 overflow-y-auto">
+<div id="renderImgContainer" class="relative w-full max-w-5xl h-[50vh] lg:h-[60vh] bg-black/90 p-2 lg:p-4 render-img-container flex items-center justify-center border border-white/10 rounded-2xl shadow-2xl overflow-hidden" ondblclick="toggleFullscreen('renderImgContainer')">
 <button onclick="event.stopPropagation(); closeRender()" class="absolute top-2 right-2 lg:top-4 lg:right-4 text-xl lg:text-2xl text-white/80 hover:text-white transition z-[200] bg-black/60 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-md">✕</button>
-<img src="" class="max-w-full max-h-full object-contain rounded-sm">
+<img id="renderImage" src="" class="max-w-full max-h-full object-contain rounded-sm" style="filter: none;">
 </div>
-<div class="mt-6 lg:mt-8 flex justify-center w-full">
-<button onclick="saveRender('renderImgContainer')" class="bg-white/10 hover:bg-white/20 text-white font-extrabold tracking-widest px-8 lg:px-12 py-3 lg:py-4 rounded-xl transition shadow-lg uppercase text-[0.7rem] lg:text-[0.8rem]" data-i18n="update">SAVE TO DEVICE</button>
+
+<!-- Renk Ayar Paneli -->
+<div id="colorAdjustPanel" class="mt-4 w-full max-w-xl glass-panel rounded-2xl p-5 lg:p-6 border border-white/10 backdrop-blur-xl bg-black/40">
+  <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-3">
+    <h4 class="text-white font-extrabold tracking-[0.2em] uppercase text-[0.7rem] lg:text-sm" data-i18n="colorAdjust">COLOR ADJUST</h4>
+    <div class="flex gap-2">
+      <button onclick="autoAdjust()" class="text-[0.55rem] tracking-widest text-white/60 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg uppercase" data-i18n="autoLevels">AUTO</button>
+      <button onclick="resetAdjust()" class="text-[0.55rem] tracking-widest text-white/60 hover:text-white bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg uppercase" data-i18n="reset">RESET</button>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-3">
+    <div class="flex items-center gap-3">
+      <span class="text-[0.55rem] tracking-widest text-white/60 uppercase w-20 flex-shrink-0" data-i18n="exposure">EXPOSURE</span>
+      <input type="range" id="adjExposure" min="-100" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
+      <span id="valExposure" class="text-[0.55rem] text-white/40 w-8 text-right">0</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-[0.55rem] tracking-widest text-white/60 uppercase w-20 flex-shrink-0" data-i18n="contrast">CONTRAST</span>
+      <input type="range" id="adjContrast" min="-100" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
+      <span id="valContrast" class="text-[0.55rem] text-white/40 w-8 text-right">0</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-[0.55rem] tracking-widest text-white/60 uppercase w-20 flex-shrink-0" data-i18n="saturation">SATURATION</span>
+      <input type="range" id="adjSaturation" min="-100" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
+      <span id="valSaturation" class="text-[0.55rem] text-white/40 w-8 text-right">0</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-[0.55rem] tracking-widest text-white/60 uppercase w-20 flex-shrink-0" data-i18n="warmth">WARMTH</span>
+      <input type="range" id="adjWarmth" min="-100" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
+      <span id="valWarmth" class="text-[0.55rem] text-white/40 w-8 text-right">0</span>
+    </div>
+    <div class="flex items-center gap-3 lg:col-span-2">
+      <span class="text-[0.55rem] tracking-widest text-white/60 uppercase w-20 flex-shrink-0" data-i18n="sharpness">SHARPNESS</span>
+      <input type="range" id="adjSharpness" min="0" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
+      <span id="valSharpness" class="text-[0.55rem] text-white/40 w-8 text-right">0</span>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4 flex justify-center w-full">
+<button onclick="saveRenderWithAdjust()" class="bg-white/10 hover:bg-white/20 text-white font-extrabold tracking-widest px-8 lg:px-12 py-3 lg:py-4 rounded-xl transition shadow-lg uppercase text-[0.7rem] lg:text-[0.8rem]" data-i18n="update">SAVE TO DEVICE</button>
 </div>
 </div>
  
