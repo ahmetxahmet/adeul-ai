@@ -638,7 +638,6 @@ window.simulateAPIConnectionUnified = async function() {
     const quality = window.selectedQuality || '4K';
     const qualityMap = {
         '1K': { resolution: '1024x1024', creditCost: 1 },
-        '2K': { resolution: '2048x2048', creditCost: 6 },
         '4K': { resolution: '4096x4096', creditCost: 12 },
         '8K': { resolution: '8K_upscale', creditCost: 30 }
     };
@@ -733,17 +732,15 @@ function applyAdjust() {
     const tint = parseInt(document.getElementById('adjTint').value);
     const sharp = parseInt(document.getElementById('adjSharpness').value);
 
-    const brightness = 1 + (exp / 200);
-    const contrastVal = 1 + (con / 150);
+    const brightness = 1 + (exp / 200) + (shad / 400) - (high / 400);
+    const contrastVal = 1 + (con / 150) + (high / 500) + (shad / 500);
     const saturation = 1 + (sat / 100);
-    const sepiaAmount = Math.abs(warm) / 200;
-    const hueShift = warm > 0 ? warm * 0.2 : warm * 0.3;
-    const tintShift = tint * 0.3;
-    const sharpContrast = 1 + (sharp / 200);
+    const hueShift = (warm * 0.15) + (tint * 0.2);
+    const sharpBoost = 1 + (sharp / 300);
 
     const img = document.getElementById('renderImage');
     if (img) {
-        img.style.filter = `brightness(${brightness}) contrast(${contrastVal * sharpContrast}) saturate(${saturation}) hue-rotate(${hueShift + tintShift}deg) sepia(${sepiaAmount})`;
+        img.style.filter = `brightness(${brightness}) contrast(${contrastVal * sharpBoost}) saturate(${saturation}) hue-rotate(${hueShift}deg)`;
     }
 }
 
@@ -758,9 +755,9 @@ function resetAdjust() {
 function autoAdjust() {
     document.getElementById('adjExposure').value = 5;
     document.getElementById('adjContrast').value = 10;
-    document.getElementById('adjHighlights').value = -8;
+    document.getElementById('adjHighlights').value = -5;
     document.getElementById('adjShadows').value = 8;
-    document.getElementById('adjSaturation').value = 10;
+    document.getElementById('adjSaturation').value = 8;
     document.getElementById('adjWarmth').value = 3;
     document.getElementById('adjTint').value = 0;
     document.getElementById('adjSharpness').value = 15;
@@ -773,18 +770,18 @@ async function saveRenderWithAdjust() {
 
     const exp = parseInt(document.getElementById('adjExposure').value);
     const con = parseInt(document.getElementById('adjContrast').value);
+    const high = parseInt(document.getElementById('adjHighlights').value);
+    const shad = parseInt(document.getElementById('adjShadows').value);
     const sat = parseInt(document.getElementById('adjSaturation').value);
     const warm = parseInt(document.getElementById('adjWarmth').value);
     const tint = parseInt(document.getElementById('adjTint').value);
     const sharp = parseInt(document.getElementById('adjSharpness').value);
 
-    const brightness = 1 + (exp / 200);
-    const contrastVal = 1 + (con / 150);
+    const brightness = 1 + (exp / 200) + (shad / 400) - (high / 400);
+    const contrastVal = 1 + (con / 150) + (high / 500) + (shad / 500);
     const saturation = 1 + (sat / 100);
-    const sepiaAmount = Math.abs(warm) / 200;
-    const hueShift = warm > 0 ? warm * 0.2 : warm * 0.3;
-    const tintShift = tint * 0.3;
-    const sharpContrast = 1 + (sharp / 200);
+    const hueShift = (warm * 0.15) + (tint * 0.2);
+    const sharpBoost = 1 + (sharp / 300);
 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -795,7 +792,7 @@ async function saveRenderWithAdjust() {
         canvas.width = tempImg.naturalWidth;
         canvas.height = tempImg.naturalHeight;
 
-        ctx.filter = `brightness(${brightness}) contrast(${contrastVal * sharpContrast}) saturate(${saturation}) hue-rotate(${hueShift + tintShift}deg) sepia(${sepiaAmount})`;
+        ctx.filter = `brightness(${brightness}) contrast(${contrastVal * sharpBoost}) saturate(${saturation}) hue-rotate(${hueShift}deg)`;
         ctx.drawImage(tempImg, 0, 0);
 
         ctx.filter = 'none';
@@ -813,10 +810,10 @@ async function saveRenderWithAdjust() {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ADEULL_${Date.now()}.jpg`;
+            a.download = `ADEULL_${Date.now()}.png`;
             a.click();
             URL.revokeObjectURL(url);
-        }, 'image/jpeg', 0.92);
+        }, 'image/png');
     };
     tempImg.src = img.src;
 }

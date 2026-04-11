@@ -247,7 +247,6 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 <div class="flex flex-col gap-3 w-full mb-4 lg:mb-0" id="generateBtnRow">
   <div class="flex gap-2 w-full">
     <button type="button" onclick="setQuality('1K', this)" id="qBtn1K" class="quality-btn flex-1 bg-white/5 hover:bg-white/10 text-white/60 font-bold tracking-widest py-2 rounded-lg uppercase text-[0.55rem] border border-white/10">1K · 1⚡</button>
-    <button type="button" onclick="setQuality('2K', this)" id="qBtn2K" class="quality-btn flex-1 bg-white/5 hover:bg-white/10 text-white/60 font-bold tracking-widest py-2 rounded-lg uppercase text-[0.55rem] border border-white/10">2K · 6⚡</button>
     <button type="button" onclick="setQuality('4K', this)" id="qBtn4K" class="quality-btn flex-1 bg-white/20 text-white font-bold tracking-widest py-2 rounded-lg uppercase text-[0.55rem] border border-white/10">4K · 12⚡</button>
     <button type="button" onclick="setQuality('8K', this)" id="qBtn8K" class="quality-btn flex-1 bg-white/5 hover:bg-white/10 text-white/60 font-bold tracking-widest py-2 rounded-lg uppercase text-[0.55rem] border border-white/10">8K · 30⚡</button>
   </div>
@@ -276,70 +275,47 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 </div>
 
 <!-- Renk Ayar Paneli -->
-<div id="colorAdjustPanel" class="mt-4 w-full max-w-md glass-panel rounded-2xl p-5 lg:p-6 border border-white/10 backdrop-blur-xl bg-black/60">
-  <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-3">
+<div id="colorAdjustPanel" class="mt-4 w-full max-w-4xl glass-panel rounded-2xl p-4 lg:p-5 border border-white/10 backdrop-blur-xl bg-black/60">
+  <div class="flex justify-between items-center mb-3 border-b border-white/10 pb-2">
     <h4 class="text-white font-extrabold tracking-[0.2em] uppercase text-[0.65rem]" data-i18n="colorAdjust">ADJUST COLOR</h4>
-    <button onclick="autoAdjust()" class="text-[0.55rem] tracking-widest text-white/70 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg uppercase" data-i18n="autoLevels">AUTO LEVELS</button>
+    <div class="flex gap-2">
+      <button onclick="autoAdjust()" class="text-[0.55rem] tracking-widest text-white/70 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg uppercase" data-i18n="autoLevels">AUTO</button>
+      <button onclick="resetAdjust()" class="text-[0.55rem] tracking-widest text-white/70 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg uppercase" data-i18n="resetAll">RESET</button>
+    </div>
   </div>
-  <!-- Light Adjustments -->
-  <div class="flex flex-col gap-2.5 mb-4">
-    <div class="flex items-center gap-3">
-      <span class="text-[0.55rem] tracking-widest text-white/70 uppercase w-20 flex-shrink-0 text-right" data-i18n="exposure">EXPOSURE</span>
-      <span class="text-white/50 text-xs">☀</span>
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-2.5">
+    <div class="flex items-center gap-2">
+      <span class="text-[0.5rem] tracking-widest text-white/70 uppercase w-16 text-right flex-shrink-0" data-i18n="exposure">EXPOSURE</span>
       <input type="range" id="adjExposure" min="-100" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
-      <span class="text-white/50 text-xs">☀</span>
     </div>
-    <div class="flex items-center gap-3">
-      <span class="text-[0.55rem] tracking-widest text-white/70 uppercase w-20 flex-shrink-0 text-right" data-i18n="contrast">CONTRAST</span>
-      <span class="text-white/50 text-xs">◐</span>
+    <div class="flex items-center gap-2">
+      <span class="text-[0.5rem] tracking-widest text-white/70 uppercase w-16 text-right flex-shrink-0" data-i18n="contrast">CONTRAST</span>
       <input type="range" id="adjContrast" min="-100" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
-      <span class="text-white/50 text-xs">◑</span>
     </div>
-    <div class="flex items-center gap-3">
-      <span class="text-[0.55rem] tracking-widest text-white/70 uppercase w-20 flex-shrink-0 text-right" data-i18n="highlights">HIGHLIGHTS</span>
-      <span class="text-white/50 text-xs">◯</span>
+    <div class="flex items-center gap-2">
+      <span class="text-[0.5rem] tracking-widest text-white/70 uppercase w-16 text-right flex-shrink-0" data-i18n="highlights">HIGHLIGHTS</span>
       <input type="range" id="adjHighlights" min="-100" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
-      <span class="text-white/50 text-xs">◉</span>
     </div>
-    <div class="flex items-center gap-3">
-      <span class="text-[0.55rem] tracking-widest text-white/70 uppercase w-20 flex-shrink-0 text-right" data-i18n="shadows">SHADOWS</span>
-      <span class="text-white/50 text-xs">●</span>
+    <div class="flex items-center gap-2">
+      <span class="text-[0.5rem] tracking-widest text-white/70 uppercase w-16 text-right flex-shrink-0" data-i18n="shadows">SHADOWS</span>
       <input type="range" id="adjShadows" min="-100" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
-      <span class="text-white/50 text-xs">○</span>
     </div>
-  </div>
-  <div class="h-px bg-white/10 my-3"></div>
-  <!-- Color Adjustments -->
-  <div class="flex flex-col gap-2.5 mb-4">
-    <div class="flex items-center gap-3">
-      <span class="text-[0.55rem] tracking-widest text-white/70 uppercase w-20 flex-shrink-0 text-right" data-i18n="saturation">SATURATION</span>
-      <span class="text-white/50 text-xs">▫</span>
+    <div class="flex items-center gap-2">
+      <span class="text-[0.5rem] tracking-widest text-white/70 uppercase w-16 text-right flex-shrink-0" data-i18n="saturation">SATURATION</span>
       <input type="range" id="adjSaturation" min="-100" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
-      <span class="text-red-400 text-xs">◼</span>
     </div>
-    <div class="flex items-center gap-3">
-      <span class="text-[0.55rem] tracking-widest text-white/70 uppercase w-20 flex-shrink-0 text-right" data-i18n="warmth">WARMTH</span>
-      <span class="text-blue-400 text-xs">❄</span>
+    <div class="flex items-center gap-2">
+      <span class="text-[0.5rem] tracking-widest text-white/70 uppercase w-16 text-right flex-shrink-0" data-i18n="warmth">WARMTH</span>
       <input type="range" id="adjWarmth" min="-100" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
-      <span class="text-orange-400 text-xs">☼</span>
     </div>
-    <div class="flex items-center gap-3">
-      <span class="text-[0.55rem] tracking-widest text-white/70 uppercase w-20 flex-shrink-0 text-right" data-i18n="tint">TINT</span>
-      <span class="text-green-400 text-xs">●</span>
+    <div class="flex items-center gap-2">
+      <span class="text-[0.5rem] tracking-widest text-white/70 uppercase w-16 text-right flex-shrink-0" data-i18n="tint">TINT</span>
       <input type="range" id="adjTint" min="-100" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
-      <span class="text-pink-400 text-xs">●</span>
     </div>
-  </div>
-  <div class="h-px bg-white/10 my-3"></div>
-  <!-- Sharpness -->
-  <div class="flex items-center gap-3">
-    <span class="text-[0.55rem] tracking-widest text-white/70 uppercase w-20 flex-shrink-0 text-right" data-i18n="sharpness">SHARPNESS</span>
-    <span class="text-white/50 text-xs">○</span>
-    <input type="range" id="adjSharpness" min="0" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
-    <span class="text-white text-xs">◆</span>
-  </div>
-  <div class="mt-4 pt-3 border-t border-white/10">
-    <button onclick="resetAdjust()" class="w-full text-[0.55rem] tracking-widest text-white/60 hover:text-white bg-white/5 hover:bg-white/15 py-2 rounded-lg uppercase" data-i18n="resetAll">RESET ALL</button>
+    <div class="flex items-center gap-2">
+      <span class="text-[0.5rem] tracking-widest text-white/70 uppercase w-16 text-right flex-shrink-0" data-i18n="sharpness">SHARPNESS</span>
+      <input type="range" id="adjSharpness" min="0" max="100" value="0" oninput="applyAdjust()" class="flex-1 adjust-slider">
+    </div>
   </div>
 </div>
 
