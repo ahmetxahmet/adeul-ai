@@ -322,26 +322,25 @@ const SUPABASE_KEY = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
 window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 window.currentUserId = null;
 async function deductCredit(action, amount) {
+    // N8N artık backend'de kredi düşüşünü hallediyor.
+    // Bu fonksiyon sadece UI'ı güncellemek için kalıyor (optimistik güncelleme yok).
+    // Render bittikten sonra güncel krediyi Supabase'den çek
     if(window.currentUserId && window.supabaseClient) {
         try {
-            // Kredi düşme işlemini frontend yerine Supabase backend'e (RPC) bırakıyoruz
-            const { data, error } = await window.supabaseClient.rpc('secure_deduct_credit', {
-                p_amount: amount,
-                p_action: action
-            });
-            
-            if (error) throw error;
-            if (data && data.success) {
-                document.getElementById('topCreditDisplay').innerText = data.new_credits.toLocaleString();
-                document.getElementById('panelCreditDisplay').innerText = data.new_credits.toLocaleString();
-                return true;
-            } else {
-                alert("⚡ " + (data.message || "Insufficient credits!"));
-                return false;
+            const { data } = await window.supabaseClient
+                .from('users')
+                .select('credits')
+                .eq('id', window.currentUserId)
+                .single();
+            if(data && typeof data.credits === 'number') {
+                const topEl = document.getElementById('topCreditDisplay');
+                const panelEl = document.getElementById('panelCreditDisplay');
+                if(topEl) topEl.innerText = data.credits.toLocaleString();
+                if(panelEl) panelEl.innerText = data.credits.toLocaleString();
             }
-        } catch(e) { console.warn('Backend kredi kontrolü başarısız:', e); return false; }
+        } catch(e) { console.warn('Credit sync failed:', e); }
     }
-    return false;
+    return true;
 }
 window.deductCredit = deductCredit;
 </script>
