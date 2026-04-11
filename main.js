@@ -271,6 +271,11 @@ async function ADEULL_UPSCALE(imageUrl) {
 }
 
 async function simulateAPIConnection(btnId, is8K = false) {
+    console.log('🔍 RENDER START:', {
+        selectedQuality: window.selectedQuality,
+        qualityConfig: window._currentQualityConfig,
+        is8K: arguments[1]
+    });
     playSound();
     if (!window.currentUserId || window.currentUserId === 'guest') {
         alert('Please login or sign up to use ADEULL AI.');
