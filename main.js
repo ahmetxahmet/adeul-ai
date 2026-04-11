@@ -7,9 +7,10 @@
 /* ==============================================================
 // GLOBAL STATE VARIABLES
 // ============================================================== */
-window.uploadedBase64 = {}; 
-window.currentBoardStyle = 1; 
-window.currentRatio = '16:9'; 
+window.uploadedBase64 = {};
+window.currentBoardStyle = 1;
+window.currentRatio = '16:9';
+window.selectedQuality = '4K'; // default 
 window.clickSound = document.getElementById('hoverSound');
 window.CORE_ENGINE_V2 = atob("aHR0cHM6Ly9hZGV1bC1pYS5hcHAubjhuLmNsb3VkL3dlYmhvb2svYWRldWwtYWktdjI=");
 window.CORE_UPSCALE = atob("aHR0cHM6Ly9hZGV1bC1pYS5hcHAubjhuLmNsb3VkL3dlYmhvb2svdXBzY2FsZQ==");
@@ -277,7 +278,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
     }
     const creditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
     const currentCredits = parseInt(creditText.replace(/[^0-9]/g, '')) || 0;
-    const requiredCredits = is8K ? 10 : 1;
+    const requiredCredits = window._currentQualityConfig?.creditCost || (is8K ? 30 : 12);
     if (currentCredits < requiredCredits) {
         alert('Insufficient credits. You need ' + requiredCredits + ' credits for this render.\n\nPlease redeem a coupon or upgrade your plan from the BILLING menu.');
         return;
@@ -356,7 +357,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
     const activeLangCode = activeLangCodeElement ? activeLangCodeElement.innerText : 'EN';
 
     if(window.deductCredit) {
-        const ok = await window.deductCredit(is8K ? '8K_RENDER' : 'NORMAL_RENDER', is8K ? 10 : 1);
+        const ok = await window.deductCredit(is8K ? '8K_RENDER' : 'NORMAL_RENDER', window._currentQualityConfig?.creditCost || (is8K ? 30 : 12));
         if(!ok) { btn.disabled = false; return; }
     }
     btn.innerHTML = is8K ? '8K RENDER IN PROGRESS...' : 'ADEULL AI GENERATING...';
@@ -401,6 +402,8 @@ async function simulateAPIConnection(btnId, is8K = false) {
         aspectRatio: window.currentRatio,
         imageSize: "4K",
         output_mime_type: "image/png",
+        resolution: window._currentQualityConfig?.resolution || (is8K ? '8K_upscale' : '4096x4096'),
+        creditCost: window._currentQualityConfig?.creditCost || (is8K ? 30 : 12),
         user_id: window.currentUserId || "guest",
         user_token: authToken
     };
@@ -485,7 +488,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
                             is_8k: is8K,
                             prompt: _promptText.substring(0, 500),
                             aspect_ratio: _ratio,
-                            credits_used: is8K ? 10 : 1
+                            credits_used: window._currentQualityConfig?.creditCost || (is8K ? 30 : 12)
                         }]);
                     } catch(e) {
                         console.warn('Render history save failed:', e);
@@ -577,3 +580,29 @@ document.addEventListener('keydown', function(event) {
         else if (dashboard && dashboard.classList.contains('active')) { exitDashboard(); }
     }
 });
+
+window.setQuality = function(quality, btn) {
+    window.selectedQuality = quality;
+    document.querySelectorAll('.quality-btn').forEach(b => {
+        b.className = b.className.replace('bg-white/20 text-white', 'bg-white/5 text-white/60');
+        if(!b.className.includes('bg-white/5')) b.className += ' bg-white/5 text-white/60';
+    });
+    if(btn) {
+        btn.className = btn.className.replace('bg-white/5 text-white/60', 'bg-white/20 text-white');
+    }
+};
+
+window.simulateAPIConnectionUnified = function() {
+    const quality = window.selectedQuality || '4K';
+    const qualityMap = {
+        '1K': { resolution: '1024x1024', creditCost: 1 },
+        '4K': { resolution: '4096x4096', creditCost: 12 },
+        '8K': { resolution: '8K_upscale', creditCost: 30 }
+    };
+    const config = qualityMap[quality] || qualityMap['4K'];
+    const is8K = (quality === '8K');
+    window._currentQualityConfig = config;
+    if(typeof simulateAPIConnection === 'function') {
+        simulateAPIConnection('generateBtnUnified', is8K);
+    }
+};
