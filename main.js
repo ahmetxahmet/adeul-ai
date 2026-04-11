@@ -509,7 +509,25 @@ async function simulateAPIConnection(btnId, is8K = false) {
         btn.innerHTML = originalText;
         btn.classList.remove('bg-blue-600', 'text-white', 'animate-pulse');
         btn.disabled = false;
-        toggleUpscaleLoader(false); 
+        toggleUpscaleLoader(false);
+        // Render sonrası (başarılı veya başarısız), UI'daki krediyi Supabase'den güncel çek
+        if(window.currentUserId && window.supabaseClient) {
+            setTimeout(async () => {
+                try {
+                    const { data } = await window.supabaseClient
+                        .from('users')
+                        .select('credits')
+                        .eq('id', window.currentUserId)
+                        .single();
+                    if(data && typeof data.credits === 'number') {
+                        const topEl = document.getElementById('topCreditDisplay');
+                        const panelEl = document.getElementById('panelCreditDisplay');
+                        if(topEl) topEl.innerText = data.credits.toLocaleString();
+                        if(panelEl) panelEl.innerText = data.credits.toLocaleString();
+                    }
+                } catch(e) { console.warn('Post-render credit sync failed:', e); }
+            }, 2000); // N8N kredi düşmesinden sonra yeterli gecikme
+        }
     }
 }
 
@@ -597,7 +615,24 @@ window.setQuality = function(quality, btn) {
     }
 };
 
-window.simulateAPIConnectionUnified = function() {
+window.simulateAPIConnectionUnified = async function() {
+    // Önce güncel krediyi çek
+    if(window.currentUserId && window.supabaseClient) {
+        try {
+            const { data } = await window.supabaseClient
+                .from('users')
+                .select('credits')
+                .eq('id', window.currentUserId)
+                .single();
+            if(data && typeof data.credits === 'number') {
+                const topEl = document.getElementById('topCreditDisplay');
+                const panelEl = document.getElementById('panelCreditDisplay');
+                if(topEl) topEl.innerText = data.credits.toLocaleString();
+                if(panelEl) panelEl.innerText = data.credits.toLocaleString();
+            }
+        } catch(e) { console.warn('Credit sync failed:', e); }
+    }
+
     const quality = window.selectedQuality || '4K';
     const qualityMap = {
         '1K': { resolution: '1024x1024', creditCost: 1 },
@@ -607,6 +642,7 @@ window.simulateAPIConnectionUnified = function() {
     const config = qualityMap[quality] || qualityMap['4K'];
     const is8K = (quality === '8K');
     window._currentQualityConfig = config;
+
     if(typeof simulateAPIConnection === 'function') {
         simulateAPIConnection('generateBtnUnified', is8K);
     }
