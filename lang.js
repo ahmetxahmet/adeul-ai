@@ -21,6 +21,7 @@ window.dict = {
         redeemCoupon: "REDEEM COUPON",
         promptBuilder: "PROMPT BUILDER",
         askAdeull: "ASK ADEULL",
+        colorAdjust: "ADJUST COLOR", autoLevels: "AUTO LEVELS", exposure: "EXPOSURE", contrast: "CONTRAST", highlights: "HIGHLIGHTS", shadows: "SHADOWS", saturation: "SATURATION", warmth: "WARMTH", tint: "TINT", sharpness: "SHARPNESS", resetAll: "RESET ALL", addItem: "ADD ITEM",
     },
     'TR': {
         subtitle: "Mimari Çekirdek Zekası", login: "Giriş Yap", email: "E-POSTA ADRESİ", password: "ŞİFRE", orLogin: "Veya Şununla Giriş Yap",
@@ -41,6 +42,7 @@ window.dict = {
         redeemCoupon: "KUPON GİR",
         promptBuilder: "PROMPT OLUŞTUR",
         askAdeull: "ADEULL'A SOR",
+        colorAdjust: "RENGİ AYARLA", autoLevels: "OTOMATİK", exposure: "POZLAMA", contrast: "KONTRAST", highlights: "VURGULAR", shadows: "GÖLGELER", saturation: "DOYGUNLUK", warmth: "SICAKLIK", tint: "RENK TONU", sharpness: "NETLİK", resetAll: "TÜMÜNÜ SIFIRLA", addItem: "EŞYA EKLE",
     },
     'ES': {
         subtitle: "Inteligencia Central Arquitectónica", login: "Iniciar Sesión", email: "CORREO ELECTRÓNICO", password: "CONTRASEÑA", orLogin: "O entrar con",
@@ -61,6 +63,7 @@ window.dict = {
         redeemCoupon: "CANJEAR CUPÓN",
         promptBuilder: "CREAR PROMPT",
         askAdeull: "PREGUNTAR A ADEULL",
+        colorAdjust: "AJUSTAR COLOR", autoLevels: "NIVELES AUTO", exposure: "EXPOSICIÓN", contrast: "CONTRASTE", highlights: "LUCES", shadows: "SOMBRAS", saturation: "SATURACIÓN", warmth: "CALIDEZ", tint: "TINTE", sharpness: "NITIDEZ", resetAll: "RESTABLECER", addItem: "AÑADIR",
     },
     'DE': {
         subtitle: "Architektonische Kernintelligenz", login: "Anmelden", email: "E-MAIL", password: "PASSWORT", orLogin: "Oder anmelden mit",
@@ -81,6 +84,7 @@ window.dict = {
         redeemCoupon: "GUTSCHEIN EINLÖSEN",
         promptBuilder: "PROMPT ERSTELLEN",
         askAdeull: "ADEULL FRAGEN",
+        colorAdjust: "FARBE ANPASSEN", autoLevels: "AUTO NIVEAUS", exposure: "BELICHTUNG", contrast: "KONTRAST", highlights: "LICHTER", shadows: "SCHATTEN", saturation: "SÄTTIGUNG", warmth: "WÄRME", tint: "TÖNUNG", sharpness: "SCHÄRFE", resetAll: "ZURÜCKSETZEN", addItem: "HINZUFÜGEN",
     },
     'FR': {
         subtitle: "Intelligence Architecturale", login: "Connexion", email: "E-MAIL", password: "MOT DE PASSE", orLogin: "Ou se connecter avec",
@@ -101,6 +105,7 @@ window.dict = {
         redeemCoupon: "UTILISER COUPON",
         promptBuilder: "CRÉER PROMPT",
         askAdeull: "DEMANDER À ADEULL",
+        colorAdjust: "AJUSTER COULEUR", autoLevels: "NIVEAUX AUTO", exposure: "EXPOSITION", contrast: "CONTRASTE", highlights: "HAUTES LUM.", shadows: "OMBRES", saturation: "SATURATION", warmth: "CHALEUR", tint: "TEINTE", sharpness: "NETTETÉ", resetAll: "TOUT RÉINIT.", addItem: "AJOUTER",
     },
     'PT': {
         subtitle: "Inteligência Arquitetônica", login: "Entrar", email: "E-MAIL", password: "SENHA", orLogin: "Ou entrar com",
@@ -121,6 +126,7 @@ window.dict = {
         redeemCoupon: "RESGATAR CUPOM",
         promptBuilder: "CRIAR PROMPT",
         askAdeull: "PERGUNTAR AO ADEULL",
+        colorAdjust: "AJUSTAR COR", autoLevels: "NÍVEIS AUTO", exposure: "EXPOSIÇÃO", contrast: "CONTRASTE", highlights: "REALCES", shadows: "SOMBRAS", saturation: "SATURAÇÃO", warmth: "CALOR", tint: "TONALIDADE", sharpness: "NITIDEZ", resetAll: "REDEFINIR", addItem: "ADICIONAR",
     },
     'ID': {
         subtitle: "Kecerdasan Arsitektur", login: "Masuk", email: "EMAIL", password: "KATA SANDI", orLogin: "Atau masuk dengan",
@@ -141,6 +147,7 @@ window.dict = {
         redeemCoupon: "TUKAR KUPON",
         promptBuilder: "BUAT PROMPT",
         askAdeull: "TANYA ADEULL",
+        colorAdjust: "SESUAIKAN WARNA", autoLevels: "OTOMATIS", exposure: "PENCAHAYAAN", contrast: "KONTRAS", highlights: "SOROTAN", shadows: "BAYANGAN", saturation: "SATURASI", warmth: "KEHANGATAN", tint: "RONA", sharpness: "KETAJAMAN", resetAll: "ATUR ULANG", addItem: "TAMBAH",
     },
     'RU': {
         subtitle: "Архитектурный ИИ", login: "Войти", email: "EMAIL", password: "ПАРОЛЬ", orLogin: "Или войти через",
@@ -161,6 +168,7 @@ window.dict = {
         redeemCoupon: "ПРИМЕНИТЬ КУПОН",
         promptBuilder: "КОНСТРУКТОР ПРОМПТОВ",
         askAdeull: "СПРОСИТЬ ADEULL",
+        colorAdjust: "НАСТРОЙКА ЦВЕТА", autoLevels: "АВТО", exposure: "ЭКСПОЗИЦИЯ", contrast: "КОНТРАСТ", highlights: "СВЕТА", shadows: "ТЕНИ", saturation: "НАСЫЩЕННОСТЬ", warmth: "ТЕПЛОТА", tint: "ОТТЕНОК", sharpness: "РЕЗКОСТЬ", resetAll: "СБРОСИТЬ", addItem: "ДОБАВИТЬ",
     },
     'AR': {
         subtitle: "الذكاء المعماري", login: "دخول", email: "البريد الإلكتروني", password: "كلمة المرور", orLogin: "أو الدخول عبر",
@@ -181,6 +189,7 @@ window.dict = {
         redeemCoupon: "استرداد القسيمة",
         promptBuilder: "إنشاء الأمر",
         askAdeull: "اسأل ADEULL",
+        colorAdjust: "ضبط اللون", autoLevels: "تلقائي", exposure: "التعرض", contrast: "التباين", highlights: "الإبرازات", shadows: "الظلال", saturation: "التشبع", warmth: "الدفء", tint: "الصبغة", sharpness: "الحدة", resetAll: "إعادة تعيين", addItem: "إضافة",
     },
     'IT': {
         subtitle: "Intelligenza Architettonica", login: "Accedi", email: "EMAIL", password: "PASSWORD", orLogin: "O accedi con",
@@ -201,6 +210,7 @@ window.dict = {
         redeemCoupon: "RISCATTA COUPON",
         promptBuilder: "CREA PROMPT",
         askAdeull: "CHIEDI A ADEULL",
+        colorAdjust: "REGOLA COLORE", autoLevels: "AUTOMATICO", exposure: "ESPOSIZIONE", contrast: "CONTRASTO", highlights: "LUCI", shadows: "OMBRE", saturation: "SATURAZIONE", warmth: "CALDO", tint: "TINTA", sharpness: "NITIDEZZA", resetAll: "RIPRISTINA", addItem: "AGGIUNGI",
     }
 };
 

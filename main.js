@@ -398,11 +398,12 @@ async function simulateAPIConnection(btnId, is8K = false) {
     const authToken = sessionData?.data?.session?.access_token || "";
 
     const payload = {
-        action: 'generate',  
+        action: 'generate',
         prompt: cleanPrompt,
         isSketch: isSketchMode,
         sketchData: theSketchImage,
         images: window.uploadedBase64,
+        items: (window._itemBoxes || []).filter(b => b && b.base64).map(b => b.base64),
         language: activeLangCode,
         aspectRatio: window.currentRatio,
         imageSize: "4K",
@@ -637,6 +638,7 @@ window.simulateAPIConnectionUnified = async function() {
     const quality = window.selectedQuality || '4K';
     const qualityMap = {
         '1K': { resolution: '1024x1024', creditCost: 1 },
+        '2K': { resolution: '2048x2048', creditCost: 6 },
         '4K': { resolution: '4096x4096', creditCost: 12 },
         '8K': { resolution: '8K_upscale', creditCost: 30 }
     };
@@ -649,32 +651,104 @@ window.simulateAPIConnectionUnified = async function() {
     }
 };
 
+// ==============================================================
+// DYNAMIC ITEM BOX MANAGEMENT
+// ==============================================================
+window._itemBoxes = [];
+window._maxItems = 6;
+
+function initItemBoxes() {
+    const container = document.getElementById('itemContainer');
+    if(!container) return;
+    container.innerHTML = '';
+    window._itemBoxes = [];
+    addEmptyItemBox();
+}
+
+function addEmptyItemBox() {
+    if(window._itemBoxes.length >= window._maxItems) return;
+    const container = document.getElementById('itemContainer');
+    if(!container) return;
+
+    const idx = window._itemBoxes.length;
+    const boxId = 'boxItem_' + idx;
+    const fileId = 'fileItem_' + idx;
+
+    const wrapper = document.createElement('div');
+    wrapper.id = boxId;
+    wrapper.className = 'h-24 lg:h-28 border border-white/30 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative';
+    wrapper.innerHTML = `<input type="file" id="${fileId}" hidden accept="image/*"><span class="text-xl mb-1">+</span><span class="text-[0.55rem] tracking-widest uppercase font-bold text-center px-1" data-i18n="addItem">ADD ITEM</span>`;
+    wrapper.onclick = function() { document.getElementById(fileId).click(); };
+    container.appendChild(wrapper);
+
+    document.getElementById(fileId).addEventListener('change', function(e) {
+        handleItemUpload(e, idx);
+    });
+
+    window._itemBoxes.push({ id: boxId, base64: null, index: idx });
+}
+
+function handleItemUpload(event, idx) {
+    const file = event.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const base64 = e.target.result;
+        window._itemBoxes[idx].base64 = base64;
+
+        const box = document.getElementById('boxItem_' + idx);
+        if(box) {
+            box.innerHTML = `<img src="${base64}" class="absolute inset-0 w-full h-full object-cover rounded-xl"><button onclick="event.stopPropagation();removeItemBox(${idx})" class="absolute top-1 right-1 bg-black/70 text-white w-5 h-5 rounded-full text-[0.6rem] z-10">✕</button>`;
+            box.onclick = null;
+        }
+
+        const filledCount = window._itemBoxes.filter(b => b.base64).length;
+        if(filledCount < window._maxItems && filledCount === window._itemBoxes.length) {
+            addEmptyItemBox();
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeItemBox(idx) {
+    window._itemBoxes[idx].base64 = null;
+    const box = document.getElementById('boxItem_' + idx);
+    if(box) {
+        const fileId = 'fileItem_' + idx;
+        box.innerHTML = `<input type="file" id="${fileId}" hidden accept="image/*"><span class="text-xl mb-1">+</span><span class="text-[0.55rem] tracking-widest uppercase font-bold text-center px-1" data-i18n="addItem">ADD ITEM</span>`;
+        box.onclick = function() { document.getElementById(fileId).click(); };
+        document.getElementById(fileId).addEventListener('change', function(e) {
+            handleItemUpload(e, idx);
+        });
+    }
+}
+
 function applyAdjust() {
     const exp = parseInt(document.getElementById('adjExposure').value);
     const con = parseInt(document.getElementById('adjContrast').value);
+    const high = parseInt(document.getElementById('adjHighlights').value);
+    const shad = parseInt(document.getElementById('adjShadows').value);
     const sat = parseInt(document.getElementById('adjSaturation').value);
     const warm = parseInt(document.getElementById('adjWarmth').value);
+    const tint = parseInt(document.getElementById('adjTint').value);
     const sharp = parseInt(document.getElementById('adjSharpness').value);
 
-    document.getElementById('valExposure').innerText = exp;
-    document.getElementById('valContrast').innerText = con;
-    document.getElementById('valSaturation').innerText = sat;
-    document.getElementById('valWarmth').innerText = warm;
-    document.getElementById('valSharpness').innerText = sharp;
-
-    const brightness = 1 + (exp / 150);
-    const contrast = 1 + (con / 100);
+    const brightness = 1 + (exp / 200);
+    const contrastVal = 1 + (con / 150);
     const saturation = 1 + (sat / 100);
-    const hueShift = warm * 0.15;
+    const sepiaAmount = Math.abs(warm) / 200;
+    const hueShift = warm > 0 ? warm * 0.2 : warm * 0.3;
+    const tintShift = tint * 0.3;
+    const sharpContrast = 1 + (sharp / 200);
 
     const img = document.getElementById('renderImage');
     if (img) {
-        img.style.filter = `brightness(${brightness}) contrast(${contrast}) saturate(${saturation}) hue-rotate(${hueShift}deg)`;
+        img.style.filter = `brightness(${brightness}) contrast(${contrastVal * sharpContrast}) saturate(${saturation}) hue-rotate(${hueShift + tintShift}deg) sepia(${sepiaAmount})`;
     }
 }
 
 function resetAdjust() {
-    ['adjExposure','adjContrast','adjSaturation','adjWarmth','adjSharpness'].forEach(id => {
+    ['adjExposure','adjContrast','adjHighlights','adjShadows','adjSaturation','adjWarmth','adjTint','adjSharpness'].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.value = 0;
     });
@@ -682,11 +756,14 @@ function resetAdjust() {
 }
 
 function autoAdjust() {
-    document.getElementById('adjExposure').value = 8;
-    document.getElementById('adjContrast').value = 15;
-    document.getElementById('adjSaturation').value = 12;
-    document.getElementById('adjWarmth').value = 5;
-    document.getElementById('adjSharpness').value = 20;
+    document.getElementById('adjExposure').value = 5;
+    document.getElementById('adjContrast').value = 10;
+    document.getElementById('adjHighlights').value = -8;
+    document.getElementById('adjShadows').value = 8;
+    document.getElementById('adjSaturation').value = 10;
+    document.getElementById('adjWarmth').value = 3;
+    document.getElementById('adjTint').value = 0;
+    document.getElementById('adjSharpness').value = 15;
     applyAdjust();
 }
 
@@ -698,11 +775,16 @@ async function saveRenderWithAdjust() {
     const con = parseInt(document.getElementById('adjContrast').value);
     const sat = parseInt(document.getElementById('adjSaturation').value);
     const warm = parseInt(document.getElementById('adjWarmth').value);
+    const tint = parseInt(document.getElementById('adjTint').value);
+    const sharp = parseInt(document.getElementById('adjSharpness').value);
 
-    const brightness = 1 + (exp / 150);
-    const contrast = 1 + (con / 100);
+    const brightness = 1 + (exp / 200);
+    const contrastVal = 1 + (con / 150);
     const saturation = 1 + (sat / 100);
-    const hueShift = warm * 0.15;
+    const sepiaAmount = Math.abs(warm) / 200;
+    const hueShift = warm > 0 ? warm * 0.2 : warm * 0.3;
+    const tintShift = tint * 0.3;
+    const sharpContrast = 1 + (sharp / 200);
 
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -713,27 +795,28 @@ async function saveRenderWithAdjust() {
         canvas.width = tempImg.naturalWidth;
         canvas.height = tempImg.naturalHeight;
 
-        ctx.filter = `brightness(${brightness}) contrast(${contrast}) saturate(${saturation}) hue-rotate(${hueShift}deg)`;
+        ctx.filter = `brightness(${brightness}) contrast(${contrastVal * sharpContrast}) saturate(${saturation}) hue-rotate(${hueShift + tintShift}deg) sepia(${sepiaAmount})`;
         ctx.drawImage(tempImg, 0, 0);
 
         ctx.filter = 'none';
-        ctx.globalAlpha = 0.3;
+        ctx.globalAlpha = 0.35;
         ctx.fillStyle = '#ffffff';
-        const fontSize = Math.max(20, Math.floor(canvas.width / 60));
-        ctx.font = `bold ${fontSize}px Arial`;
-        const text = 'ADEULL AI';
+        const fontSize = Math.max(24, Math.floor(canvas.width / 55));
+        ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+        ctx.textBaseline = 'bottom';
+        const text = 'ADEULL';
         const textWidth = ctx.measureText(text).width;
-        ctx.fillText(text, canvas.width - textWidth - 20, canvas.height - 20);
+        ctx.fillText(text, canvas.width - textWidth - 30, canvas.height - 25);
         ctx.globalAlpha = 1;
 
         canvas.toBlob(function(blob) {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `ADEULL_AI_${Date.now()}.png`;
+            a.download = `ADEULL_${Date.now()}.jpg`;
             a.click();
             URL.revokeObjectURL(url);
-        }, 'image/png', 0.95);
+        }, 'image/jpeg', 0.92);
     };
     tempImg.src = img.src;
 }
