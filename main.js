@@ -270,6 +270,44 @@ async function ADEULL_UPSCALE(imageUrl) {
     }
 }
 
+async function mergeItemsCanvas(items) {
+    if (items.length === 0) return '';
+    if (items.length === 1) return items[0].base64;
+
+    const loadImg = (src) => new Promise(res => {
+        const img = new Image();
+        img.onload = () => res(img);
+        img.onerror = () => res(null);
+        img.src = src;
+    });
+
+    const imgs = (await Promise.all(items.map(i => loadImg(i.base64)))).filter(Boolean);
+    if (imgs.length === 0) return '';
+    if (imgs.length === 1) return items[0].base64;
+
+    const cols = Math.ceil(Math.sqrt(imgs.length));
+    const rows = Math.ceil(imgs.length / cols);
+    const cellW = 512, cellH = 512;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = cellW * cols;
+    canvas.height = cellH * rows;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    imgs.forEach((img, i) => {
+        const x = (i % cols) * cellW;
+        const y = Math.floor(i / cols) * cellH;
+        const scale = Math.min(cellW / img.width, cellH / img.height);
+        const w = img.width * scale;
+        const h = img.height * scale;
+        ctx.drawImage(img, x + (cellW - w) / 2, y + (cellH - h) / 2, w, h);
+    });
+
+    return canvas.toDataURL('image/jpeg', 0.9);
+}
+
 async function simulateAPIConnection(btnId, is8K = false) {
     console.log('🔍 RENDER START:', {
         selectedQuality: window.selectedQuality,
@@ -393,6 +431,10 @@ async function simulateAPIConnection(btnId, is8K = false) {
         isSketchMode = "EVET";
     }
 
+    // Merge multiple items into a single grid image for N8N
+    const mergedItem = await mergeItemsCanvas(filledItems);
+    if (mergedItem) { window.uploadedBase64['boxItem'] = mergedItem; }
+
     // Add secure auth token and user_id to payload for Core Engine validation
     const sessionData = window.supabaseClient ? await window.supabaseClient.auth.getSession() : null;
     const authToken = sessionData?.data?.session?.access_token || "";
@@ -403,7 +445,6 @@ async function simulateAPIConnection(btnId, is8K = false) {
         isSketch: isSketchMode,
         sketchData: theSketchImage,
         images: window.uploadedBase64,
-        items: filledItems.map(b => b.base64),
         language: activeLangCode,
         aspectRatio: window.currentRatio,
         imageSize: "4K",
