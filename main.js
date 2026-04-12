@@ -272,7 +272,7 @@ async function ADEULL_UPSCALE(imageUrl) {
 
 async function mergeItemsCanvas(items) {
     if (items.length === 0) return '';
-    if (items.length === 1) return items[0].base64;
+    if (items.length === 1) return (items[0].base64 || '').replace(/^data:image\/[a-z]+;base64,/, '');
 
     const loadImg = (src) => new Promise(res => {
         const img = new Image();
@@ -283,7 +283,7 @@ async function mergeItemsCanvas(items) {
 
     const imgs = (await Promise.all(items.map(i => loadImg(i.base64)))).filter(Boolean);
     if (imgs.length === 0) return '';
-    if (imgs.length === 1) return items[0].base64;
+    if (imgs.length === 1) return (items[0].base64 || '').replace(/^data:image\/[a-z]+;base64,/, '');
 
     const cols = Math.ceil(Math.sqrt(imgs.length));
     const rows = Math.ceil(imgs.length / cols);
@@ -305,7 +305,7 @@ async function mergeItemsCanvas(items) {
         ctx.drawImage(img, x + (cellW - w) / 2, y + (cellH - h) / 2, w, h);
     });
 
-    return canvas.toDataURL('image/jpeg', 0.9);
+    return canvas.toDataURL('image/jpeg', 0.9).replace(/^data:image\/[a-z]+;base64,/, '');
 }
 
 async function simulateAPIConnection(btnId, is8K = false) {
