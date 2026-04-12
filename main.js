@@ -294,7 +294,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
 
     const currentMenu = document.getElementById('dashboardTitle').getAttribute('data-raw-title');
     const hasScene = window.uploadedBase64 && window.uploadedBase64['boxScene'];
-    const hasItem = window.uploadedBase64 && window.uploadedBase64['boxItem'];
+    const filledItems = (window._itemBoxes || []).filter(b => b && b.base64);
 
     const _langCode = (document.getElementById('activeCode') || {}).innerText || 'EN';
     const _warnings = {
@@ -341,13 +341,13 @@ async function simulateAPIConnection(btnId, is8K = false) {
     };
     const _L = _warnings[_langCode] || _warnings['EN'];
 
-    if ((currentMenu === 'INTERIOR' || currentMenu === 'EXTERIOR' || currentMenu === 'ARCHITECTURE') && hasScene && !hasItem) {
+    if ((currentMenu === 'INTERIOR' || currentMenu === 'EXTERIOR' || currentMenu === 'ARCHITECTURE') && hasScene && filledItems.length === 0) {
         alert(_L.missingItem);
         btn.disabled = false;
         return;
     }
 
-    if ((currentMenu === 'INTERIOR' || currentMenu === 'EXTERIOR' || currentMenu === 'ARCHITECTURE') && !hasScene && hasItem) {
+    if ((currentMenu === 'INTERIOR' || currentMenu === 'EXTERIOR' || currentMenu === 'ARCHITECTURE') && !hasScene && filledItems.length > 0) {
         alert(_L.missingScene);
         btn.disabled = false;
         return;
@@ -403,7 +403,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
         isSketch: isSketchMode,
         sketchData: theSketchImage,
         images: window.uploadedBase64,
-        items: (window._itemBoxes || []).filter(b => b && b.base64).map(b => b.base64),
+        items: filledItems.map(b => b.base64),
         language: activeLangCode,
         aspectRatio: window.currentRatio,
         imageSize: "4K",
