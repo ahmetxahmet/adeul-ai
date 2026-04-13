@@ -648,14 +648,15 @@ document.addEventListener('keydown', function(event) {
 });
 
 window.setQuality = function(quality, btn) {
-    window.selectedQuality = quality;
-    document.querySelectorAll('.quality-btn').forEach(b => {
-        b.className = b.className.replace('bg-white/20 text-white', 'bg-white/5 text-white/60');
-        if(!b.className.includes('bg-white/5')) b.className += ' bg-white/5 text-white/60';
-    });
-    if(btn) {
-        btn.className = btn.className.replace('bg-white/5 text-white/60', 'bg-white/20 text-white');
-    }
+  window.selectedQuality = quality;
+  document.querySelectorAll('.quality-btn').forEach(b => {
+    b.classList.remove('bg-white', 'text-black');
+    b.classList.add('bg-white/5', 'text-white/60');
+  });
+  if(btn) {
+    btn.classList.remove('bg-white/5', 'text-white/60');
+    btn.classList.add('bg-white', 'text-black');
+  }
 };
 
 window.simulateAPIConnectionUnified = async function() {
