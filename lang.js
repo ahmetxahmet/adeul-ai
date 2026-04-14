@@ -24,6 +24,7 @@ window.dict = {
         colorAdjust: "ADJUST COLOR", autoLevels: "AUTO LEVELS", exposure: "EXPOSURE", contrast: "CONTRAST", highlights: "HIGHLIGHTS", shadows: "SHADOWS", saturation: "SATURATION", warmth: "WARMTH", tint: "TINT", sharpness: "SHARPNESS", resetAll: "RESET ALL", addItem: "ADD ITEM",
         heroTitle: "AI ARCHITECTURAL VISUALIZATION",
         heroSubtitle: "Transform sketches, photos and ideas into photorealistic renders in seconds. Built for architects, designers and real estate professionals.",
+        termsLink: "TERMS", privacyLink: "PRIVACY", refundLink: "REFUND", contactLink: "CONTACT",
     },
     'TR': {
         subtitle: "Mimari Çekirdek Zekası", login: "Giriş Yap", email: "E-POSTA ADRESİ", password: "ŞİFRE", orLogin: "Veya Şununla Giriş Yap",
@@ -47,6 +48,7 @@ window.dict = {
         colorAdjust: "RENGİ AYARLA", autoLevels: "OTOMATİK", exposure: "POZLAMA", contrast: "KONTRAST", highlights: "VURGULAR", shadows: "GÖLGELER", saturation: "DOYGUNLUK", warmth: "SICAKLIK", tint: "RENK TONU", sharpness: "NETLİK", resetAll: "TÜMÜNÜ SIFIRLA", addItem: "EŞYA EKLE",
         heroTitle: "YAPAY ZEKA MİMARİ GÖRSELLEŞTİRME",
         heroSubtitle: "Eskiz, fotoğraf ve fikirleri saniyeler içinde fotogerçekçi renderlara dönüştürün. Mimarlar, tasarımcılar ve emlakçılar için.",
+        termsLink: "KOŞULLAR", privacyLink: "GİZLİLİK", refundLink: "İADE", contactLink: "İLETİŞİM",
     },
     'ES': {
         subtitle: "Inteligencia Central Arquitectónica", login: "Iniciar Sesión", email: "CORREO ELECTRÓNICO", password: "CONTRASEÑA", orLogin: "O entrar con",
@@ -70,6 +72,7 @@ window.dict = {
         colorAdjust: "AJUSTAR COLOR", autoLevels: "NIVELES AUTO", exposure: "EXPOSICIÓN", contrast: "CONTRASTE", highlights: "LUCES", shadows: "SOMBRAS", saturation: "SATURACIÓN", warmth: "CALIDEZ", tint: "TINTE", sharpness: "NITIDEZ", resetAll: "RESTABLECER", addItem: "AÑADIR",
         heroTitle: "VISUALIZACIÓN ARQUITECTÓNICA IA",
         heroSubtitle: "Transforma bocetos, fotos e ideas en renders fotorrealistas en segundos. Para arquitectos, diseñadores y profesionales inmobiliarios.",
+        termsLink: "TÉRMINOS", privacyLink: "PRIVACIDAD", refundLink: "REEMBOLSO", contactLink: "CONTACTO",
     },
     'DE': {
         subtitle: "Architektonische Kernintelligenz", login: "Anmelden", email: "E-MAIL", password: "PASSWORT", orLogin: "Oder anmelden mit",
@@ -93,6 +96,7 @@ window.dict = {
         colorAdjust: "FARBE ANPASSEN", autoLevels: "AUTO NIVEAUS", exposure: "BELICHTUNG", contrast: "KONTRAST", highlights: "LICHTER", shadows: "SCHATTEN", saturation: "SÄTTIGUNG", warmth: "WÄRME", tint: "TÖNUNG", sharpness: "SCHÄRFE", resetAll: "ZURÜCKSETZEN", addItem: "HINZUFÜGEN",
         heroTitle: "KI ARCHITEKTURVISUALISIERUNG",
         heroSubtitle: "Verwandle Skizzen, Fotos und Ideen in Sekunden in fotorealistische Renderings. Für Architekten, Designer und Immobilienprofis.",
+        termsLink: "AGB", privacyLink: "DATENSCHUTZ", refundLink: "RÜCKERSTATTUNG", contactLink: "KONTAKT",
     },
     'FR': {
         subtitle: "Intelligence Architecturale", login: "Connexion", email: "E-MAIL", password: "MOT DE PASSE", orLogin: "Ou se connecter avec",
@@ -116,6 +120,7 @@ window.dict = {
         colorAdjust: "AJUSTER COULEUR", autoLevels: "NIVEAUX AUTO", exposure: "EXPOSITION", contrast: "CONTRASTE", highlights: "HAUTES LUM.", shadows: "OMBRES", saturation: "SATURATION", warmth: "CHALEUR", tint: "TEINTE", sharpness: "NETTETÉ", resetAll: "TOUT RÉINIT.", addItem: "AJOUTER",
         heroTitle: "VISUALISATION ARCHITECTURALE IA",
         heroSubtitle: "Transformez croquis, photos et idées en rendus photoréalistes en quelques secondes. Pour architectes, designers et pros de l'immobilier.",
+        termsLink: "CONDITIONS", privacyLink: "CONFIDENTIALITÉ", refundLink: "REMBOURSEMENT", contactLink: "CONTACT",
     },
     'PT': {
         subtitle: "Inteligência Arquitetônica", login: "Entrar", email: "E-MAIL", password: "SENHA", orLogin: "Ou entrar com",
@@ -139,6 +144,7 @@ window.dict = {
         colorAdjust: "AJUSTAR COR", autoLevels: "NÍVEIS AUTO", exposure: "EXPOSIÇÃO", contrast: "CONTRASTE", highlights: "REALCES", shadows: "SOMBRAS", saturation: "SATURAÇÃO", warmth: "CALOR", tint: "TONALIDADE", sharpness: "NITIDEZ", resetAll: "REDEFINIR", addItem: "ADICIONAR",
         heroTitle: "VISUALIZAÇÃO ARQUITETÔNICA IA",
         heroSubtitle: "Transforme esboços, fotos e ideias em renders fotorrealistas em segundos. Para arquitetos, designers e profissionais imobiliários.",
+        termsLink: "TERMOS", privacyLink: "PRIVACIDADE", refundLink: "REEMBOLSO", contactLink: "CONTATO",
     },
     'ID': {
         subtitle: "Kecerdasan Arsitektur", login: "Masuk", email: "EMAIL", password: "KATA SANDI", orLogin: "Atau masuk dengan",
@@ -162,6 +168,7 @@ window.dict = {
         colorAdjust: "SESUAIKAN WARNA", autoLevels: "OTOMATIS", exposure: "PENCAHAYAAN", contrast: "KONTRAS", highlights: "SOROTAN", shadows: "BAYANGAN", saturation: "SATURASI", warmth: "KEHANGATAN", tint: "RONA", sharpness: "KETAJAMAN", resetAll: "ATUR ULANG", addItem: "TAMBAH",
         heroTitle: "VISUALISASI ARSITEKTUR AI",
         heroSubtitle: "Ubah sketsa, foto, dan ide menjadi render fotorealistis dalam hitungan detik. Untuk arsitek, desainer, dan profesional properti.",
+        termsLink: "KETENTUAN", privacyLink: "PRIVASI", refundLink: "PENGEMBALIAN", contactLink: "KONTAK",
     },
     'RU': {
         subtitle: "Архитектурный ИИ", login: "Войти", email: "EMAIL", password: "ПАРОЛЬ", orLogin: "Или войти через",
@@ -183,8 +190,9 @@ window.dict = {
         promptBuilder: "КОНСТРУКТОР ПРОМПТОВ",
         askAdeull: "СПРОСИТЬ ADEULL",
         colorAdjust: "НАСТРОЙКА ЦВЕТА", autoLevels: "АВТО", exposure: "ЭКСПОЗИЦИЯ", contrast: "КОНТРАСТ", highlights: "СВЕТА", shadows: "ТЕНИ", saturation: "НАСЫЩЕННОСТЬ", warmth: "ТЕПЛОТА", tint: "ОТТЕНОК", sharpness: "РЕЗКОСТЬ", resetAll: "СБРОСИТЬ", addItem: "ДОБАВИТЬ",
-        heroTitle: "AI АРХИТЕКТУРНАЯ ВИЗУАЛИЗАЦИЯ",
+        heroTitle: "ИИ АРХИТЕКТУРНАЯ ВИЗУАЛИЗАЦИЯ",
         heroSubtitle: "Превращайте эскизы, фото и идеи в фотореалистичные рендеры за секунды. Для архитекторов, дизайнеров и риелторов.",
+        termsLink: "УСЛОВИЯ", privacyLink: "КОНФИДЕНЦИАЛЬНОСТЬ", refundLink: "ВОЗВРАТ", contactLink: "КОНТАКТ",
     },
     'AR': {
         subtitle: "الذكاء المعماري", login: "دخول", email: "البريد الإلكتروني", password: "كلمة المرور", orLogin: "أو الدخول عبر",
@@ -208,6 +216,7 @@ window.dict = {
         colorAdjust: "ضبط اللون", autoLevels: "تلقائي", exposure: "التعرض", contrast: "التباين", highlights: "الإبرازات", shadows: "الظلال", saturation: "التشبع", warmth: "الدفء", tint: "الصبغة", sharpness: "الحدة", resetAll: "إعادة تعيين", addItem: "إضافة",
         heroTitle: "التصور المعماري بالذكاء الاصطناعي",
         heroSubtitle: "حوّل الرسومات والصور والأفكار إلى تصاميم واقعية في ثوانٍ. للمهندسين المعماريين والمصممين ومحترفي العقارات.",
+        termsLink: "الشروط", privacyLink: "الخصوصية", refundLink: "الاسترداد", contactLink: "اتصل",
     },
     'IT': {
         subtitle: "Intelligenza Architettonica", login: "Accedi", email: "EMAIL", password: "PASSWORD", orLogin: "O accedi con",
@@ -231,6 +240,7 @@ window.dict = {
         colorAdjust: "REGOLA COLORE", autoLevels: "AUTOMATICO", exposure: "ESPOSIZIONE", contrast: "CONTRASTO", highlights: "LUCI", shadows: "OMBRE", saturation: "SATURAZIONE", warmth: "CALDO", tint: "TINTA", sharpness: "NITIDEZZA", resetAll: "RIPRISTINA", addItem: "AGGIUNGI",
         heroTitle: "VISUALIZZAZIONE ARCHITETTONICA IA",
         heroSubtitle: "Trasforma schizzi, foto e idee in render fotorealistici in pochi secondi. Per architetti, designer e professionisti immobiliari.",
+        termsLink: "TERMINI", privacyLink: "PRIVACY", refundLink: "RIMBORSO", contactLink: "CONTATTO",
     }
 };
 
