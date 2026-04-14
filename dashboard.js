@@ -327,6 +327,23 @@
             html += '</div>';
         }
 
+        html += '<div style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);' +
+            'text-align:center;display:flex;justify-content:center;gap:16px;">';
+        var legalLinks = [
+            { label: 'TERMS', href: '/terms.html' },
+            { label: 'PRIVACY', href: '/privacy.html' },
+            { label: 'REFUND', href: '/refund.html' }
+        ];
+        for (var li = 0; li < legalLinks.length; li++) {
+            if (li > 0) html += '<span style="color:rgba(255,255,255,0.15);font-size:7px;">·</span>';
+            html += '<a href="' + legalLinks[li].href + '" style="font-size:7px;font-weight:700;letter-spacing:0.2em;' +
+                'color:rgba(255,255,255,0.25);text-decoration:none;text-transform:uppercase;' +
+                'transition:color 0.2s;font-family:inherit;" ' +
+                'onmouseenter="this.style.color=\'rgba(255,255,255,0.6)\'" ' +
+                'onmouseleave="this.style.color=\'rgba(255,255,255,0.25)\'">' + legalLinks[li].label + '</a>';
+        }
+        html += '</div>';
+
         showDashPage(html, 'billing');
     };
 
