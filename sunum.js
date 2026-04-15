@@ -207,6 +207,7 @@
     // startSunumAnalysis
     // ============================================================
     window.startSunumAnalysis = async function() {
+        if (!window.currentUserId || window.currentUserId === 'guest') { alert('Please login or sign up to use ADEULL AI rendering. Visit pricing page for plans.'); document.getElementById('loginScreen').style.display = 'flex'; return; }
         if (window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(function(){}); }
 
         var lang = getLang();
