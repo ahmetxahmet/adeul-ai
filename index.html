@@ -14,14 +14,19 @@
 <audio id="hoverSound" src="https://actions.google.com/sounds/v1/ui/button_click.ogg" preload="auto"></audio>
  
 <div id="loginScreen" class="absolute inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md px-4">
-<button onclick="document.getElementById('loginScreen').style.display='none';document.getElementById('appContent').classList.add('active');document.getElementById('appContent').style.display='block';document.getElementById('landing').classList.remove('hidden');document.getElementById('landing').style.display='flex';document.getElementById('topCreditDisplay').innerText='0';document.getElementById('panelCreditDisplay').innerText='0';document.getElementById('panelUserName').innerText='GUEST';document.getElementById('panelUserPlan').innerText='PREVIEW MODE';" class="absolute top-6 right-6 text-white/60 hover:text-white text-2xl z-[210] bg-black/40 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-md">✕</button>
+<button onclick="document.getElementById('loginScreen').style.display='none';document.getElementById('appContent').classList.add('active');document.getElementById('appContent').style.display='block';document.getElementById('landing').classList.remove('hidden');document.getElementById('landing').style.display='flex';document.getElementById('topCreditDisplay').innerText='0';document.getElementById('panelCreditDisplay').innerText='0';document.getElementById('panelUserName').innerText='GUEST';document.getElementById('panelUserPlan').innerText='PREVIEW MODE';document.getElementById('demoBanner').style.display='block';" class="absolute top-6 right-6 text-white/60 hover:text-white text-2xl z-[210] bg-black/40 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-md">✕</button>
 
 <div class="w-full max-w-6xl flex flex-col lg:flex-row gap-6 lg:gap-10 items-stretch">
 
   <!-- LEFT: LOGIN FORM -->
   <div class="w-full lg:w-[28rem] glass-panel rounded-[2rem] p-8 lg:p-10 flex flex-col items-center shadow-2xl relative overflow-hidden flex-shrink-0">
     <h2 class="text-3xl lg:text-4xl font-extrabold tracking-[0.3em] text-white mb-2 uppercase relative z-10">ADEULL</h2>
-    <p class="text-[0.5rem] tracking-[0.4em] text-white/40 uppercase mb-8 text-center relative z-10" data-i18n="subtitle">Architectural Core Intelligence</p>
+    <p class="text-[0.5rem] tracking-[0.4em] text-white/40 uppercase mb-6 text-center relative z-10" data-i18n="subtitle">Architectural Core Intelligence</p>
+
+    <div class="text-center mb-6 lg:hidden relative z-10 w-full">
+      <h2 class="text-xl font-extrabold tracking-[0.1em] text-white uppercase mb-2" data-i18n="heroTitle">AI Architectural Visualization</h2>
+      <p class="text-xs text-white/70" data-i18n="heroSubtitle">Photorealistic renders in seconds</p>
+    </div>
 
     <form class="w-full flex flex-col gap-4 relative z-10" onsubmit="handleLoginAdvanced(event)">
       <div id="signupFields" style="display:none;" class="flex flex-col gap-4">
@@ -65,6 +70,7 @@
       </div>
       <input type="email" id="loginEmail" name="email" autocomplete="username" placeholder="EMAIL ADDRESS" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
       <input type="password" id="loginPassword" name="password" autocomplete="current-password" placeholder="PASSWORD" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+      <a href="/pricing.html" class="text-center text-[0.55rem] tracking-widest text-white/50 hover:text-white uppercase underline w-full block">View Pricing →</a>
       <button type="submit" class="w-full bg-white text-black font-extrabold py-4 rounded-2xl tracking-[0.2em] hover:bg-gray-200 transition mt-2 uppercase">Login</button>
     </form>
 
@@ -101,43 +107,55 @@
 
   <!-- RIGHT: SHOWCASE -->
   <div class="hidden lg:flex flex-1 glass-panel rounded-[2rem] p-10 flex-col justify-center items-center shadow-2xl relative overflow-hidden min-h-[600px]">
-    <div class="text-center mb-8 relative z-10">
-      <h3 class="text-2xl xl:text-3xl font-extrabold tracking-[0.15em] text-white uppercase mb-3" data-i18n="heroTitle">AI ARCHITECTURAL VISUALIZATION</h3>
-      <p class="text-[0.65rem] tracking-[0.2em] uppercase text-white/60" data-i18n="heroSubtitle">Transform sketches, photos and ideas into photorealistic renders in seconds</p>
+    <div class="text-center mb-6 relative z-20">
+      <h2 class="text-3xl xl:text-5xl font-extrabold tracking-[0.1em] text-white uppercase mb-3 leading-tight" data-i18n="heroTitle">AI Architectural Visualization</h2>
+      <p class="text-sm xl:text-base text-white/80 max-w-xl mx-auto leading-relaxed" data-i18n="heroSubtitle">Transform sketches and photos into photorealistic renders in seconds. Built for architects, designers and real estate professionals.</p>
     </div>
 
     <div class="w-full max-w-md aspect-square relative" id="showcaseCarousel">
-      <div class="showcase-card showcase-active absolute inset-0 flex flex-row justify-between items-center bg-gradient-to-br from-white/5 to-white/10 border border-white/10 rounded-3xl p-10 backdrop-blur-md">
-        <div class="flex flex-col justify-center gap-2 flex-1">
-          <p class="text-[0.5rem] tracking-[0.35em] uppercase text-white/40 mb-1">01 / 04</p>
-          <h4 class="text-2xl font-extrabold tracking-[0.15em] uppercase text-white leading-tight">INTERIOR</h4>
-          <p class="text-[0.6rem] tracking-widest text-white/60 uppercase mt-2">Living rooms, bedrooms, offices</p>
+      <div class="showcase-card showcase-active absolute inset-0 flex bg-gradient-to-br from-amber-500/10 to-orange-500/5 border border-white/10 rounded-3xl backdrop-blur-md overflow-hidden">
+        <div class="w-14 flex items-center justify-center bg-black/40 flex-shrink-0">
+          <h4 class="text-white font-extrabold tracking-[0.3em] uppercase text-[0.6rem]" style="writing-mode: vertical-rl; transform: rotate(180deg);">INTERIOR</h4>
         </div>
-        <div class="text-6xl ml-6">🛋️</div>
+        <div class="flex-1 flex flex-col justify-center items-center text-center p-6">
+          <div class="text-6xl mb-4">🛋️</div>
+          <h5 class="text-sm font-bold tracking-widest uppercase text-white mb-2">LIVING ROOM RENDER</h5>
+          <p class="text-[0.6rem] text-white/60 italic mb-3">"modern minimalist with marble coffee table"</p>
+          <span class="text-[0.55rem] tracking-widest text-green-300 uppercase">→ Photorealistic 4K in 30 seconds</span>
+        </div>
       </div>
-      <div class="showcase-card absolute inset-0 flex flex-row justify-between items-center bg-gradient-to-br from-white/5 to-white/10 border border-white/10 rounded-3xl p-10 backdrop-blur-md opacity-0">
-        <div class="flex flex-col justify-center gap-2 flex-1">
-          <p class="text-[0.5rem] tracking-[0.35em] uppercase text-white/40 mb-1">02 / 04</p>
-          <h4 class="text-2xl font-extrabold tracking-[0.15em] uppercase text-white leading-tight">DESIGN</h4>
-          <p class="text-[0.6rem] tracking-widest text-white/60 uppercase mt-2">Furniture, lighting, materials</p>
+      <div class="showcase-card absolute inset-0 flex bg-gradient-to-br from-purple-500/10 to-pink-500/5 border border-white/10 rounded-3xl backdrop-blur-md overflow-hidden opacity-0">
+        <div class="w-14 flex items-center justify-center bg-black/40 flex-shrink-0">
+          <h4 class="text-white font-extrabold tracking-[0.3em] uppercase text-[0.6rem]" style="writing-mode: vertical-rl; transform: rotate(180deg);">DESIGN</h4>
         </div>
-        <div class="text-6xl ml-6">✨</div>
+        <div class="flex-1 flex flex-col justify-center items-center text-center p-6">
+          <div class="text-6xl mb-4">✨</div>
+          <h5 class="text-sm font-bold tracking-widest uppercase text-white mb-2">FURNITURE RENDER</h5>
+          <p class="text-[0.6rem] text-white/60 italic mb-3">"vintage leather armchair, warm studio light"</p>
+          <span class="text-[0.55rem] tracking-widest text-green-300 uppercase">→ Photorealistic 4K in 30 seconds</span>
+        </div>
       </div>
-      <div class="showcase-card absolute inset-0 flex flex-row justify-between items-center bg-gradient-to-br from-white/5 to-white/10 border border-white/10 rounded-3xl p-10 backdrop-blur-md opacity-0">
-        <div class="flex flex-col justify-center gap-2 flex-1">
-          <p class="text-[0.5rem] tracking-[0.35em] uppercase text-white/40 mb-1">03 / 04</p>
-          <h4 class="text-2xl font-extrabold tracking-[0.15em] uppercase text-white leading-tight">PLAN<br>RESIZE</h4>
-          <p class="text-[0.6rem] tracking-widest text-white/60 uppercase mt-2">Turn 2D plans into renders</p>
+      <div class="showcase-card absolute inset-0 flex bg-gradient-to-br from-blue-500/10 to-cyan-500/5 border border-white/10 rounded-3xl backdrop-blur-md overflow-hidden opacity-0">
+        <div class="w-14 flex items-center justify-center bg-black/40 flex-shrink-0">
+          <h4 class="text-white font-extrabold tracking-[0.3em] uppercase text-[0.6rem]" style="writing-mode: vertical-rl; transform: rotate(180deg);">PLAN RESIZE</h4>
         </div>
-        <div class="text-6xl ml-6">📐</div>
+        <div class="flex-1 flex flex-col justify-center items-center text-center p-6">
+          <div class="text-6xl mb-4">📐</div>
+          <h5 class="text-sm font-bold tracking-widest uppercase text-white mb-2">2D PLAN TO 3D</h5>
+          <p class="text-[0.6rem] text-white/60 italic mb-3">"upload floor plan → get photorealistic render"</p>
+          <span class="text-[0.55rem] tracking-widest text-green-300 uppercase">→ Photorealistic 4K in 30 seconds</span>
+        </div>
       </div>
-      <div class="showcase-card absolute inset-0 flex flex-row justify-between items-center bg-gradient-to-br from-white/5 to-white/10 border border-white/10 rounded-3xl p-10 backdrop-blur-md opacity-0">
-        <div class="flex flex-col justify-center gap-2 flex-1">
-          <p class="text-[0.5rem] tracking-[0.35em] uppercase text-white/40 mb-1">04 / 04</p>
-          <h4 class="text-2xl font-extrabold tracking-[0.15em] uppercase text-white leading-tight">PRESEN&shy;TATION</h4>
-          <p class="text-[0.6rem] tracking-widest text-white/60 uppercase mt-2">Material boards, mood panels</p>
+      <div class="showcase-card absolute inset-0 flex bg-gradient-to-br from-green-500/10 to-emerald-500/5 border border-white/10 rounded-3xl backdrop-blur-md overflow-hidden opacity-0">
+        <div class="w-14 flex items-center justify-center bg-black/40 flex-shrink-0">
+          <h4 class="text-white font-extrabold tracking-[0.3em] uppercase text-[0.6rem]" style="writing-mode: vertical-rl; transform: rotate(180deg);">PRESENTATION</h4>
         </div>
-        <div class="text-6xl ml-6">🎨</div>
+        <div class="flex-1 flex flex-col justify-center items-center text-center p-6">
+          <div class="text-6xl mb-4">🎨</div>
+          <h5 class="text-sm font-bold tracking-widest uppercase text-white mb-2">MATERIAL MOOD BOARD</h5>
+          <p class="text-[0.6rem] text-white/60 italic mb-3">"oak wood, white marble, brushed brass palette"</p>
+          <span class="text-[0.55rem] tracking-widest text-green-300 uppercase">→ Photorealistic 4K in 30 seconds</span>
+        </div>
       </div>
     </div>
 
@@ -148,11 +166,18 @@
       <span class="w-2 h-2 rounded-full bg-white/30"></span>
     </div>
 
-    <a href="/pricing.html" class="mt-6 text-[0.55rem] tracking-[0.3em] uppercase text-white/50 hover:text-white transition">VIEW PRICING →</a>
-    <p class="text-[0.55rem] tracking-[0.25em] uppercase text-white/40 mt-4 relative z-10">⚡ Trusted by architects worldwide</p>
+    <div class="mt-8 flex flex-col items-center gap-3 relative z-10">
+      <a href="/pricing.html" class="px-10 py-4 bg-white text-black font-extrabold tracking-[0.2em] uppercase text-sm rounded-full hover:bg-gray-200 transition shadow-2xl">VIEW PRICING & PLANS →</a>
+      <p class="text-[0.55rem] tracking-widest text-white/40 uppercase">Starting at $9/month</p>
+    </div>
   </div>
 
 </div>
+</div>
+
+<div id="demoBanner" style="display:none;" class="fixed top-0 left-0 right-0 bg-yellow-500/20 backdrop-blur-md border-b border-yellow-500/40 text-yellow-100 py-2 px-4 text-center z-[90] text-[0.65rem] tracking-widest uppercase font-bold">
+  ⚡ <span data-i18n="demoMode">DEMO MODE — Login or sign up to start rendering</span>
+  <a href="#" onclick="event.preventDefault();document.getElementById('loginScreen').style.display='flex';" class="underline ml-2" data-i18n="loginNow">LOGIN NOW</a>
 </div>
 
 <div id="appContent">
@@ -234,6 +259,12 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
     Transform sketches, photos and ideas into photorealistic renders in seconds. Built for architects, designers and real estate professionals.
   </p>
 </div>
+<div class="mb-8 lg:mb-10 text-center max-w-2xl mx-auto px-4 relative z-20 w-full">
+  <button onclick="openPromptBuilder()" class="w-full bg-white text-black font-extrabold tracking-[0.2em] uppercase py-5 lg:py-6 rounded-2xl hover:bg-gray-200 transition text-sm lg:text-base shadow-2xl mb-3">
+    ✨ <span data-i18n="startWithPromptBuilder">START WITH PROMPT BUILDER</span>
+  </button>
+  <p class="text-[0.6rem] tracking-widest text-white/50 uppercase" data-i18n="promptBuilderHint">New here? Let AI help you write the perfect prompt</p>
+</div>
 <div class="flex items-stretch mt-[2vh] relative z-10">
 <div class="w-[2px] bg-white/70 mr-6"></div>
 <nav class="flex flex-col justify-between py-2 uppercase gap-4">
@@ -247,19 +278,22 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 </div>
 <div class="mt-12 flex flex-col lg:flex-row gap-3 relative z-10">
 <button onclick="openCouponModal()" class="px-8 lg:px-10 py-4 glass-panel rounded-full text-[0.55rem] lg:text-[0.65rem] font-bold tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer"><span data-i18n="redeemCoupon">REDEEM COUPON</span></button>
-<button onclick="openPromptBuilder()" class="px-8 lg:px-10 py-4 glass-panel rounded-full text-[0.55rem] lg:text-[0.65rem] font-bold tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer"><span data-i18n="promptBuilder">PROMPT BUILDER</span></button>
 <button onclick="openAdeullChat()" class="px-8 lg:px-10 py-4 glass-panel rounded-full text-[0.55rem] lg:text-[0.65rem] font-bold tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer"><span data-i18n="askAdeull">ASK ADEULL</span></button>
 <button onclick="openVendorForm()" class="px-8 lg:px-10 py-4 glass-panel rounded-full text-[0.55rem] lg:text-[0.65rem] font-bold tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all duration-300 uppercase shadow-2xl cursor-pointer"><span data-i18n="becomeVendor">JOIN NETWORK</span></button>
 <button id="adminPanelBtn" onclick="openAdminPanel()" style="display:none;" class="px-8 lg:px-10 py-4 bg-yellow-500/10 border border-yellow-500/30 rounded-full text-[0.55rem] lg:text-[0.65rem] font-bold tracking-[0.4em] text-yellow-300 hover:bg-yellow-500/20 transition-all duration-300 uppercase shadow-2xl cursor-pointer">⚡ ADMIN</button>
 </div>
-<div class="mt-10 lg:mt-14 flex flex-wrap justify-center gap-3 lg:gap-5 text-[0.5rem] lg:text-[0.55rem] tracking-[0.25em] uppercase text-white/40 relative z-30">
-  <a href="/terms.html" class="hover:text-white transition" data-i18n="termsLink">TERMS</a>
-  <span class="text-white/20">·</span>
-  <a href="/privacy.html" class="hover:text-white transition" data-i18n="privacyLink">PRIVACY</a>
-  <span class="text-white/20">·</span>
-  <a href="/refund.html" class="hover:text-white transition" data-i18n="refundLink">REFUND</a>
-  <span class="text-white/20">·</span>
-  <a href="mailto:info@adeull.com" class="hover:text-white transition" data-i18n="contactLink">CONTACT</a>
+<div class="absolute bottom-4 left-0 right-0 text-center z-30 px-4">
+  <div class="flex flex-wrap justify-center gap-3 lg:gap-5 text-[0.55rem] tracking-[0.25em] uppercase text-white/50">
+    <a href="/pricing.html" class="hover:text-white transition font-bold" data-i18n="pricingLink">PRICING</a>
+    <span class="text-white/20">·</span>
+    <a href="/terms.html" class="hover:text-white transition" data-i18n="termsLink">TERMS</a>
+    <span class="text-white/20">·</span>
+    <a href="/privacy.html" class="hover:text-white transition" data-i18n="privacyLink">PRIVACY</a>
+    <span class="text-white/20">·</span>
+    <a href="/refund.html" class="hover:text-white transition" data-i18n="refundLink">REFUND</a>
+    <span class="text-white/20">·</span>
+    <a href="mailto:info@adeull.com" class="hover:text-white transition" data-i18n="contactLink">CONTACT</a>
+  </div>
 </div>
 </div>
  
@@ -588,6 +622,8 @@ function applyUserData(userData) {
     if(document.getElementById('panelCreditDisplay')) document.getElementById('panelCreditDisplay').innerText = userData.credits;
     if(document.getElementById('topCreditDisplay')) document.getElementById('topCreditDisplay').innerText = userData.credits;
     document.getElementById('loginScreen').style.opacity = '0';
+    const demoBanner = document.getElementById('demoBanner');
+    if (demoBanner) demoBanner.style.display = 'none';
     setTimeout(() => {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('appContent').classList.add('active');
