@@ -13,13 +13,12 @@
  
 <audio id="hoverSound" src="https://actions.google.com/sounds/v1/ui/button_click.ogg" preload="auto"></audio>
  
-<div id="loginScreen" class="absolute inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md px-4">
-<button onclick="document.getElementById('loginScreen').style.display='none';document.getElementById('appContent').classList.add('active');document.getElementById('appContent').style.display='block';document.getElementById('landing').classList.remove('hidden');document.getElementById('landing').style.display='flex';document.getElementById('topCreditDisplay').innerText='0';document.getElementById('panelCreditDisplay').innerText='0';document.getElementById('panelUserName').innerText='GUEST';document.getElementById('panelUserPlan').innerText='PREVIEW MODE';document.getElementById('demoBanner').style.display='block';" class="absolute top-6 right-6 text-white/60 hover:text-white text-2xl z-[210] bg-black/40 rounded-full w-10 h-10 flex items-center justify-center backdrop-blur-md">✕</button>
+<div id="loginScreen" class="absolute inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-md px-4 overflow-y-auto">
 
 <div class="w-full max-w-6xl flex flex-col lg:flex-row gap-6 lg:gap-10 items-stretch">
 
   <!-- LEFT: LOGIN FORM -->
-  <div class="w-full lg:w-[28rem] glass-panel rounded-[2rem] p-8 lg:p-10 pt-12 flex flex-col items-center shadow-2xl relative overflow-hidden flex-shrink-0">
+  <div class="w-full lg:w-[28rem] glass-panel rounded-[2rem] p-8 lg:p-10 pt-12 flex flex-col items-center shadow-2xl relative overflow-hidden flex-shrink-0 max-h-[90vh] overflow-y-auto">
     <h2 class="text-3xl lg:text-4xl font-extrabold tracking-[0.3em] text-white mb-2 uppercase relative z-10">ADEULL</h2>
     <p class="text-[0.5rem] tracking-[0.4em] text-white/40 uppercase mb-6 text-center relative z-10" data-i18n="subtitle">Architectural Core Intelligence</p>
 
@@ -73,6 +72,8 @@
       <a href="/pricing.html" class="text-center text-[0.55rem] tracking-widest text-white/50 hover:text-white uppercase underline w-full block">View Pricing →</a>
       <button type="submit" class="w-full bg-white text-black font-extrabold py-4 rounded-2xl tracking-[0.2em] hover:bg-gray-200 transition mt-2 uppercase">Login</button>
     </form>
+
+    <a href="/pricing.html" class="w-full text-center bg-yellow-500/10 border border-yellow-500/40 text-yellow-200 font-bold py-3 rounded-2xl tracking-[0.2em] hover:bg-yellow-500/20 transition uppercase text-[0.65rem] mt-2 relative z-10" data-i18n="viewDemoPricing">📊 SEE PLANS & DEMO →</a>
 
     <p class="text-[0.55rem] tracking-widest text-white/40 uppercase mt-3 text-center relative z-10">
       <span data-i18n="noAccount">DON'T HAVE AN ACCOUNT?</span>
@@ -297,7 +298,7 @@ ADEULL AI IS AN ARTIFICIAL INTELLIGENCE MODEL AND CAN MAKE MISTAKES. PLEASE VERI
 <div id="landing" class="absolute inset-0 flex flex-col justify-center items-center text-white z-20 pt-12 lg:pt-16">
 <div class="bg-overlay"></div>
 <div class="absolute top-0 left-0 right-0 bg-gradient-to-r from-yellow-500/15 via-amber-500/15 to-yellow-500/15 backdrop-blur-md border-b border-yellow-500/30 py-2.5 px-4 text-center z-[85]">
-  <p class="text-[0.55rem] lg:text-[0.65rem] tracking-[0.25em] uppercase text-yellow-100 font-bold">
+  <p class="text-[0.45rem] lg:text-[0.65rem] tracking-[0.25em] uppercase text-yellow-100 font-bold">
     💎 <span data-i18n="saasNotice">PAID SUBSCRIPTION SERVICE — START FROM $9/MONTH</span>
     <a href="/pricing.html" class="underline ml-3 hover:text-white" data-i18n="viewPlansShort">VIEW PLANS</a>
   </p>
