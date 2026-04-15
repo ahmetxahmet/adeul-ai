@@ -30,6 +30,9 @@ window.dict = {
         startWithPromptBuilder: "START WITH PROMPT BUILDER",
         promptBuilderHint: "New here? Let AI help you write the perfect prompt",
         pricingLink: "PRICING",
+        saasNotice: "PAID SUBSCRIPTION SERVICE — START FROM $9/MONTH",
+        viewPlansShort: "VIEW PLANS",
+        step1: "SUBSCRIBE", step2: "UPLOAD", step3: "RENDER", step4: "DOWNLOAD",
     },
     'TR': {
         subtitle: "Mimari Çekirdek Zekası", login: "Giriş Yap", email: "E-POSTA ADRESİ", password: "ŞİFRE", orLogin: "Veya Şununla Giriş Yap",
@@ -59,6 +62,9 @@ window.dict = {
         startWithPromptBuilder: "PROMPT BUILDER İLE BAŞLA",
         promptBuilderHint: "Yeni misin? AI sana mükemmel promptu yazsın",
         pricingLink: "FİYATLAR",
+        saasNotice: "ÜCRETLİ ABONELİK SERVİSİ — AYDA $9'DAN BAŞLAR",
+        viewPlansShort: "PAKETLERİ GÖR",
+        step1: "ABONE OL", step2: "YÜKLE", step3: "RENDER AL", step4: "İNDİR",
     },
     'ES': {
         subtitle: "Inteligencia Central Arquitectónica", login: "Iniciar Sesión", email: "CORREO ELECTRÓNICO", password: "CONTRASEÑA", orLogin: "O entrar con",
@@ -88,6 +94,9 @@ window.dict = {
         startWithPromptBuilder: "EMPEZAR CON PROMPT BUILDER",
         promptBuilderHint: "¿Nuevo? Deja que la IA escriba el prompt perfecto",
         pricingLink: "PRECIOS",
+        saasNotice: "SERVICIO POR SUSCRIPCIÓN — DESDE $9/MES",
+        viewPlansShort: "VER PLANES",
+        step1: "SUSCRÍBETE", step2: "SUBIR", step3: "RENDERIZAR", step4: "DESCARGAR",
     },
     'DE': {
         subtitle: "Architektonische Kernintelligenz", login: "Anmelden", email: "E-MAIL", password: "PASSWORT", orLogin: "Oder anmelden mit",
@@ -117,6 +126,9 @@ window.dict = {
         startWithPromptBuilder: "MIT PROMPT BUILDER STARTEN",
         promptBuilderHint: "Neu hier? KI schreibt den perfekten Prompt",
         pricingLink: "PREISE",
+        saasNotice: "BEZAHLTES ABO — AB $9/MONAT",
+        viewPlansShort: "PLÄNE ANSEHEN",
+        step1: "ABONNIEREN", step2: "HOCHLADEN", step3: "RENDERN", step4: "HERUNTERLADEN",
     },
     'FR': {
         subtitle: "Intelligence Architecturale", login: "Connexion", email: "E-MAIL", password: "MOT DE PASSE", orLogin: "Ou se connecter avec",
@@ -146,6 +158,9 @@ window.dict = {
         startWithPromptBuilder: "COMMENCER AVEC PROMPT BUILDER",
         promptBuilderHint: "Nouveau? L'IA écrit le prompt parfait",
         pricingLink: "TARIFS",
+        saasNotice: "ABONNEMENT PAYANT — DÈS $9/MOIS",
+        viewPlansShort: "VOIR LES PLANS",
+        step1: "S'ABONNER", step2: "CHARGER", step3: "RENDU", step4: "TÉLÉCHARGER",
     },
     'PT': {
         subtitle: "Inteligência Arquitetônica", login: "Entrar", email: "E-MAIL", password: "SENHA", orLogin: "Ou entrar com",
@@ -175,6 +190,9 @@ window.dict = {
         startWithPromptBuilder: "COMEÇAR COM PROMPT BUILDER",
         promptBuilderHint: "Novo? Deixe a IA escrever o prompt perfeito",
         pricingLink: "PREÇOS",
+        saasNotice: "ASSINATURA PAGA — A PARTIR DE $9/MÊS",
+        viewPlansShort: "VER PLANOS",
+        step1: "ASSINAR", step2: "CARREGAR", step3: "RENDERIZAR", step4: "BAIXAR",
     },
     'ID': {
         subtitle: "Kecerdasan Arsitektur", login: "Masuk", email: "EMAIL", password: "KATA SANDI", orLogin: "Atau masuk dengan",
@@ -204,6 +222,9 @@ window.dict = {
         startWithPromptBuilder: "MULAI DENGAN PROMPT BUILDER",
         promptBuilderHint: "Baru? Biarkan AI menulis prompt sempurna",
         pricingLink: "HARGA",
+        saasNotice: "LAYANAN BERLANGGANAN — MULAI $9/BULAN",
+        viewPlansShort: "LIHAT PAKET",
+        step1: "BERLANGGANAN", step2: "UNGGAH", step3: "RENDER", step4: "UNDUH",
     },
     'RU': {
         subtitle: "Архитектурный ИИ", login: "Войти", email: "EMAIL", password: "ПАРОЛЬ", orLogin: "Или войти через",
@@ -233,6 +254,9 @@ window.dict = {
         startWithPromptBuilder: "НАЧАТЬ С PROMPT BUILDER",
         promptBuilderHint: "Новичок? ИИ напишет идеальный промпт",
         pricingLink: "ЦЕНЫ",
+        saasNotice: "ПЛАТНАЯ ПОДПИСКА — ОТ $9/МЕСЯЦ",
+        viewPlansShort: "ПЛАНЫ",
+        step1: "ПОДПИСКА", step2: "ЗАГРУЗКА", step3: "РЕНДЕР", step4: "СКАЧАТЬ",
     },
     'AR': {
         subtitle: "الذكاء المعماري", login: "دخول", email: "البريد الإلكتروني", password: "كلمة المرور", orLogin: "أو الدخول عبر",
@@ -262,6 +286,9 @@ window.dict = {
         startWithPromptBuilder: "ابدأ مع PROMPT BUILDER",
         promptBuilderHint: "جديد؟ دع الذكاء الاصطناعي يكتب الأمر المثالي",
         pricingLink: "الأسعار",
+        saasNotice: "خدمة اشتراك مدفوعة — ابتداء من $9 شهريا",
+        viewPlansShort: "عرض الخطط",
+        step1: "اشترك", step2: "تحميل", step3: "تصيير", step4: "تنزيل",
     },
     'IT': {
         subtitle: "Intelligenza Architettonica", login: "Accedi", email: "EMAIL", password: "PASSWORD", orLogin: "O accedi con",
@@ -291,6 +318,9 @@ window.dict = {
         startWithPromptBuilder: "INIZIA CON PROMPT BUILDER",
         promptBuilderHint: "Nuovo? L'IA scrive il prompt perfetto",
         pricingLink: "PREZZI",
+        saasNotice: "SERVIZIO IN ABBONAMENTO — DA $9/MESE",
+        viewPlansShort: "VEDI PIANI",
+        step1: "ABBONATI", step2: "CARICA", step3: "RENDER", step4: "SCARICA",
     }
 };
 
