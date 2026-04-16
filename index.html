@@ -68,18 +68,16 @@
         </video>
       </div>
       <!-- BEFORE/AFTER SLIDER -->
-      <div class="relative aspect-video rounded-3xl overflow-hidden border border-white/10 bg-black/30 select-none" id="heroBeforeAfter">
+      <div class="relative aspect-video max-h-[250px] lg:max-h-[300px] rounded-3xl overflow-hidden border border-white/10 bg-black/30 select-none" id="heroBeforeAfter">
         <img src="/images/cadbefore3.jpg" alt="Before" class="absolute inset-0 w-full h-full object-cover">
-        <div id="heroAfterWrap" class="absolute inset-0 overflow-hidden pointer-events-none" style="width: 50%;">
-          <img src="/images/cadafter3.jpg" alt="After" class="absolute inset-0 w-full h-full object-cover">
-        </div>
-        <div id="heroSliderHandle" class="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize shadow-2xl" style="left: 50%;">
-          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-2xl">
-            <span class="text-black text-lg">⇔</span>
+        <img src="/images/cadafter3.jpg" alt="After" class="absolute inset-0 w-full h-full object-cover" id="heroAfterImg" style="clip-path: inset(0 50% 0 0);">
+        <div id="heroSliderHandle" class="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize shadow-2xl z-10" style="left: 50%;">
+          <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-2xl">
+            <span class="text-black text-sm">⇔</span>
           </div>
         </div>
-        <div class="absolute top-4 left-4 bg-black/70 backdrop-blur-md text-white text-[0.55rem] tracking-widest uppercase px-3 py-1 rounded-full">BEFORE</div>
-        <div class="absolute top-4 right-4 bg-green-500/80 backdrop-blur-md text-white text-[0.55rem] tracking-widest uppercase px-3 py-1 rounded-full">AFTER · ADEULL AI</div>
+        <div class="absolute top-3 left-3 bg-black/70 backdrop-blur-md text-white text-[0.5rem] tracking-widest uppercase px-2 py-0.5 rounded-full z-10">BEFORE</div>
+        <div class="absolute top-3 right-3 bg-green-500/80 backdrop-blur-md text-white text-[0.5rem] tracking-widest uppercase px-2 py-0.5 rounded-full z-10">AFTER</div>
       </div>
     </div>
   </section>
@@ -122,52 +120,44 @@
 
         <div>
           <h4 class="text-sm font-bold tracking-widest uppercase text-white mb-3">📐 <span data-i18n="examplePlan">PLAN RESIZE</span></h4>
-          <div class="relative aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black/30 select-none" id="ba1">
+          <div class="relative aspect-video max-h-[200px] lg:max-h-[250px] rounded-2xl overflow-hidden border border-white/10 bg-black/30 select-none" id="ba1">
             <img src="/images/planbefore.jpg" class="absolute inset-0 w-full h-full object-cover">
-            <div class="ba-after absolute inset-0 overflow-hidden pointer-events-none" style="width: 50%;">
-              <img src="/images/planafter.jpg" class="absolute inset-0 w-full h-full object-cover">
-            </div>
-            <div class="ba-handle absolute top-0 bottom-0 w-0.5 bg-white cursor-ew-resize" style="left: 50%;">
-              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-xl text-xs text-black">⇔</div>
+            <img src="/images/planafter.jpg" class="absolute inset-0 w-full h-full object-cover ba-after-img" style="clip-path: inset(0 50% 0 0);">
+            <div class="ba-handle absolute top-0 bottom-0 w-0.5 bg-white cursor-ew-resize z-10" style="left: 50%;">
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-xl text-[0.6rem] text-black">⇔</div>
             </div>
           </div>
         </div>
 
         <div>
           <h4 class="text-sm font-bold tracking-widest uppercase text-white mb-3">✏️ <span data-i18n="exampleSketch">SKETCH TO RENDER</span></h4>
-          <div class="relative aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black/30 select-none" id="ba2">
+          <div class="relative aspect-video max-h-[200px] lg:max-h-[250px] rounded-2xl overflow-hidden border border-white/10 bg-black/30 select-none" id="ba2">
             <img src="/images/eskizbefore2.jpg" class="absolute inset-0 w-full h-full object-cover">
-            <div class="ba-after absolute inset-0 overflow-hidden pointer-events-none" style="width: 50%;">
-              <img src="/images/eskizafter2.jpg" class="absolute inset-0 w-full h-full object-cover">
-            </div>
-            <div class="ba-handle absolute top-0 bottom-0 w-0.5 bg-white cursor-ew-resize" style="left: 50%;">
-              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-xl text-xs text-black">⇔</div>
+            <img src="/images/eskizafter2.jpg" class="absolute inset-0 w-full h-full object-cover ba-after-img" style="clip-path: inset(0 50% 0 0);">
+            <div class="ba-handle absolute top-0 bottom-0 w-0.5 bg-white cursor-ew-resize z-10" style="left: 50%;">
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-xl text-[0.6rem] text-black">⇔</div>
             </div>
           </div>
         </div>
 
         <div>
           <h4 class="text-sm font-bold tracking-widest uppercase text-white mb-3">🔧 <span data-i18n="exampleRevision">REVISION</span></h4>
-          <div class="relative aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black/30 select-none" id="ba3">
+          <div class="relative aspect-video max-h-[200px] lg:max-h-[250px] rounded-2xl overflow-hidden border border-white/10 bg-black/30 select-none" id="ba3">
             <img src="/images/revisionbefore.jpg" class="absolute inset-0 w-full h-full object-cover">
-            <div class="ba-after absolute inset-0 overflow-hidden pointer-events-none" style="width: 50%;">
-              <img src="/images/revisionafter.jpg" class="absolute inset-0 w-full h-full object-cover">
-            </div>
-            <div class="ba-handle absolute top-0 bottom-0 w-0.5 bg-white cursor-ew-resize" style="left: 50%;">
-              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-xl text-xs text-black">⇔</div>
+            <img src="/images/revisionafter.jpg" class="absolute inset-0 w-full h-full object-cover ba-after-img" style="clip-path: inset(0 50% 0 0);">
+            <div class="ba-handle absolute top-0 bottom-0 w-0.5 bg-white cursor-ew-resize z-10" style="left: 50%;">
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-xl text-[0.6rem] text-black">⇔</div>
             </div>
           </div>
         </div>
 
         <div>
           <h4 class="text-sm font-bold tracking-widest uppercase text-white mb-3">🎨 <span data-i18n="examplePresentation">PRESENTATION BOARD</span></h4>
-          <div class="relative aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black/30 select-none" id="ba4">
+          <div class="relative aspect-video max-h-[200px] lg:max-h-[250px] rounded-2xl overflow-hidden border border-white/10 bg-black/30 select-none" id="ba4">
             <img src="/images/presentationbefore.jpg" class="absolute inset-0 w-full h-full object-cover">
-            <div class="ba-after absolute inset-0 overflow-hidden pointer-events-none" style="width: 50%;">
-              <img src="/images/presentationafter.jpg" class="absolute inset-0 w-full h-full object-cover">
-            </div>
-            <div class="ba-handle absolute top-0 bottom-0 w-0.5 bg-white cursor-ew-resize" style="left: 50%;">
-              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-white flex items-center justify-center shadow-xl text-xs text-black">⇔</div>
+            <img src="/images/presentationafter.jpg" class="absolute inset-0 w-full h-full object-cover ba-after-img" style="clip-path: inset(0 50% 0 0);">
+            <div class="ba-handle absolute top-0 bottom-0 w-0.5 bg-white cursor-ew-resize z-10" style="left: 50%;">
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-xl text-[0.6rem] text-black">⇔</div>
             </div>
           </div>
         </div>
@@ -1542,8 +1532,9 @@ async function submitVendorForm() {
 function initBeforeAfterSlider(containerId) {
   const container = document.getElementById(containerId);
   if(!container) return;
-  const after = container.querySelector('.ba-after, #heroAfterWrap');
+  const afterImg = container.querySelector('.ba-after-img, #heroAfterImg');
   const handle = container.querySelector('.ba-handle, #heroSliderHandle');
+  if(!afterImg || !handle) return;
   let dragging = false;
 
   const start = (e) => { dragging = true; e.preventDefault(); };
@@ -1553,15 +1544,15 @@ function initBeforeAfterSlider(containerId) {
     const rect = container.getBoundingClientRect();
     const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
     const pct = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    if(after) after.style.width = pct + '%';
-    if(handle) handle.style.left = pct + '%';
+    afterImg.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+    handle.style.left = pct + '%';
   };
 
   handle.addEventListener('mousedown', start);
   container.addEventListener('mousemove', move);
   document.addEventListener('mouseup', end);
-  handle.addEventListener('touchstart', start);
-  container.addEventListener('touchmove', move);
+  handle.addEventListener('touchstart', start, {passive: false});
+  container.addEventListener('touchmove', move, {passive: false});
   document.addEventListener('touchend', end);
 }
 
