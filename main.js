@@ -859,3 +859,182 @@ async function saveRenderWithAdjust() {
     };
     tempImg.src = img.src;
 }
+
+// ==============================================================
+// DXF EXPORT
+// ==============================================================
+async function exportToDXF() {
+  const img = document.getElementById('renderImage');
+  if(!img || !img.src) { alert('No render to export'); return; }
+
+  if(!window.currentUserId || window.currentUserId === 'guest') {
+    alert('Please login to export files.');
+    return;
+  }
+
+  const creditCost = 20;
+  const creditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
+  const currentCredits = parseInt(creditText.replace(/[^0-9]/g, '')) || 0;
+  if(currentCredits < creditCost) {
+    alert('DXF export requires ' + creditCost + ' credits. You have ' + currentCredits + '.');
+    return;
+  }
+
+  if(!confirm('DXF export will use 20 credits. Continue?')) return;
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const tempImg = new Image();
+  tempImg.crossOrigin = 'anonymous';
+  tempImg.onload = async function() {
+    canvas.width = tempImg.naturalWidth;
+    canvas.height = tempImg.naturalHeight;
+    ctx.drawImage(tempImg, 0, 0);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const edges = detectEdges(imageData);
+    const dxfContent = generateDXF(edges);
+
+    if(window.deductCredit) await window.deductCredit('DXF_EXPORT', creditCost);
+
+    const blob = new Blob([dxfContent], { type: 'application/dxf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ADEULL_' + Date.now() + '.dxf';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  tempImg.src = img.src;
+}
+
+function detectEdges(imageData) {
+  const w = imageData.width;
+  const h = imageData.height;
+  const gray = new Float32Array(w * h);
+  const d = imageData.data;
+
+  for(let i = 0; i < w * h; i++) {
+    gray[i] = (d[i*4] * 0.299 + d[i*4+1] * 0.587 + d[i*4+2] * 0.114);
+  }
+
+  const edges = [];
+  const threshold = 30;
+  const step = 3;
+
+  for(let y = 1; y < h - 1; y += step) {
+    for(let x = 1; x < w - 1; x += step) {
+      const gx = -gray[(y-1)*w+(x-1)] + gray[(y-1)*w+(x+1)]
+                -2*gray[y*w+(x-1)] + 2*gray[y*w+(x+1)]
+                -gray[(y+1)*w+(x-1)] + gray[(y+1)*w+(x+1)];
+      const gy = -gray[(y-1)*w+(x-1)] - 2*gray[(y-1)*w+x] - gray[(y-1)*w+(x+1)]
+                +gray[(y+1)*w+(x-1)] + 2*gray[(y+1)*w+x] + gray[(y+1)*w+(x+1)];
+      const magnitude = Math.sqrt(gx*gx + gy*gy);
+      if(magnitude > threshold) {
+        edges.push({ x: x, y: h - y });
+      }
+    }
+  }
+  return edges;
+}
+
+function generateDXF(edges) {
+  let dxf = '0\nSECTION\n2\nENTITIES\n';
+
+  for(let i = 0; i < edges.length - 1; i++) {
+    const e1 = edges[i];
+    const e2 = edges[i + 1];
+    const dist = Math.sqrt(Math.pow(e2.x - e1.x, 2) + Math.pow(e2.y - e1.y, 2));
+    if(dist < 10) {
+      dxf += '0\nLINE\n8\nADEULL_EDGES\n';
+      dxf += '10\n' + e1.x.toFixed(2) + '\n20\n' + e1.y.toFixed(2) + '\n30\n0.0\n';
+      dxf += '11\n' + e2.x.toFixed(2) + '\n21\n' + e2.y.toFixed(2) + '\n31\n0.0\n';
+    }
+  }
+
+  dxf += '0\nENDSEC\n0\nEOF\n';
+  return dxf;
+}
+
+// ==============================================================
+// 3D OBJ EXPORT
+// ==============================================================
+async function exportToGLB() {
+  const img = document.getElementById('renderImage');
+  if(!img || !img.src) { alert('No render to export'); return; }
+
+  if(!window.currentUserId || window.currentUserId === 'guest') {
+    alert('Please login to export files.');
+    return;
+  }
+
+  const creditCost = 30;
+  const creditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
+  const currentCredits = parseInt(creditText.replace(/[^0-9]/g, '')) || 0;
+  if(currentCredits < creditCost) {
+    alert('3D export requires ' + creditCost + ' credits. You have ' + currentCredits + '.');
+    return;
+  }
+
+  if(!confirm('3D Model export will use 30 credits. Continue?')) return;
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const tempImg = new Image();
+  tempImg.crossOrigin = 'anonymous';
+  tempImg.onload = async function() {
+    const w = Math.min(tempImg.naturalWidth, 512);
+    const h = Math.min(tempImg.naturalHeight, 512);
+    canvas.width = w;
+    canvas.height = h;
+    ctx.drawImage(tempImg, 0, 0, w, h);
+
+    const imageData = ctx.getImageData(0, 0, w, h);
+    const d = imageData.data;
+
+    let obj = '# ADEULL AI 3D Export\n# Generated from render\n\n';
+    const step = 4;
+    const vertexMap = {};
+    let vIdx = 1;
+
+    for(let y = 0; y < h; y += step) {
+      for(let x = 0; x < w; x += step) {
+        const i = (y * w + x) * 4;
+        const depth = (d[i] * 0.299 + d[i+1] * 0.587 + d[i+2] * 0.114) / 255.0;
+        const px = (x / w - 0.5) * 10;
+        const py = depth * 2;
+        const pz = (y / h - 0.5) * -10;
+        obj += 'v ' + px.toFixed(3) + ' ' + py.toFixed(3) + ' ' + pz.toFixed(3) + '\n';
+        obj += 'vt ' + (x / w).toFixed(4) + ' ' + (1 - y / h).toFixed(4) + '\n';
+        vertexMap[y + '_' + x] = vIdx;
+        vIdx++;
+      }
+    }
+
+    for(let y = 0; y < h - step; y += step) {
+      for(let x = 0; x < w - step; x += step) {
+        const a = vertexMap[y + '_' + x];
+        const b = vertexMap[y + '_' + (x + step)];
+        const c = vertexMap[(y + step) + '_' + (x + step)];
+        const dd = vertexMap[(y + step) + '_' + x];
+        if(a && b && c && dd) {
+          obj += 'f ' + a + '/' + a + ' ' + b + '/' + b + ' ' + c + '/' + c + '\n';
+          obj += 'f ' + a + '/' + a + ' ' + c + '/' + c + ' ' + dd + '/' + dd + '\n';
+        }
+      }
+    }
+
+    if(window.deductCredit) await window.deductCredit('3D_EXPORT', creditCost);
+
+    const blob = new Blob([obj], { type: 'model/obj' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ADEULL_3D_' + Date.now() + '.obj';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    alert('3D Model exported as OBJ. Open in Blender, 3ds Max, SketchUp or any 3D software.');
+  };
+  tempImg.src = img.src;
+}
