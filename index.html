@@ -268,9 +268,6 @@
       <button onclick="quickLogin('Google')" class="flex-1 bg-white/5 border border-white/10 py-3 rounded-2xl hover:bg-white/10 transition flex items-center justify-center gap-2">
         <span class="text-base">G</span><span class="text-[0.6rem] font-bold tracking-widest uppercase">Google</span>
       </button>
-      <button onclick="quickLogin('Office')" class="flex-1 bg-white/5 border border-white/10 py-3 rounded-2xl hover:bg-white/10 transition flex items-center justify-center gap-2">
-        <span class="text-base">⊞</span><span class="text-[0.6rem] font-bold tracking-widest uppercase">Office</span>
-      </button>
     </div>
 
     <div class="flex justify-center gap-3 mt-6 text-[0.5rem] tracking-widest uppercase text-white/30 relative z-10">
@@ -844,9 +841,19 @@ function handleLoginAdvanced(event) {
     }
 }
  
-function quickLogin(provider) {
+async function quickLogin(provider) {
     if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
-    alert("❌ This login method is not active yet.");
+    if(!window.supabaseClient) { alert('System error'); return; }
+    
+    if(provider === 'Google') {
+        const { error } = await window.supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: window.location.origin }
+        });
+        if(error) alert('Error: ' + error.message);
+    } else {
+        alert('This login method is coming soon.');
+    }
 }
  
 function applyUserData(userData) {
