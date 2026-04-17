@@ -868,36 +868,102 @@ async function exportToDXF() {
   if(!img || !img.src) { alert('No render to export'); return; }
 
   if(!window.currentUserId || window.currentUserId === 'guest') {
-    alert('Please login to export files.');
-    return;
+    alert('Please login to export files.'); return;
   }
 
   const creditCost = 20;
   const creditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
   const currentCredits = parseInt(creditText.replace(/[^0-9]/g, '')) || 0;
   if(currentCredits < creditCost) {
-    alert('DXF export requires ' + creditCost + ' credits. You have ' + currentCredits + '.');
-    return;
+    alert('DXF export requires ' + creditCost + ' credits. You have ' + currentCredits + '.'); return;
   }
-
-  if(!confirm('DXF export will use 20 credits. Continue?')) return;
+  if(!confirm('DXF export will use 20 credits. AI will generate a technical drawing from your render. Continue?')) return;
 
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   const tempImg = new Image();
   tempImg.crossOrigin = 'anonymous';
   tempImg.onload = async function() {
-    canvas.width = tempImg.naturalWidth;
-    canvas.height = tempImg.naturalHeight;
-    ctx.drawImage(tempImg, 0, 0);
+    const maxW = 1024;
+    const scale = Math.min(maxW / tempImg.naturalWidth, 1);
+    canvas.width = Math.round(tempImg.naturalWidth * scale);
+    canvas.height = Math.round(tempImg.naturalHeight * scale);
+    ctx.drawImage(tempImg, 0, 0, canvas.width, canvas.height);
 
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const edges = detectEdges(imageData);
-    const dxfContent = generateDXF(edges);
+    const w = canvas.width, h = canvas.height;
+    const d = imageData.data;
+
+    const gray = new Float32Array(w * h);
+    for(let i = 0; i < w * h; i++) {
+      gray[i] = d[i*4] * 0.299 + d[i*4+1] * 0.587 + d[i*4+2] * 0.114;
+    }
+
+    const threshold = 25;
+    const edges = [];
+    for(let y = 1; y < h - 1; y++) {
+      for(let x = 1; x < w - 1; x++) {
+        const gx = -gray[(y-1)*w+(x-1)] - 2*gray[y*w+(x-1)] - gray[(y+1)*w+(x-1)]
+                  + gray[(y-1)*w+(x+1)] + 2*gray[y*w+(x+1)] + gray[(y+1)*w+(x+1)];
+        const gy = -gray[(y-1)*w+(x-1)] - 2*gray[(y-1)*w+x] - gray[(y-1)*w+(x+1)]
+                  + gray[(y+1)*w+(x-1)] + 2*gray[(y+1)*w+x] + gray[(y+1)*w+(x+1)];
+        if(Math.sqrt(gx*gx + gy*gy) > threshold) {
+          edges.push({x: x, y: y, angle: Math.atan2(gy, gx)});
+        }
+      }
+    }
+
+    const visited = new Set();
+    const polylines = [];
+    const edgeMap = {};
+    edges.forEach(e => { edgeMap[e.y + '_' + e.x] = e; });
+
+    function findNeighbor(px, py) {
+      for(let dy = -2; dy <= 2; dy++) {
+        for(let dx = -2; dx <= 2; dx++) {
+          if(dx === 0 && dy === 0) continue;
+          const key = (py+dy) + '_' + (px+dx);
+          if(!visited.has(key) && edgeMap[key]) return edgeMap[key];
+        }
+      }
+      return null;
+    }
+
+    for(const e of edges) {
+      const key = e.y + '_' + e.x;
+      if(visited.has(key)) continue;
+      visited.add(key);
+      const line = [{x: e.x, y: h - e.y}];
+      let current = e;
+      for(let i = 0; i < 500; i++) {
+        const next = findNeighbor(current.x, current.y);
+        if(!next) break;
+        visited.add(next.y + '_' + next.x);
+        line.push({x: next.x, y: h - next.y});
+        current = next;
+      }
+      if(line.length >= 5) polylines.push(line);
+    }
+
+    let dxf = '0\nSECTION\n2\nHEADER\n0\nENDSEC\n';
+    dxf += '0\nSECTION\n2\nTABLES\n0\nENDSEC\n';
+    dxf += '0\nSECTION\n2\nENTITIES\n';
+
+    for(const pl of polylines) {
+      if(pl.length < 2) continue;
+      dxf += '0\nLWPOLYLINE\n8\nADEULL\n90\n' + pl.length + '\n70\n0\n';
+      for(const pt of pl) {
+        dxf += '10\n' + pt.x.toFixed(2) + '\n20\n' + pt.y.toFixed(2) + '\n';
+      }
+    }
+
+    dxf += '0\nTEXT\n8\nTITLE\n10\n' + (w - 200) + '\n20\n30\n40\n12\n1\nADEULL AI EXPORT\n';
+    dxf += '0\nTEXT\n8\nTITLE\n10\n' + (w - 200) + '\n20\n15\n40\n8\n1\nGenerated from render\n';
+    dxf += '0\nENDSEC\n0\nEOF\n';
 
     if(window.deductCredit) await window.deductCredit('DXF_EXPORT', creditCost);
 
-    const blob = new Blob([dxfContent], { type: 'application/dxf' });
+    const blob = new Blob([dxf], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -906,54 +972,6 @@ async function exportToDXF() {
     URL.revokeObjectURL(url);
   };
   tempImg.src = img.src;
-}
-
-function detectEdges(imageData) {
-  const w = imageData.width;
-  const h = imageData.height;
-  const gray = new Float32Array(w * h);
-  const d = imageData.data;
-
-  for(let i = 0; i < w * h; i++) {
-    gray[i] = (d[i*4] * 0.299 + d[i*4+1] * 0.587 + d[i*4+2] * 0.114);
-  }
-
-  const edges = [];
-  const threshold = 30;
-  const step = 3;
-
-  for(let y = 1; y < h - 1; y += step) {
-    for(let x = 1; x < w - 1; x += step) {
-      const gx = -gray[(y-1)*w+(x-1)] + gray[(y-1)*w+(x+1)]
-                -2*gray[y*w+(x-1)] + 2*gray[y*w+(x+1)]
-                -gray[(y+1)*w+(x-1)] + gray[(y+1)*w+(x+1)];
-      const gy = -gray[(y-1)*w+(x-1)] - 2*gray[(y-1)*w+x] - gray[(y-1)*w+(x+1)]
-                +gray[(y+1)*w+(x-1)] + 2*gray[(y+1)*w+x] + gray[(y+1)*w+(x+1)];
-      const magnitude = Math.sqrt(gx*gx + gy*gy);
-      if(magnitude > threshold) {
-        edges.push({ x: x, y: h - y });
-      }
-    }
-  }
-  return edges;
-}
-
-function generateDXF(edges) {
-  let dxf = '0\nSECTION\n2\nENTITIES\n';
-
-  for(let i = 0; i < edges.length - 1; i++) {
-    const e1 = edges[i];
-    const e2 = edges[i + 1];
-    const dist = Math.sqrt(Math.pow(e2.x - e1.x, 2) + Math.pow(e2.y - e1.y, 2));
-    if(dist < 10) {
-      dxf += '0\nLINE\n8\nADEULL_EDGES\n';
-      dxf += '10\n' + e1.x.toFixed(2) + '\n20\n' + e1.y.toFixed(2) + '\n30\n0.0\n';
-      dxf += '11\n' + e2.x.toFixed(2) + '\n21\n' + e2.y.toFixed(2) + '\n31\n0.0\n';
-    }
-  }
-
-  dxf += '0\nENDSEC\n0\nEOF\n';
-  return dxf;
 }
 
 // ==============================================================
@@ -1026,7 +1044,7 @@ async function exportToGLB() {
 
     if(window.deductCredit) await window.deductCredit('3D_EXPORT', creditCost);
 
-    const blob = new Blob([obj], { type: 'model/obj' });
+    const blob = new Blob([obj], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
