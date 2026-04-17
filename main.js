@@ -945,20 +945,26 @@ async function exportToDXF() {
       if(line.length >= 5) polylines.push(line);
     }
 
-    let dxf = '0\nSECTION\n2\nHEADER\n0\nENDSEC\n';
-    dxf += '0\nSECTION\n2\nTABLES\n0\nENDSEC\n';
+    let dxf = '999\nDXF created by ADEULL AI\n';
+    dxf += '0\nSECTION\n2\nHEADER\n';
+    dxf += '9\n$ACADVER\n1\nAC1014\n';
+    dxf += '0\nENDSEC\n';
+    dxf += '0\nSECTION\n2\nTABLES\n';
+    dxf += '0\nTABLE\n2\nLAYER\n70\n1\n';
+    dxf += '0\nLAYER\n2\nADEULL\n70\n0\n62\n7\n6\nCONTINUOUS\n';
+    dxf += '0\nENDTAB\n';
+    dxf += '0\nENDSEC\n';
     dxf += '0\nSECTION\n2\nENTITIES\n';
 
     for(const pl of polylines) {
       if(pl.length < 2) continue;
-      dxf += '0\nLWPOLYLINE\n8\nADEULL\n90\n' + pl.length + '\n70\n0\n';
+      dxf += '0\nPOLYLINE\n8\nADEULL\n66\n8\n';
       for(const pt of pl) {
-        dxf += '10\n' + pt.x.toFixed(2) + '\n20\n' + pt.y.toFixed(2) + '\n';
+        dxf += '0\nVERTEX\n8\nADEULL\n10\n' + pt.x.toFixed(2) + '\n20\n' + pt.y.toFixed(2) + '\n30\n0.0\n';
       }
+      dxf += '0\nSEQEND\n8\nADEULL\n';
     }
 
-    dxf += '0\nTEXT\n8\nTITLE\n10\n' + (w - 200) + '\n20\n30\n40\n12\n1\nADEULL AI EXPORT\n';
-    dxf += '0\nTEXT\n8\nTITLE\n10\n' + (w - 200) + '\n20\n15\n40\n8\n1\nGenerated from render\n';
     dxf += '0\nENDSEC\n0\nEOF\n';
 
     if(window.deductCredit) await window.deductCredit('DXF_EXPORT', creditCost);
@@ -1048,7 +1054,7 @@ async function exportToGLB() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'ADEULL_3D_' + Date.now() + '.obj';
+    a.download = 'ADEULL_3D_' + Date.now() + '.obj'; // Ensures .obj extension
     a.click();
     URL.revokeObjectURL(url);
 
