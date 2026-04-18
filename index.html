@@ -848,7 +848,7 @@ async function quickLogin(provider) {
     if(provider === 'Google') {
         const { error } = await window.supabaseClient.auth.signInWithOAuth({
             provider: 'google',
-            options: { redirectTo: window.location.origin }
+            options: { redirectTo: 'https://adeull.com' }
         });
         if(error) alert('Error: ' + error.message);
     } else {
