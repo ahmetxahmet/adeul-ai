@@ -750,6 +750,33 @@ function togglePublicLangMenu() {
     dd.classList.toggle('flex');
 }
  
+// Google OAuth callback kontrolü - sayfa yüklendiğinde session varsa direkt giriş yap
+window.addEventListener('DOMContentLoaded', async function() {
+  if(!window.supabaseClient) return;
+  const { data: { session } } = await window.supabaseClient.auth.getSession();
+  if(session && session.user) {
+    // Kullanıcı zaten giriş yapmış (OAuth callback'ten dönmüş olabilir)
+    const email = session.user.email;
+    const userId = session.user.id;
+    window.currentUserId = userId;
+
+    // public.users'dan bilgileri çek
+    const { data: userData } = await window.supabaseClient.from('users').select('*').eq('id', userId).single();
+
+    if(userData) {
+      applyUserData({ name: userData.full_name || email, plan: userData.plan || 'FREE', credits: userData.credits || 0 });
+    } else {
+      applyUserData({ name: email, plan: 'FREE', credits: 0 });
+    }
+
+    // Landing ve login ekranlarını gizle
+    var pl = document.getElementById('publicLanding');
+    if(pl) pl.style.display = 'none';
+    var ls = document.getElementById('loginScreen');
+    if(ls) ls.style.display = 'none';
+  }
+});
+
 window.addEventListener('load', () => {
     /* public landing visible by default */
 });
