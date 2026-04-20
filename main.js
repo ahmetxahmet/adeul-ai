@@ -231,18 +231,13 @@ function b64toBlob(b64Data, contentType='', sliceSize=512) {
 
 async function ADEULL_UPSCALE(imageUrl) {
     if (!window.currentUserId || window.currentUserId === 'guest') {
-        alert('Please login or sign up to use ADEULL AI.');
+        alert('Please login to use 8K rendering.');
         return;
     }
-    const _upscaleCreditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
-    const _upscaleCredits = parseInt(_upscaleCreditText.replace(/[^0-9]/g, '')) || 0;
-    if (_upscaleCredits < 10) {
-        alert('Insufficient credits. You need 10 credits for 8K render.\n\nPlease redeem a coupon or upgrade your plan from the BILLING menu.');
-        return;
-    }
+
     try {
-        let finalImage = imageUrl;
-        finalImage = await new Promise((resolve) => {
+        // Görseli JPEG olarak sıkıştır
+        const jpegBase64 = await new Promise((resolve) => {
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onload = function() {
@@ -250,26 +245,62 @@ async function ADEULL_UPSCALE(imageUrl) {
                 c.width = img.naturalWidth;
                 c.height = img.naturalHeight;
                 c.getContext('2d').drawImage(img, 0, 0);
-                resolve(c.toDataURL('image/jpeg', 0.85));
+                const dataUrl = c.toDataURL('image/jpeg', 0.90);
+                resolve(dataUrl);
             };
             img.onerror = function() { resolve(imageUrl); };
             img.src = imageUrl;
         });
 
-        const sessionData = window.supabaseClient ? await window.supabaseClient.auth.getSession() : null;
-        const authToken = sessionData?.data?.session?.access_token || '';
-        const response = await fetch(window.CORE_UPSCALE, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ image: finalImage, user_token: authToken })
+        // Fal.ai'ye direkt gönder
+        const response = await fetch('https://queue.fal.run/fal-ai/aura-sr', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Key 1a1d33bb-6d88-48e0-9fcd-a8689814b54a:9c5fa77a856618fb8f126a41ecb89ce5',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                image_url: jpegBase64
+            })
         });
-        
-        if (!response.ok) throw new Error("Core Engine is not responding!");
-        
+
+        if (!response.ok) throw new Error('Fal.ai error: ' + response.status);
+
         const data = await response.json();
-        return data.output_url || data.output || data;
+
+        // Queue response - poll for result
+        if (data.request_id) {
+            let result = null;
+            for (let i = 0; i < 60; i++) {
+                await new Promise(r => setTimeout(r, 3000));
+                const statusRes = await fetch('https://queue.fal.run/fal-ai/aura-sr/requests/' + data.request_id, {
+                    headers: {
+                        'Authorization': 'Key 1a1d33bb-6d88-48e0-9fcd-a8689814b54a:9c5fa77a856618fb8f126a41ecb89ce5'
+                    }
+                });
+                const statusData = await statusRes.json();
+                if (statusData.status === 'COMPLETED' && statusData.output) {
+                    result = statusData.output;
+                    break;
+                }
+                if (statusData.status === 'FAILED') throw new Error('Upscale failed');
+            }
+            if (result && result.image && result.image.url) {
+                return result.image.url;
+            }
+        }
+
+        // Direct response
+        if (data.output && data.output.image && data.output.image.url) {
+            return data.output.image.url;
+        }
+        if (data.image && data.image.url) {
+            return data.image.url;
+        }
+
+        throw new Error('No output from Fal.ai');
     } catch (error) {
-        console.error("Upscale hatası:", error);
+        console.error('8K Upscale error:', error);
         throw error;
     }
 }
