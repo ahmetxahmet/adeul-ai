@@ -261,9 +261,17 @@ async function ADEULL_UPSCALE(imageUrl) {
             img.crossOrigin = 'anonymous';
             img.onload = function() {
                 const c = document.createElement('canvas');
-                c.width = img.naturalWidth;
-                c.height = img.naturalHeight;
-                c.getContext('2d').drawImage(img, 0, 0);
+                const maxDim = 3072;
+                let w = img.naturalWidth;
+                let h = img.naturalHeight;
+                if (w > maxDim || h > maxDim) {
+                    const scale = Math.min(maxDim / w, maxDim / h);
+                    w = Math.round(w * scale);
+                    h = Math.round(h * scale);
+                }
+                c.width = w;
+                c.height = h;
+                c.getContext('2d').drawImage(img, 0, 0, w, h);
                 c.toBlob((b) => resolve(b), 'image/jpeg', 0.92);
             };
             img.onerror = function() { resolve(blob); };
