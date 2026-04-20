@@ -252,7 +252,7 @@ async function ADEULL_UPSCALE(imageUrl) {
                 c.width = img.naturalWidth;
                 c.height = img.naturalHeight;
                 c.getContext('2d').drawImage(img, 0, 0);
-                resolve(c.toDataURL('image/jpeg', 0.92));
+                resolve(c.toDataURL('image/jpeg', 0.97));
             };
             img.onerror = function() { resolve(imageUrl); };
             img.src = imageUrl;
