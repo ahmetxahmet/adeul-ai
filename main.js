@@ -242,21 +242,15 @@ async function ADEULL_UPSCALE(imageUrl) {
     }
     try {
         let finalImage = imageUrl;
-
-        // Görseli JPEG olarak sıkıştır (PNG 11MB -> JPEG 3MB, Fal.ai upload limiti)
-        finalImage = await new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.onload = function() {
-                const c = document.createElement('canvas');
-                c.width = img.naturalWidth;
-                c.height = img.naturalHeight;
-                c.getContext('2d').drawImage(img, 0, 0);
-                resolve(c.toDataURL('image/jpeg', 0.97));
-            };
-            img.onerror = function() { resolve(imageUrl); };
-            img.src = imageUrl;
-        });
+        if (imageUrl.startsWith('blob:')) {
+            const blobResponse = await fetch(imageUrl);
+            const blob = await blobResponse.blob();
+            finalImage = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(blob);
+            });
+        }
 
         const sessionData = window.supabaseClient ? await window.supabaseClient.auth.getSession() : null;
         const authToken = sessionData?.data?.session?.access_token || '';
