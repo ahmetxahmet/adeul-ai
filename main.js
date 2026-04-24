@@ -558,6 +558,8 @@ async function simulateAPIConnection(btnId, is8K = false) {
                         if(upscaledUrl) {
                             imgElement.crossOrigin = "Anonymous";
                             imgElement.src = upscaledUrl;
+                            const hint8k = document.getElementById('saveHint8K');
+                            if(hint8k) hint8k.style.display = 'block';
                         }
                     } catch (upscaleError) {
                         console.log("8K Upscale failed, keeping original render.", upscaleError);
@@ -681,12 +683,16 @@ document.addEventListener('click', function(e) {
 });
 
 function showRenderScreen() {
+    const hint8k = document.getElementById('saveHint8K');
+    if(hint8k) hint8k.style.display = 'none';
     const overlay = document.getElementById('renderOverlay');
     if(overlay) { overlay.classList.remove('hidden'); overlay.classList.add('flex'); setTimeout(() => overlay.style.opacity = '1', 50); }
     if(typeof resetAdjust === 'function') resetAdjust();
 }
 
 function closeRender() {
+    const hint8k = document.getElementById('saveHint8K');
+    if(hint8k) hint8k.style.display = 'none';
     const overlay = document.getElementById('renderOverlay');
     if(overlay) {
         overlay.style.opacity = '0';
