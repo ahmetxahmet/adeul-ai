@@ -618,6 +618,16 @@ async function simulateAPIConnection(btnId, is8K = false) {
 
 async function saveRender(mode = 'renderImgContainer') {
     playSound();
+    const renderImg = document.getElementById('renderImage');
+    if (renderImg && renderImg.src && renderImg.src.startsWith('http') && !renderImg.src.includes('adeull.com')) {
+        // 8K render - cross-origin, direkt indir
+        const a = document.createElement('a');
+        a.href = renderImg.src;
+        a.download = 'ADEULL_8K_' + Date.now() + '.png';
+        a.target = '_blank';
+        a.click();
+        return;
+    }
     if (mode === 'renderImgContainer') {
         const imgElement = document.querySelector('#renderImgContainer img');
         if (!imgElement || !imgElement.src || imgElement.src.length < 10) { alert("No image to save!"); return; }
