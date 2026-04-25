@@ -1142,34 +1142,34 @@ async function exportToGLB() {
 
 const quickPromptData = {
     'INTERIOR': [
-        'modern minimalist living room, natural light, neutral tones',
-        'luxury bedroom with panoramic city view, warm ambient lighting',
-        'scandinavian kitchen with marble countertop and brass details'
+        'place the uploaded furniture into the room naturally, match perspective lighting and scale perfectly',
+        'integrate all items into the scene, keep room unchanged, realistic shadows and reflections',
+        'position objects in the interior as a professional photographer would capture them'
     ],
     'EXTERIOR': [
-        'modern villa with infinity pool, Mediterranean landscape, golden hour',
-        'contemporary office building, glass facade, urban setting, daylight',
-        'residential complex with green terraces, sustainable architecture'
+        'place the uploaded object into the outdoor scene, match terrain lighting and perspective',
+        'integrate structure into the landscape naturally, correct scale and realistic shadows',
+        'position the item in the exterior environment, match sunlight direction and ground contact'
     ],
     'ARCHITECTURE': [
-        'use given empty land as base, keep terrain unchanged, place residential buildings with correct scale spacing and layout, add simple roads and landscape, match lighting and perspective',
-        'modern commercial building on this site, glass and steel, 8 floors, matching terrain elevation',
-        'luxury villa complex on this terrain, low-rise, natural stone facade, landscape integration'
+        'use given empty land as base, keep terrain unchanged, place buildings with correct scale spacing and layout, add roads and landscape, match lighting and perspective',
+        'replace the existing building in the scene with the uploaded building, match scale and environment',
+        'place this structure on the empty site, integrate with terrain elevation and surroundings'
     ],
     'DESIGN': [
-        'modern coffee table, polished marble top, brushed brass legs, studio lighting',
-        'contemporary dining chair, dark walnut frame, cream boucle upholstery',
-        'minimalist floor lamp, black metal, adjustable arm, warm light'
+        'high-end architectural interior, strong concept design, cinematic lighting, rich material contrast, balanced composition, realistic shadows, modern elegant atmosphere',
+        'design a modern living space with premium materials, natural light, professional photography quality',
+        'create luxury minimal interior, concrete walls, marble floor, designer furniture, warm golden hour light'
     ],
     'PLAN': [
-        'convert this floor plan into photorealistic 3D visualization, modern interior style',
-        'render this architectural plan as a luxury apartment, warm lighting, designer furniture',
-        'transform this blueprint into realistic interior view, scandinavian style'
+        'convert this sketch into photorealistic product, preserve exact shape and proportions, add realistic materials and textures',
+        'transform this drawing into a real furniture piece, match the design lines, add fabric texture and wood grain details',
+        'render this concept sketch as a finished product, professional studio lighting, realistic materials'
     ],
     'PRESENTATION': [
-        'create material mood board with fabric swatches, wood samples, and color palette',
-        'design presentation board showing furniture selections with dimensions and materials',
-        'create concept board combining textures, colors, and spatial references'
+        'create material mood board with fabric swatches, wood samples, stone textures and color palette',
+        'design presentation board showing furniture selections with dimensions and material callouts',
+        'create architectural concept board combining interior textures, finishes and spatial layout'
     ]
 };
 
