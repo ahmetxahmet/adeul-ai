@@ -1152,9 +1152,9 @@ const quickPromptData = {
         'position the item in the exterior environment, match sunlight direction and ground contact'
     ],
     'ARCHITECTURE': [
-        'use given empty land as base, keep terrain unchanged, place buildings with correct scale spacing and layout, add roads and landscape, match lighting and perspective',
-        'replace the existing building in the scene with the uploaded building, match scale and environment',
-        'place this structure on the empty site, integrate with terrain elevation and surroundings'
+        'use given empty land as base, keep terrain unchanged, place residential buildings with correct scale spacing and layout, add simple roads and landscape, match lighting and perspective',
+        'use given empty land as base, keep terrain unchanged, place the uploaded building with correct scale, match ground elevation lighting and perspective naturally',
+        'use given scene as base, replace existing building with uploaded building, keep environment roads and landscape unchanged, match scale and lighting'
     ],
     'DESIGN': [
         'high-end architectural interior, strong concept design, cinematic lighting, rich material contrast, balanced composition, realistic shadows, modern elegant atmosphere',
