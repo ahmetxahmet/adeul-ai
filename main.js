@@ -1138,7 +1138,7 @@ async function exportToGLB() {
     alert('3D Model exported as OBJ. Open in Blender, 3ds Max, SketchUp or any 3D software.');
   };
   tempImg.src = img.src;
-}}
+}
 
 const quickPromptData = {
     'INTERIOR': [

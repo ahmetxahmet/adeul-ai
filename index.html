@@ -539,7 +539,7 @@ ADEULL provides cloud-based rendering services. Results are computer-generated v
     <!-- Dynamic item boxes will be injected here -->
   </div>
 </div>
-<p class="text-[0.45rem] tracking-widest text-white/40 uppercase mt-1 text-center" data-i18n="itemAngleHint">TIP: Upload item image from similar angle as scene for best results</p>
+<p id="itemAngleHint" class="text-[0.45rem] tracking-widest text-white/40 uppercase mt-1 text-center" data-i18n="itemAngleHint" style="display:none;">TIP: Upload item image from similar angle as scene for best results</p>
 <!-- ═══ SUNUM MODÜLÜ (V2) ═══ -->
 <input type="file" id="fileSunumImage" hidden accept="image/*" onchange="sunumPreviewImage(this)">
 <div id="sunumUploadArea" class="hidden w-full mb-6 flex flex-col gap-4">
@@ -1015,6 +1015,8 @@ function enterDashboard(menuName) {
         netwrolerPanel: document.getElementById('netwrolerPanel')
     };
     for (const [k, el] of Object.entries(els)) { if(el) el.style.setProperty('display','none','important'); }
+    const _angleHint = document.getElementById('itemAngleHint');
+    if(_angleHint) _angleHint.style.display = (menuName === 'INTERIOR' || menuName === 'EXTERIOR' || menuName === 'ARCHITECTURE') ? '' : 'none';
     // Prompt ve generate butonları: PRESENTATION hariç her yerde göster
     if (menuName === 'PRESENTATION') {
         if(els.sunumUploadArea) els.sunumUploadArea.style.setProperty('display','flex','important');
