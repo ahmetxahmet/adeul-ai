@@ -1138,4 +1138,58 @@ async function exportToGLB() {
     alert('3D Model exported as OBJ. Open in Blender, 3ds Max, SketchUp or any 3D software.');
   };
   tempImg.src = img.src;
+}}
+
+const quickPromptData = {
+    'INTERIOR': [
+        'modern minimalist living room, natural light, neutral tones',
+        'luxury bedroom with panoramic city view, warm ambient lighting',
+        'scandinavian kitchen with marble countertop and brass details'
+    ],
+    'EXTERIOR': [
+        'modern villa with infinity pool, Mediterranean landscape, golden hour',
+        'contemporary office building, glass facade, urban setting, daylight',
+        'residential complex with green terraces, sustainable architecture'
+    ],
+    'ARCHITECTURE': [
+        'use given empty land as base, keep terrain unchanged, place residential buildings with correct scale spacing and layout, add simple roads and landscape, match lighting and perspective',
+        'modern commercial building on this site, glass and steel, 8 floors, matching terrain elevation',
+        'luxury villa complex on this terrain, low-rise, natural stone facade, landscape integration'
+    ],
+    'DESIGN': [
+        'modern coffee table, polished marble top, brushed brass legs, studio lighting',
+        'contemporary dining chair, dark walnut frame, cream boucle upholstery',
+        'minimalist floor lamp, black metal, adjustable arm, warm light'
+    ],
+    'PLAN': [
+        'convert this floor plan into photorealistic 3D visualization, modern interior style',
+        'render this architectural plan as a luxury apartment, warm lighting, designer furniture',
+        'transform this blueprint into realistic interior view, scandinavian style'
+    ],
+    'PRESENTATION': [
+        'create material mood board with fabric swatches, wood samples, and color palette',
+        'design presentation board showing furniture selections with dimensions and materials',
+        'create concept board combining textures, colors, and spatial references'
+    ]
+};
+
+function loadQuickPrompts(menuName) {
+    const container = document.getElementById('quickPrompts');
+    if (!container) return;
+    container.innerHTML = '';
+    const prompts = quickPromptData[menuName] || [];
+    prompts.forEach((p) => {
+        const btn = document.createElement('button');
+        btn.className = 'bg-white/5 border border-white/10 text-white/60 text-[0.45rem] tracking-widest uppercase px-2 py-1 rounded-lg hover:bg-white/10 hover:text-white transition cursor-pointer';
+        btn.innerText = p.length > 40 ? p.substring(0, 40) + '...' : p;
+        btn.title = p;
+        btn.onclick = function() {
+            const promptArea = document.getElementById('promptArea');
+            if (promptArea) {
+                promptArea.value = p;
+                promptArea.dispatchEvent(new Event('input'));
+            }
+        };
+        container.appendChild(btn);
+    });
 }

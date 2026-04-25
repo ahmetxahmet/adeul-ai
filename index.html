@@ -579,6 +579,8 @@ ADEULL provides cloud-based rendering services. Results are computer-generated v
 <button type="button" onclick="setRatio('1:1', this)" class="ratio-btn bg-white/5 hover:bg-white/10 text-white/50 hover:text-white px-3 py-1 rounded-lg text-[0.55rem] font-bold tracking-wider transition border border-white/10">1:1</button>
 </div>
 </div>
+<div id="quickPrompts" class="flex flex-wrap gap-1.5 mb-2 px-1">
+</div>
 <textarea id="promptArea" data-i18n-ph="promptPh" placeholder="Describe your architectural vision..." class="w-full h-20 lg:h-24 bg-white/10 border border-white/20 rounded-xl p-3 lg:p-4 text-white outline-none focus:bg-white/20 resize-none mb-4 text-[0.6rem] lg:text-[0.65rem]"></textarea>
 <div class="flex flex-col gap-3 w-full mb-4 lg:mb-0" id="generateBtnRow">
   <div class="flex gap-2 w-full">
@@ -967,6 +969,7 @@ function handlePresentationBoxClick() {
 function enterDashboard(menuName) {
     if(window.clickSound) { window.clickSound.currentTime = 0; window.clickSound.play().catch(e => {}); }
     document.getElementById('dashboardTitle').setAttribute('data-raw-title', menuName);
+    loadQuickPrompts(menuName);
     const activeLangCodeEl = document.getElementById('activeCode');
     const currentLang = activeLangCodeEl ? activeLangCodeEl.innerText : 'EN';
     const key = menuName.toLowerCase();
