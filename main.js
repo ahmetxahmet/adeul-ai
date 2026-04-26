@@ -1193,3 +1193,85 @@ function loadQuickPrompts(menuName) {
         container.appendChild(btn);
     });
 }
+
+const styleOptions = {
+    'INTERIOR': {
+        styles: ['Modern', 'Minimalist', 'Scandinavian', 'Japandi', 'Classic', 'Neoclassical', 'Art Deco', 'Rustic', 'Mediterranean', 'Wabi-Sabi', 'Industrial', 'Loft', 'Brutalist', 'Luxury', 'Glam', 'Maximalist', 'Bohemian', 'Eclectic', 'Vintage'],
+        spaces: ['Living Room', 'Bedroom', 'Kitchen', 'Bathroom', 'Dining Room', 'Home Office', 'Hallway', 'Kids Room', 'Walk-in Closet', 'Library']
+    },
+    'EXTERIOR': {
+        styles: ['English Garden', 'Japanese Garden', 'Tropical', 'Modern Landscape', 'Minimal Garden', 'Mediterranean', 'Desert', 'Coastal'],
+        spaces: ['Courtyard', 'Rooftop', 'Terrace', 'Pool Area', 'Front Yard', 'Backyard', 'Balcony', 'Patio']
+    },
+    'ARCHITECTURE': {
+        styles: ['Modern', 'Contemporary', 'Minimal', 'Classical', 'Neoclassical', 'Ottoman', 'Mediterranean', 'Japanese', 'Scandinavian', 'Brutalist', 'Industrial', 'High-Tech', 'Parametric'],
+        spaces: ['Villa', 'Apartment Building', 'Office Building', 'Cafe', 'Restaurant', 'Hotel', 'Museum', 'Residential Complex', 'Shopping Center', 'School']
+    },
+    'DESIGN': {
+        styles: ['Modern', 'Minimalist', 'Scandinavian', 'Industrial', 'Luxury', 'Mid-Century', 'Art Deco', 'Japanese', 'Rustic', 'Contemporary'],
+        spaces: ['Sofa', 'Armchair', 'Coffee Table', 'Dining Table', 'Dining Chair', 'Bed', 'Desk', 'Bookshelf', 'Floor Lamp', 'Console Table', 'Side Table', 'Cabinet']
+    },
+    'PLAN': {
+        styles: ['Modern', 'Minimalist', 'Scandinavian', 'Luxury', 'Classic', 'Industrial', 'Mediterranean'],
+        spaces: ['Apartment', 'Villa', 'Studio', 'Penthouse', 'Office', 'Loft', 'Duplex']
+    },
+    'PRESENTATION': {
+        styles: ['Modern', 'Minimalist', 'Luxury', 'Natural', 'Industrial', 'Warm', 'Cool', 'Monochrome'],
+        spaces: ['Material Board', 'Mood Board', 'Color Palette', 'Furniture Selection', 'Concept Board', 'Finish Schedule']
+    }
+};
+
+function loadStyleDropdowns(menuName) {
+    const styleDD = document.getElementById('styleDropdown');
+    const spaceDD = document.getElementById('spaceDropdown');
+    if (!styleDD || !spaceDD) return;
+
+    const data = styleOptions[menuName] || { styles: [], spaces: [] };
+
+    styleDD.innerHTML = '<option value="" class="bg-black">STYLE</option>';
+    data.styles.forEach(s => {
+        styleDD.innerHTML += '<option value="' + s + '" class="bg-black">' + s.toUpperCase() + '</option>';
+    });
+
+    spaceDD.innerHTML = '<option value="" class="bg-black">SPACE TYPE</option>';
+    data.spaces.forEach(s => {
+        spaceDD.innerHTML += '<option value="' + s + '" class="bg-black">' + s.toUpperCase() + '</option>';
+    });
+}
+
+function buildAutoPrompt() {
+    const style = document.getElementById('styleDropdown')?.value || '';
+    const space = document.getElementById('spaceDropdown')?.value || '';
+    if (!style && !space) return;
+
+    const menu = document.getElementById('dashboardTitle')?.getAttribute('data-raw-title') || '';
+    let prompt = '';
+
+    if (menu === 'INTERIOR' || menu === 'EXTERIOR') {
+        if (style && space) prompt = 'place uploaded items into the scene as a ' + style.toLowerCase() + ' ' + space.toLowerCase() + ', match perspective lighting and scale perfectly, realistic integration';
+        else if (style) prompt = style.toLowerCase() + ' style, match lighting and perspective, realistic placement';
+        else if (space) prompt = 'place items in ' + space.toLowerCase() + ', natural positioning, match scene lighting';
+    } else if (menu === 'ARCHITECTURE') {
+        if (style && space) prompt = 'use given land as base, keep terrain unchanged, place ' + style.toLowerCase() + ' ' + space.toLowerCase() + ' with correct scale spacing and layout, add landscape, match lighting and perspective';
+        else if (style) prompt = style.toLowerCase() + ' architecture, match terrain and lighting naturally';
+        else if (space) prompt = 'place ' + space.toLowerCase() + ' on the site, correct scale, match environment';
+    } else if (menu === 'DESIGN') {
+        if (style && space) prompt = style.toLowerCase() + ' ' + space.toLowerCase() + ', premium materials, professional studio lighting, photorealistic, high-end design, cinematic composition';
+        else if (style) prompt = style.toLowerCase() + ' furniture design, premium materials, studio lighting';
+        else if (space) prompt = 'design a ' + space.toLowerCase() + ', high-end materials, professional photography';
+    } else if (menu === 'PLAN') {
+        if (style && space) prompt = 'convert this plan into photorealistic ' + style.toLowerCase() + ' ' + space.toLowerCase() + ', designer furniture, realistic lighting';
+        else if (style) prompt = 'render this plan as ' + style.toLowerCase() + ' interior, warm lighting, realistic';
+        else if (space) prompt = 'transform this blueprint into realistic ' + space.toLowerCase() + ' visualization';
+    } else if (menu === 'PRESENTATION') {
+        if (style && space) prompt = 'create ' + style.toLowerCase() + ' ' + space.toLowerCase() + ' with textures, materials, finishes and color references';
+        else if (style) prompt = 'create ' + style.toLowerCase() + ' presentation board with material samples';
+        else if (space) prompt = 'design ' + space.toLowerCase() + ' with detailed material callouts';
+    }
+
+    const promptArea = document.getElementById('promptArea');
+    if (promptArea && prompt) {
+        promptArea.value = prompt;
+        promptArea.dispatchEvent(new Event('input'));
+    }
+}
