@@ -590,25 +590,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
         }
     } catch (error) {
         console.error(error);
-        // Render başarısız - kredi iade et
-        if (window.supabaseClient && window.currentUserId) {
-            try {
-                await window.supabaseClient.rpc('secure_deduct_credit', {
-                    p_amount: -(window._currentQualityConfig?.creditCost || 12),
-                    p_action: 'REFUND_RENDER_FAILED'
-                });
-                const { data: refundData } = await window.supabaseClient.from('users').select('credits').eq('id', window.currentUserId).single();
-                if (refundData) {
-                    const topEl = document.getElementById('topCreditDisplay');
-                    const panelEl = document.getElementById('panelCreditDisplay');
-                    if (topEl) topEl.innerText = refundData.credits.toLocaleString();
-                    if (panelEl) panelEl.innerText = refundData.credits.toLocaleString();
-                }
-                alert('Render failed. Your credits have been refunded.');
-            } catch(refundErr) {
-                console.error('Refund failed:', refundErr);
-            }
-        }
+        alert('Render failed, please try again.');
         closeRender();
     } finally {
         btn.innerHTML = originalText;
