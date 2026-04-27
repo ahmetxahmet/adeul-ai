@@ -327,38 +327,16 @@
     // ============================================================
     // PADDLE CHECKOUT
     // ============================================================
+    var LEMON_URLS = {
+        'student':  'https://adeull.lemonsqueezy.com/checkout/buy/98dd4a0e-c208-46a3-9608-6668d073aef1',
+        'standard': 'https://adeull.lemonsqueezy.com/checkout/buy/d2cefbcd-04e9-4d2b-9b2b-9100a1e75c57',
+        'pro':      'https://adeull.lemonsqueezy.com/checkout/buy/80077dec-7152-4c79-b840-80b43d608e02',
+        'ultra':    'https://adeull.lemonsqueezy.com/checkout/buy/23d7d560-9121-405c-bad3-2af2c46731c8'
+    };
+
     window.subscribePlan = function(planId, yearly) {
-        var plan = PLANS.find(function(p) { return p.id === planId; });
-        if (!plan) return;
-
-        // Paddle henüz onaylanmadı, kapalı
-        alert('🚀 Our payment system is launching soon!\n\nContact info@adeull.com for early access or to request a trial coupon.');
-        return;
-
-        // Aşağıdaki Paddle kodu Paddle onaylandıktan sonra aktif olacak
-        var priceId = yearly ? plan.paddleYearlyId : plan.paddleMonthlyId;
-
-        // Paddle checkout
-        if (typeof Paddle !== 'undefined' && PADDLE_VENDOR_ID !== 'YOUR_PADDLE_VENDOR_ID') {
-            Paddle.Checkout.open({
-                items: [{ priceId: priceId, quantity: 1 }],
-                customer: {
-                    email: (document.getElementById('panelUserName') || {}).innerText || ''
-                },
-                customData: {
-                    user_id: window.currentUserId || 'unknown_user'
-                },
-                settings: {
-                    theme: 'dark',
-                    locale: (document.getElementById('activeCode') || {}).innerText || 'en',
-                    successUrl: window.location.origin + '?payment=success',
-                    displayMode: 'overlay'
-                }
-            });
-        } else {
-            // Paddle henüz bağlanmadı
-            alert('Payment system will be available soon. Plan: ' + plan.name + ' ($' + (yearly ? plan.yearlyPrice : plan.monthlyPrice) + ')');
-        }
+        var url = LEMON_URLS[planId];
+        if (url) window.open(url, '_blank');
     };
 
     // ============================================================
