@@ -1,4 +1,4 @@
-const CACHE_NAME = 'adeull-v2';
+const CACHE_NAME = 'adeull-v3';
 const urlsToCache = ['/', '/index.html', '/style.css', '/main.js'];
 
 self.addEventListener('install', event => {
