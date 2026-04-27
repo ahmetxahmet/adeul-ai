@@ -590,7 +590,22 @@ async function simulateAPIConnection(btnId, is8K = false) {
         }
     } catch (error) {
         console.error(error);
-        alert('Render failed, please try again.');
+        if (window.supabaseClient && window.currentUserId) {
+            try {
+                await window.supabaseClient.rpc('refund_credit', {
+                    p_user_id: window.currentUserId,
+                    p_amount: window._currentQualityConfig?.creditCost || 12
+                });
+                const { data: refundData } = await window.supabaseClient.from('users').select('credits').eq('id', window.currentUserId).single();
+                if (refundData) {
+                    const topEl = document.getElementById('topCreditDisplay');
+                    const panelEl = document.getElementById('panelCreditDisplay');
+                    if (topEl) topEl.innerText = refundData.credits.toLocaleString();
+                    if (panelEl) panelEl.innerText = refundData.credits.toLocaleString();
+                }
+            } catch(e) { console.warn('Refund failed:', e); }
+        }
+        alert('Render failed. Your credits have been refunded. Please try again.');
         closeRender();
     } finally {
         btn.innerHTML = originalText;
