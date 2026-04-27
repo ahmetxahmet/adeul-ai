@@ -10,7 +10,10 @@
 window.uploadedBase64 = {};
 window.currentBoardStyle = 1;
 window.currentRatio = '16:9';
-window.selectedQuality = '4K'; // default 
+window.selectedQuality = '4K'; // default
+window.originalRenderBase64 = null;
+window.originalRenderPrompt = '';
+window.revisionHistory = [];
 window.clickSound = document.getElementById('hoverSound');
 window.CORE_ENGINE_V2 = atob("aHR0cHM6Ly9hZGV1bC1pYS5hcHAubjhuLmNsb3VkL3dlYmhvb2svYWRldWwtYWktdjI=");
 window.CORE_UPSCALE = atob("aHR0cHM6Ly9hZGV1bC1pYS5hcHAubjhuLmNsb3VkL3dlYmhvb2svdXBzY2FsZQ==");
@@ -498,6 +501,12 @@ async function simulateAPIConnection(btnId, is8K = false) {
         user_token: authToken
     };
 
+    if (window.isRevisionMode) {
+        window.revisionHistory.push(cleanPrompt);
+        payload.prompt = window.originalRenderPrompt + ' [APPLY ALL REVISIONS IN ORDER: ' + window.revisionHistory.join(' AND THEN ') + ']';
+        payload.images = { currentRender: window.originalRenderBase64 || '' };
+    }
+
     try {
         const response = await fetch(window.CORE_ENGINE_V2, {
             method: 'POST',
@@ -548,6 +557,12 @@ async function simulateAPIConnection(btnId, is8K = false) {
                     
                     imgElement.src = finalImage;
                     showRenderScreen();
+                }
+
+                if (!window.isRevisionMode) {
+                    window.originalRenderBase64 = finalImage;
+                    window.originalRenderPrompt = cleanPrompt;
+                    window.revisionHistory = [];
                 }
 
                 if (is8K) {
