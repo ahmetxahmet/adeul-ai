@@ -1245,7 +1245,7 @@ function buildAutoPrompt() {
     let prompt = '';
 
     if (menu === 'INTERIOR' || menu === 'EXTERIOR') {
-        if (style && space) prompt = 'place uploaded items into the scene as a ' + style.toLowerCase() + ' ' + space.toLowerCase() + ', match perspective lighting and scale perfectly, realistic integration';
+        if (style && space) prompt = 'STRICT STYLE: ' + style + '. Place uploaded items into a ' + style.toLowerCase() + ' ' + space.toLowerCase() + ', all elements must match ' + style.toLowerCase() + ' design language, match perspective lighting and scale perfectly, realistic integration';
         else if (style) prompt = style.toLowerCase() + ' style, match lighting and perspective, realistic placement';
         else if (space) prompt = 'place items in ' + space.toLowerCase() + ', natural positioning, match scene lighting';
     } else if (menu === 'ARCHITECTURE') {
@@ -1253,7 +1253,7 @@ function buildAutoPrompt() {
         else if (style) prompt = style.toLowerCase() + ' architecture, match terrain and lighting naturally';
         else if (space) prompt = 'place ' + space.toLowerCase() + ' on the site, correct scale, match environment';
     } else if (menu === 'DESIGN') {
-        if (style && space) prompt = style.toLowerCase() + ' ' + space.toLowerCase() + ', premium materials, professional studio lighting, photorealistic, high-end design, cinematic composition';
+        if (style && space) prompt = 'STRICT STYLE: ' + style + '. Design a ' + space.toLowerCase() + ' in pure ' + style.toLowerCase() + ' style. Use ONLY materials and forms authentic to ' + style.toLowerCase() + ' design language. Premium materials, professional studio lighting, photorealistic, high-end design, cinematic composition';
         else if (style) prompt = style.toLowerCase() + ' furniture design, premium materials, studio lighting';
         else if (space) prompt = 'design a ' + space.toLowerCase() + ', high-end materials, professional photography';
     } else if (menu === 'PLAN') {
