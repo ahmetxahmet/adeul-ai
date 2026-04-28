@@ -1304,17 +1304,19 @@ function startVRayAnimation() {
     const ctx = canvas.getContext('2d');
     canvas.width = 800;
     canvas.height = 500;
-    let buckets = [];
     const bw = 40, bh = 40;
     const cols = Math.floor(canvas.width / bw);
     const rows = Math.floor(canvas.height / bh);
+    let buckets = [];
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
-            buckets.push({ x: c * bw, y: r * bh, done: false, progress: 0 });
+            buckets.push({ x: c * bw, y: r * bh, done: false });
         }
     }
     let shuffled = [...buckets].sort(() => Math.random() - 0.5);
-    let idx = 0;
+    let activeCount = 8;
+    let activeIdx = 0;
+    let doneCount = 0;
     const progress = document.getElementById('vrayProgress');
 
     const interval = setInterval(() => {
@@ -1328,29 +1330,38 @@ function startVRayAnimation() {
         for (let i = 0; i < shuffled.length; i++) {
             const b = shuffled[i];
             if (b.done) {
-                const gray = 30 + Math.random() * 40;
-                ctx.fillStyle = `rgb(${gray},${gray},${gray})`;
+                const gray = 25 + Math.random() * 35;
+                ctx.fillStyle = 'rgb(' + gray + ',' + gray + ',' + gray + ')';
                 ctx.fillRect(b.x, b.y, bw - 1, bh - 1);
             }
         }
 
-        if (idx < shuffled.length) {
-            const current = shuffled[idx];
-            ctx.strokeStyle = '#d4a853';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(current.x, current.y, bw - 1, bh - 1);
-            current.progress += 0.2;
-            if (current.progress >= 1) {
-                current.done = true;
-                idx++;
+        for (let a = 0; a < activeCount; a++) {
+            const idx = activeIdx + a;
+            if (idx < shuffled.length && !shuffled[idx].done) {
+                ctx.strokeStyle = '#d4a853';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(shuffled[idx].x, shuffled[idx].y, bw - 1, bh - 1);
+                ctx.fillStyle = 'rgba(212,168,83,0.15)';
+                ctx.fillRect(shuffled[idx].x, shuffled[idx].y, bw - 1, bh - 1);
             }
-            if (progress) progress.style.width = Math.round((idx / shuffled.length) * 100) + '%';
-        } else {
-            idx = 0;
-            shuffled = [...buckets].sort(() => Math.random() - 0.5);
-            buckets.forEach(b => { b.done = false; b.progress = 0; });
         }
-    }, 50);
+
+        doneCount++;
+        if (doneCount % 3 === 0 && activeIdx < shuffled.length) {
+            shuffled[activeIdx].done = true;
+            activeIdx++;
+        }
+
+        if (progress) progress.style.width = Math.round((activeIdx / shuffled.length) * 100) + '%';
+
+        if (activeIdx >= shuffled.length) {
+            activeIdx = 0;
+            doneCount = 0;
+            shuffled = [...buckets].sort(() => Math.random() - 0.5);
+            buckets.forEach(b => b.done = false);
+        }
+    }, 30);
 }
 
 async function quickRevision(command) {
