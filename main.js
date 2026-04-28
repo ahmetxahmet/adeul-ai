@@ -10,7 +10,7 @@
 window.uploadedBase64 = {};
 window.currentBoardStyle = 1;
 window.currentRatio = '16:9';
-window.selectedQuality = '4K'; // default
+window.selectedQuality = '1K'; // default
 window.originalRenderBase64 = null;
 window.originalRenderPrompt = '';
 window.revisionHistory = [];
