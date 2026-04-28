@@ -1183,7 +1183,8 @@ function loadQuickPrompts(menuName) {
             const promptArea = document.getElementById('promptArea');
             if (promptArea) {
                 promptArea.value = p;
-                promptArea.dispatchEvent(new Event('input'));
+                promptArea.dispatchEvent(new Event('input', { bubbles: true }));
+                promptArea.dispatchEvent(new Event('change', { bubbles: true }));
             }
         };
         container.appendChild(btn);
@@ -1268,8 +1269,18 @@ function buildAutoPrompt() {
     const promptArea = document.getElementById('promptArea');
     if (promptArea && prompt) {
         promptArea.value = prompt;
-        promptArea.dispatchEvent(new Event('input'));
+        promptArea.dispatchEvent(new Event('input', { bubbles: true }));
+        promptArea.dispatchEvent(new Event('change', { bubbles: true }));
     }
+}
+
+async function forgotPassword() {
+    const email = document.getElementById('loginEmail').value;
+    if (!email) { alert('Please enter your email address first.'); return; }
+    if (!window.supabaseClient) return;
+    const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: 'https://adeull.com' });
+    if (error) { alert('Error: ' + error.message); }
+    else { alert('Password reset email sent. Check your inbox.'); }
 }
 
 function showVRayLoader(show) {
