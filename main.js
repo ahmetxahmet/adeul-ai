@@ -611,14 +611,14 @@ async function simulateAPIConnection(btnId, is8K = false) {
                     p_user_id: window.currentUserId,
                     p_amount: window._currentQualityConfig?.creditCost || 12
                 });
-                const { data: refundData } = await window.supabaseClient.from('users').select('credits').eq('id', window.currentUserId).single();
-                if (refundData) {
-                    const topEl = document.getElementById('topCreditDisplay');
-                    const panelEl = document.getElementById('panelCreditDisplay');
-                    if (topEl) topEl.innerText = refundData.credits.toLocaleString();
-                    if (panelEl) panelEl.innerText = refundData.credits.toLocaleString();
+                const { data: rd } = await window.supabaseClient.from('users').select('credits').eq('id', window.currentUserId).single();
+                if (rd) {
+                    var t = document.getElementById('topCreditDisplay');
+                    var p = document.getElementById('panelCreditDisplay');
+                    if (t) t.innerText = rd.credits.toLocaleString();
+                    if (p) p.innerText = rd.credits.toLocaleString();
                 }
-            } catch(e) { console.warn('Refund failed:', e); }
+            } catch(re) { console.warn('Refund error:', re); }
         }
         alert('Render failed. Your credits have been refunded. Please try again.');
         closeRender();
