@@ -445,10 +445,6 @@ async function simulateAPIConnection(btnId, is8K = false) {
     const activeLangCodeElement = document.getElementById('activeCode');
     const activeLangCode = activeLangCodeElement ? activeLangCodeElement.innerText : 'EN';
 
-    if(window.deductCredit) {
-        const ok = await window.deductCredit(is8K ? '8K_RENDER' : 'NORMAL_RENDER', window._currentQualityConfig?.creditCost || (is8K ? 30 : 12));
-        if(!ok) { btn.disabled = false; return; }
-    }
     btn.innerHTML = is8K ? '8K RENDER IN PROGRESS...' : 'ADEULL AI GENERATING...';
     btn.classList.add('bg-blue-600', 'text-white', 'animate-pulse');
     showVRayLoader(true);
@@ -608,22 +604,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
         }
     } catch (error) {
         console.error(error);
-        if (window.supabaseClient && window.currentUserId) {
-            try {
-                await window.supabaseClient.rpc('refund_credit', {
-                    p_user_id: window.currentUserId,
-                    p_amount: window._currentQualityConfig?.creditCost || 12
-                });
-                const { data: rd } = await window.supabaseClient.from('users').select('credits').eq('id', window.currentUserId).single();
-                if (rd) {
-                    var t = document.getElementById('topCreditDisplay');
-                    var p = document.getElementById('panelCreditDisplay');
-                    if (t) t.innerText = rd.credits.toLocaleString();
-                    if (p) p.innerText = rd.credits.toLocaleString();
-                }
-            } catch(re) { console.warn('Refund error:', re); }
-        }
-        alert('Render failed. Your credits have been refunded. Please try again.');
+        alert('Render failed. Please try again.');
         closeRender();
     } finally {
         btn.innerHTML = originalText;
