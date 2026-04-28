@@ -451,6 +451,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
     }
     btn.innerHTML = is8K ? '8K RENDER IN PROGRESS...' : 'ADEULL AI GENERATING...';
     btn.classList.add('bg-blue-600', 'text-white', 'animate-pulse');
+    showVRayLoader(true);
 
     if (window.uploadedBase64['boxScene']) {
         window.uploadedBase64['boxScene'] = await compressImageBase64(window.uploadedBase64['boxScene']);
@@ -548,14 +549,16 @@ async function simulateAPIConnection(btnId, is8K = false) {
                     imgElement.crossOrigin = "Anonymous";
                     imgElement.src = rawOutput;
                     finalImage = rawOutput;
+                    showVRayLoader(false);
                     showRenderScreen();
                 } else {
                     let cleanBase64 = String(rawOutput).replace(/^data:image\/[a-z]+;base64,/, '').replace(/\s/g, '');
-                    
-                    const imageBlob = b64toBlob(cleanBase64, 'image/png'); 
+
+                    const imageBlob = b64toBlob(cleanBase64, 'image/png');
                     finalImage = URL.createObjectURL(imageBlob);
-                    
+
                     imgElement.src = finalImage;
+                    showVRayLoader(false);
                     showRenderScreen();
                 }
 
@@ -1285,5 +1288,171 @@ function buildAutoPrompt() {
     if (promptArea && prompt) {
         promptArea.value = prompt;
         promptArea.dispatchEvent(new Event('input'));
+    }
+}
+
+function showVRayLoader(show) {
+    const loader = document.getElementById('vrayLoader');
+    if (!loader) return;
+    loader.style.display = show ? 'flex' : 'none';
+    if (show) startVRayAnimation();
+}
+
+function startVRayAnimation() {
+    const canvas = document.getElementById('vrayCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = 800;
+    canvas.height = 500;
+    let buckets = [];
+    const bw = 40, bh = 40;
+    const cols = Math.floor(canvas.width / bw);
+    const rows = Math.floor(canvas.height / bh);
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            buckets.push({ x: c * bw, y: r * bh, done: false, progress: 0 });
+        }
+    }
+    let shuffled = [...buckets].sort(() => Math.random() - 0.5);
+    let idx = 0;
+    const progress = document.getElementById('vrayProgress');
+
+    const interval = setInterval(() => {
+        if (!document.getElementById('vrayLoader') || document.getElementById('vrayLoader').style.display === 'none') {
+            clearInterval(interval);
+            return;
+        }
+        ctx.fillStyle = '#0a0a0a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < shuffled.length; i++) {
+            const b = shuffled[i];
+            if (b.done) {
+                const gray = 30 + Math.random() * 40;
+                ctx.fillStyle = `rgb(${gray},${gray},${gray})`;
+                ctx.fillRect(b.x, b.y, bw - 1, bh - 1);
+            }
+        }
+
+        if (idx < shuffled.length) {
+            const current = shuffled[idx];
+            ctx.strokeStyle = '#d4a853';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(current.x, current.y, bw - 1, bh - 1);
+            current.progress += 0.2;
+            if (current.progress >= 1) {
+                current.done = true;
+                idx++;
+            }
+            if (progress) progress.style.width = Math.round((idx / shuffled.length) * 100) + '%';
+        } else {
+            idx = 0;
+            shuffled = [...buckets].sort(() => Math.random() - 0.5);
+            buckets.forEach(b => { b.done = false; b.progress = 0; });
+        }
+    }, 50);
+}
+
+async function quickRevision(command) {
+    if (!command) return;
+    if (!window.currentUserId || window.currentUserId === 'guest') {
+        alert('Please login to use revisions.');
+        return;
+    }
+    const creditCost = window._currentQualityConfig?.creditCost || 12;
+    const creditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
+    const currentCredits = parseInt(creditText.replace(/[^0-9]/g, '')) || 0;
+    if (currentCredits < creditCost) {
+        alert('Insufficient credits for revision. You need ' + creditCost + ' credits.');
+        return;
+    }
+    if (!confirm('Revision will use ' + creditCost + ' credits. Continue?')) return;
+
+    const renderImg = document.getElementById('renderImage') || document.querySelector('#renderImgContainer img');
+    if (!renderImg || !renderImg.src) { alert('No render to revise'); return; }
+
+    window.revisionHistory = window.revisionHistory || [];
+    window.revisionHistory.push(command);
+
+    const imgSrc = window.originalRenderBase64 || renderImg.src;
+    let base64Data = imgSrc;
+    if (imgSrc.startsWith('blob:')) {
+        const resp = await fetch(imgSrc);
+        const blob = await resp.blob();
+        base64Data = await new Promise(r => { const fr = new FileReader(); fr.onloadend = () => r(fr.result); fr.readAsDataURL(blob); });
+    }
+    base64Data = base64Data.replace(/^data:image\/[a-z]+;base64,/, '');
+
+    const fullPrompt = (window.originalRenderPrompt || '') + ' [APPLY ALL REVISIONS IN ORDER: ' + window.revisionHistory.join(' AND THEN ') + ']';
+
+    const btn = document.getElementById('generateBtnUnified');
+    if (btn) { btn.disabled = true; btn.innerHTML = 'REVISING...'; btn.classList.add('animate-pulse'); }
+
+    showVRayLoader(true);
+
+    const sessionData = window.supabaseClient ? await window.supabaseClient.auth.getSession() : null;
+    const authToken = sessionData?.data?.session?.access_token || '';
+
+    try {
+        if (window.deductCredit) {
+            const ok = await window.deductCredit('REVISION', creditCost);
+            if (!ok) { if (btn) btn.disabled = false; showVRayLoader(false); return; }
+        }
+
+        const response = await fetch(window.CORE_ENGINE_V2, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'generate',
+                prompt: fullPrompt,
+                isRevision: true,
+                images: { currentRender: base64Data },
+                language: (document.getElementById('activeCode') || {}).innerText || 'EN',
+                aspectRatio: window.currentRatio || '16:9',
+                resolution: window._currentQualityConfig?.resolution || '4096x4096',
+                creditCost: creditCost,
+                user_id: window.currentUserId,
+                user_token: authToken
+            })
+        });
+
+        if (!response.ok) throw new Error('Server Error: ' + response.status);
+        const data = await response.json();
+        let result = Array.isArray(data) ? data[0] : data;
+        let rawOutput = result.output_url || result.output || '';
+        if (result.candidates && result.candidates[0]?.content?.parts[0]?.inlineData) {
+            rawOutput = result.candidates[0].content.parts[0].inlineData.data;
+        }
+
+        if (rawOutput && renderImg) {
+            if (rawOutput.startsWith('http')) {
+                renderImg.crossOrigin = 'Anonymous';
+                renderImg.src = rawOutput;
+            } else {
+                let clean = rawOutput.replace(/^data:image\/[a-z]+;base64,/, '').replace(/\s/g, '');
+                const blob = b64toBlob(clean, 'image/png');
+                renderImg.src = URL.createObjectURL(blob);
+            }
+        }
+        const customInput = document.getElementById('customRevisionInput');
+        if (customInput) customInput.value = '';
+    } catch (error) {
+        console.error('Revision error:', error);
+        if (window.supabaseClient && window.currentUserId) {
+            try {
+                await window.supabaseClient.rpc('refund_credit', { p_user_id: window.currentUserId, p_amount: creditCost });
+                const { data: rd } = await window.supabaseClient.from('users').select('credits').eq('id', window.currentUserId).single();
+                if (rd) {
+                    var t = document.getElementById('topCreditDisplay');
+                    var p = document.getElementById('panelCreditDisplay');
+                    if (t) t.innerText = rd.credits.toLocaleString();
+                    if (p) p.innerText = rd.credits.toLocaleString();
+                }
+            } catch(re) {}
+        }
+        alert('Revision failed. Credits refunded.');
+    } finally {
+        showVRayLoader(false);
+        if (btn) { btn.disabled = false; btn.innerHTML = 'GENERATE'; btn.classList.remove('animate-pulse'); }
     }
 }
