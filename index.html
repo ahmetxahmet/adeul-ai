@@ -251,7 +251,7 @@
           <option value="OTHER" class="bg-black">OTHER</option>
         </select>
       </div>
-      <input type="email" id="loginEmail" name="email" autocomplete="username" placeholder="EMAIL ADDRESS" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+      <input type="email" id="loginEmail" name="email" autocomplete="username" autocapitalize="off" autocorrect="off" placeholder="EMAIL ADDRESS" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs normal-case" style="text-transform:none">
       <input type="password" id="loginPassword" name="password" autocomplete="current-password" placeholder="PASSWORD" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
       <input type="password" id="signupPasswordConfirm" placeholder="CONFIRM PASSWORD" style="display:none;" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
       <a href="/pricing.html" class="text-center text-[0.55rem] tracking-widest text-white/50 hover:text-white uppercase underline w-full block">View Pricing →</a>
@@ -430,7 +430,7 @@ ADEULL provides cloud-based rendering services. Results are computer-generated v
 <div class="flex items-center gap-4">
 <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center text-3xl">👤</div>
 <div>
-<div class="text-lg font-bold tracking-widest text-white uppercase" id="panelUserName">USER</div>
+<div class="text-lg font-bold tracking-widest text-white uppercase truncate max-w-[150px]" id="panelUserName">USER</div>
 <div class="text-[0.65rem] opacity-70 tracking-[0.3em] text-green-300 mt-1 uppercase" id="panelUserPlan">FREE</div>
 </div>
 </div>
@@ -688,18 +688,18 @@ ADEULL provides cloud-based rendering services. Results are computer-generated v
 <button onclick="saveRenderWithAdjust()" class="bg-white/10 hover:bg-white/20 text-white font-extrabold tracking-widest px-8 lg:px-12 py-3 lg:py-4 rounded-xl transition shadow-lg uppercase text-[0.7rem] lg:text-[0.8rem]" data-i18n="update">SAVE TO DEVICE</button>
 <p id="saveHint8K" style="display:none;" class="text-[0.55rem] tracking-widest text-yellow-300 uppercase mt-2 text-center animate-pulse">⚠ 8K FILE TOO LARGE FOR DIRECT SAVE — RIGHT-CLICK ON IMAGE → SAVE AS</p>
 </div>
-<div class="flex flex-wrap justify-center gap-1 mt-2 max-w-lg mx-auto" id="renderRevisionTools">
-  <button onclick="quickRevision('move the main object to the left')" class="bg-white/5 border border-white/10 text-white/70 text-[0.4rem] tracking-widest px-2 py-1 rounded hover:bg-white/10 transition">←</button>
-  <button onclick="quickRevision('move the main object to the right')" class="bg-white/5 border border-white/10 text-white/70 text-[0.4rem] tracking-widest px-2 py-1 rounded hover:bg-white/10 transition">→</button>
-  <button onclick="quickRevision('move the main object upward')" class="bg-white/5 border border-white/10 text-white/70 text-[0.4rem] tracking-widest px-2 py-1 rounded hover:bg-white/10 transition">↑</button>
-  <button onclick="quickRevision('move the main object downward')" class="bg-white/5 border border-white/10 text-white/70 text-[0.4rem] tracking-widest px-2 py-1 rounded hover:bg-white/10 transition">↓</button>
-  <button onclick="quickRevision('scale up the main object by 25 percent')" class="bg-white/5 border border-white/10 text-white/70 text-[0.4rem] tracking-widest px-2 py-1 rounded hover:bg-white/10 transition">+</button>
-  <button onclick="quickRevision('scale down the main object by 25 percent')" class="bg-white/5 border border-white/10 text-white/70 text-[0.4rem] tracking-widest px-2 py-1 rounded hover:bg-white/10 transition">-</button>
-  <button onclick="quickRevision('rotate camera 15 degrees to the left, keep everything else identical')" class="bg-white/5 border border-yellow-500/20 text-yellow-200/70 text-[0.4rem] tracking-widest px-2 py-1 rounded hover:bg-yellow-500/10 transition">↶15°</button>
-  <button onclick="quickRevision('rotate camera 15 degrees to the right, keep everything else identical')" class="bg-white/5 border border-yellow-500/20 text-yellow-200/70 text-[0.4rem] tracking-widest px-2 py-1 rounded hover:bg-yellow-500/10 transition">15°↷</button>
-  <button onclick="quickRevision('change camera to 45 degree elevated perspective looking down, keep scene identical')" class="bg-white/5 border border-yellow-500/20 text-yellow-200/70 text-[0.4rem] tracking-widest px-2 py-1 rounded hover:bg-yellow-500/10 transition">45°↙</button>
-  <button onclick="quickRevision('change camera to straight top-down birds eye view, keep scene identical')" class="bg-white/5 border border-yellow-500/20 text-yellow-200/70 text-[0.4rem] tracking-widest px-2 py-1 rounded hover:bg-yellow-500/10 transition">90°↓</button>
-  <button onclick="quickRevision('change camera to eye-level straight perspective, keep scene identical')" class="bg-white/5 border border-yellow-500/20 text-yellow-200/70 text-[0.4rem] tracking-widest px-2 py-1 rounded hover:bg-yellow-500/10 transition">0°→</button>
+<div class="flex flex-wrap justify-center gap-1 mt-2 max-w-xs sm:max-w-md mx-auto px-2" id="renderRevisionTools">
+  <button onclick="quickRevision('move the main object to the left')" class="bg-white/5 border border-white/10 text-white/70 text-[0.35rem] sm:text-[0.55rem] tracking-widest px-4 py-2 rounded hover:bg-white/10 transition">←</button>
+  <button onclick="quickRevision('move the main object to the right')" class="bg-white/5 border border-white/10 text-white/70 text-[0.35rem] sm:text-[0.55rem] tracking-widest px-4 py-2 rounded hover:bg-white/10 transition">→</button>
+  <button onclick="quickRevision('move the main object upward')" class="bg-white/5 border border-white/10 text-white/70 text-[0.35rem] sm:text-[0.55rem] tracking-widest px-4 py-2 rounded hover:bg-white/10 transition">↑</button>
+  <button onclick="quickRevision('move the main object downward')" class="bg-white/5 border border-white/10 text-white/70 text-[0.35rem] sm:text-[0.55rem] tracking-widest px-4 py-2 rounded hover:bg-white/10 transition">↓</button>
+  <button onclick="quickRevision('scale up the main object by 25 percent')" class="bg-white/5 border border-white/10 text-white/70 text-[0.35rem] sm:text-[0.55rem] tracking-widest px-4 py-2 rounded hover:bg-white/10 transition">+</button>
+  <button onclick="quickRevision('scale down the main object by 25 percent')" class="bg-white/5 border border-white/10 text-white/70 text-[0.35rem] sm:text-[0.55rem] tracking-widest px-4 py-2 rounded hover:bg-white/10 transition">-</button>
+  <button onclick="quickRevision('rotate camera 15 degrees to the left, keep everything else identical')" class="bg-white/5 border border-yellow-500/20 text-yellow-200/70 text-[0.35rem] sm:text-[0.55rem] tracking-widest px-4 py-2 rounded hover:bg-yellow-500/10 transition">↶15°</button>
+  <button onclick="quickRevision('rotate camera 15 degrees to the right, keep everything else identical')" class="bg-white/5 border border-yellow-500/20 text-yellow-200/70 text-[0.35rem] sm:text-[0.55rem] tracking-widest px-4 py-2 rounded hover:bg-yellow-500/10 transition">15°↷</button>
+  <button onclick="quickRevision('change camera to 45 degree elevated perspective looking down, keep scene identical')" class="bg-white/5 border border-yellow-500/20 text-yellow-200/70 text-[0.35rem] sm:text-[0.55rem] tracking-widest px-4 py-2 rounded hover:bg-yellow-500/10 transition">45°↙</button>
+  <button onclick="quickRevision('change camera to straight top-down birds eye view, keep scene identical')" class="bg-white/5 border border-yellow-500/20 text-yellow-200/70 text-[0.35rem] sm:text-[0.55rem] tracking-widest px-4 py-2 rounded hover:bg-yellow-500/10 transition">90°↓</button>
+  <button onclick="quickRevision('change camera to eye-level straight perspective, keep scene identical')" class="bg-white/5 border border-yellow-500/20 text-yellow-200/70 text-[0.35rem] sm:text-[0.55rem] tracking-widest px-4 py-2 rounded hover:bg-yellow-500/10 transition">0°→</button>
 </div>
 <div class="flex gap-1 mt-2 max-w-md mx-auto">
   <input type="text" id="customRevisionInput" placeholder="Type revision..." class="flex-1 bg-white/5 border border-white/10 rounded-full p-2 px-4 text-white text-[0.5rem] tracking-widest uppercase outline-none focus:border-white/30" onkeypress="if(event.key==='Enter')quickRevision(this.value)">
@@ -734,7 +734,7 @@ ADEULL provides cloud-based rendering services. Results are computer-generated v
 <div id="quoteFormArea" class="flex flex-col gap-4">
 <input type="text" id="quoteName" placeholder="FULL NAME" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-white/40 text-[0.65rem] tracking-widest uppercase">
 <input type="tel" id="quotePhone" placeholder="PHONE NUMBER" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-white/40 text-[0.65rem] tracking-widest uppercase">
-<input type="email" id="quoteEmail" placeholder="EMAIL ADDRESS" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-white/40 text-[0.65rem] tracking-widest uppercase">
+<input type="email" id="quoteEmail" autocapitalize="off" autocorrect="off" placeholder="EMAIL ADDRESS" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-white/40 text-[0.65rem] tracking-widest normal-case" style="text-transform:none">
 <textarea id="quoteNote" placeholder="PROJECT DETAILS & REQUESTS..." class="w-full h-24 bg-white/5 border border-white/10 rounded-xl p-4 text-white outline-none focus:border-white/40 text-[0.65rem] tracking-widest uppercase resize-none"></textarea>
 <button onclick="saveQuoteInfo()" class="w-full bg-white text-black font-extrabold py-4 rounded-xl tracking-[0.2em] hover:bg-gray-200 transition mt-2 uppercase text-[0.65rem]">SAVE & CONTINUE</button>
 </div>
@@ -1188,7 +1188,7 @@ if(dashTitle) observer.observe(dashTitle, {childList: true, characterData: true,
       <option value="PAINTER" class="bg-black">PAINTER</option>
     </select>
     <textarea id="vendorDescription" placeholder="BRIEF DESCRIPTION OF YOUR SERVICES..." rows="3" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase resize-none"></textarea>
-    <input id="vendorEmail" type="email" placeholder="EMAIL *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
+    <input id="vendorEmail" type="email" autocapitalize="off" autocorrect="off" placeholder="EMAIL *" required class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs normal-case" style="text-transform:none">
     <input id="vendorPhone" type="tel" placeholder="PHONE" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
     <input id="vendorWhatsapp" type="tel" placeholder="WHATSAPP (+COUNTRY CODE)" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
     <input id="vendorWebsite" type="url" placeholder="WEBSITE (OPTIONAL)" class="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-white/40 transition tracking-widest text-xs uppercase">
