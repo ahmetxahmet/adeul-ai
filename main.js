@@ -1180,7 +1180,9 @@ function loadQuickPrompts(menuName) {
         btn.innerText = p.length > 40 ? p.substring(0, 40) + '...' : p;
         btn.title = p;
         btn.onclick = function() {
-            const promptArea = document.getElementById('promptArea');
+            const isPresentation = (document.getElementById('dashboardTitle')?.getAttribute('data-raw-title') === 'PRESENTATION');
+            const targetId = isPresentation ? 'sunumPromptArea' : 'promptArea';
+            const promptArea = document.getElementById(targetId);
             if (promptArea) {
                 promptArea.value = p;
                 promptArea.dispatchEvent(new Event('input', { bubbles: true }));
@@ -1266,7 +1268,9 @@ function buildAutoPrompt() {
         else if (space) prompt = 'design ' + space.toLowerCase() + ' with detailed material callouts';
     }
 
-    const promptArea = document.getElementById('promptArea');
+    const isPresentation = (document.getElementById('dashboardTitle')?.getAttribute('data-raw-title') === 'PRESENTATION');
+    const targetId = isPresentation ? 'sunumPromptArea' : 'promptArea';
+    const promptArea = document.getElementById(targetId);
     if (promptArea && prompt) {
         promptArea.value = prompt;
         promptArea.dispatchEvent(new Event('input', { bubbles: true }));
