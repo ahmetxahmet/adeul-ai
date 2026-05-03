@@ -1481,3 +1481,37 @@ async function quickRevision(command) {
         if (btn) { btn.disabled = false; btn.innerHTML = 'GENERATE'; btn.classList.remove('animate-pulse'); }
     }
 }
+
+async function quickDetailView(command) {
+    if (!command) return;
+    if (!window.currentUserId || window.currentUserId === 'guest') {
+        alert('Please login.');
+        return;
+    }
+    var newPrompt = (window.originalRenderPrompt || 'modern interior design') + ', ' + command;
+    var promptArea = document.getElementById('promptArea');
+    if (promptArea) {
+        promptArea.value = newPrompt;
+        promptArea.dispatchEvent(new Event('input', { bubbles: true }));
+        promptArea.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    window.isRevisionMode = false;
+    window.originalRenderBase64 = null;
+    window.revisionHistory = [];
+    var genBtn = document.getElementById('generateBtnUnified');
+    if (genBtn) genBtn.click();
+}
+
+async function quickDetailFromOriginal() {
+    if (!window.currentUserId || window.currentUserId === 'guest') {
+        alert('Please login.');
+        return;
+    }
+    var originalImg = window.originalRenderBase64;
+    if (!originalImg) {
+        var renderImg = document.getElementById('renderImage') || document.querySelector('#renderImgContainer img');
+        if (renderImg) originalImg = renderImg.src;
+    }
+    if (!originalImg) { alert('No render to analyze'); return; }
+    quickRevision('create a detail showcase of this scene: split the image into 4 equal quadrants, each quadrant showing an extreme close-up macro photograph of a different material or texture visible in the scene, top-left shows the main furniture material in extreme detail, top-right shows the floor or wall material texture, bottom-left shows a fabric or upholstery close-up, bottom-right shows a metal or accessory detail, each quadrant must be a hyper-realistic macro photograph showing individual fibers grains veins or surface imperfections, professional product photography lighting');
+}
