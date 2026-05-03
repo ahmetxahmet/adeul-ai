@@ -1366,6 +1366,24 @@ async function quickRevision(command) {
         alert('Please login to use revisions.');
         return;
     }
+
+    // NEW ANGLE komutu - sıfırdan render al, revizyon değil
+    if (command.includes('different camera angle') || command.includes('opposite corner')) {
+        const newPrompt = (window.originalRenderPrompt || 'modern interior') + ', shot from a completely different camera angle and viewpoint';
+        const promptArea = document.getElementById('promptArea');
+        if (promptArea) {
+            promptArea.value = newPrompt;
+            promptArea.dispatchEvent(new Event('input', { bubbles: true }));
+            promptArea.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        window.isRevisionMode = false;
+        window.originalRenderBase64 = null;
+        window.revisionHistory = [];
+        const genBtn = document.getElementById('generateBtnUnified');
+        if (genBtn) genBtn.click();
+        return;
+    }
+
     const creditCost = window._currentQualityConfig?.creditCost || 12;
     const creditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
     const currentCredits = parseInt(creditText.replace(/[^0-9]/g, '')) || 0;
