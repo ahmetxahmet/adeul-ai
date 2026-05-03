@@ -1482,25 +1482,6 @@ async function quickRevision(command) {
     }
 }
 
-async function quickDetailView(command) {
-    if (!command) return;
-    if (!window.currentUserId || window.currentUserId === 'guest') {
-        alert('Please login.');
-        return;
-    }
-    var newPrompt = (window.originalRenderPrompt || 'modern interior design') + ', ' + command;
-    var promptArea = document.getElementById('promptArea');
-    if (promptArea) {
-        promptArea.value = newPrompt;
-        promptArea.dispatchEvent(new Event('input', { bubbles: true }));
-        promptArea.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-    window.isRevisionMode = false;
-    window.originalRenderBase64 = null;
-    window.revisionHistory = [];
-    var genBtn = document.getElementById('generateBtnUnified');
-    if (genBtn) genBtn.click();
-}
 
 async function quickDetailFromOriginal() {
     if (!window.currentUserId || window.currentUserId === 'guest') {
