@@ -440,7 +440,8 @@ async function simulateAPIConnection(btnId, is8K = false) {
     const originalText = btn.innerHTML;
     const promptInput = document.getElementById('promptArea');
     const userPrompt = promptInput && promptInput.value.trim() !== "" ? promptInput.value : "Modern architectural design";
-    const cleanPrompt = userPrompt.replace(/\{\{/g, '').replace(/\}\}/g, '').replace(/\{/g, '').replace(/\}/g, '').replace(/\"/g, '\\"').replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/\t/g, ' ');
+    let cleanPrompt = userPrompt.replace(/\"/g, '\\"').replace(/\n/g, ' ').replace(/\r/g, ' ').replace(/\t/g, ' ');
+    cleanPrompt = cleanPrompt.replace(/\{\{/g, '').replace(/\}\}/g, '').replace(/\{/g, '').replace(/\}/g, '');
 
     const activeLangCodeElement = document.getElementById('activeCode');
     const activeLangCode = activeLangCodeElement ? activeLangCodeElement.innerText : 'EN';
@@ -1367,15 +1368,6 @@ async function quickRevision(command) {
         return;
     }
 
-    const creditCost = window._currentQualityConfig?.creditCost || 12;
-    const creditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
-    const currentCredits = parseInt(creditText.replace(/[^0-9]/g, '')) || 0;
-    if (currentCredits < creditCost) {
-        alert('Insufficient credits. You need ' + creditCost + ' credits.');
-        return;
-    }
-    if (!confirm((command.includes('different camera angle') || command.includes('opposite corner') ? 'New angle' : 'Revision') + ' will use ' + creditCost + ' credits. Continue?')) return;
-
     // NEW ANGLE komutu - sıfırdan render al, revizyon değil
     if (command.includes('different camera angle') || command.includes('opposite corner')) {
         const newPrompt = (window.originalRenderPrompt || 'modern interior') + ', shot from a completely different camera angle and viewpoint';
@@ -1388,10 +1380,24 @@ async function quickRevision(command) {
         window.isRevisionMode = false;
         window.originalRenderBase64 = null;
         window.revisionHistory = [];
+        const angleCreditCost = window._currentQualityConfig?.creditCost || 12;
+        const angleCreditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
+        const angleCredits = parseInt(angleCreditText.replace(/[^0-9]/g, '')) || 0;
+        if (angleCredits < angleCreditCost) { alert('Insufficient credits.'); return; }
+        if (!confirm('This will use ' + angleCreditCost + ' credits. Continue?')) return;
         const genBtn = document.getElementById('generateBtnUnified');
         if (genBtn) genBtn.click();
         return;
     }
+
+    const creditCost = window._currentQualityConfig?.creditCost || 12;
+    const creditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
+    const currentCredits = parseInt(creditText.replace(/[^0-9]/g, '')) || 0;
+    if (currentCredits < creditCost) {
+        alert('Insufficient credits for revision. You need ' + creditCost + ' credits.');
+        return;
+    }
+    if (!confirm('Revision will use ' + creditCost + ' credits. Continue?')) return;
 
     const renderImg = document.getElementById('renderImage') || document.querySelector('#renderImgContainer img');
     if (!renderImg || !renderImg.src) { alert('No render to revise'); return; }
@@ -1495,21 +1501,4 @@ async function quickDetailFromOriginal() {
     }
     if (!originalImg) { alert('No render to analyze'); return; }
     quickRevision('create a detail showcase of this scene: split the image into 4 equal quadrants, each quadrant showing an extreme close-up macro photograph of a different material or texture visible in the scene, top-left shows the main furniture material in extreme detail, top-right shows the floor or wall material texture, bottom-left shows a fabric or upholstery close-up, bottom-right shows a metal or accessory detail, each quadrant must be a hyper-realistic macro photograph showing individual fibers grains veins or surface imperfections, professional product photography lighting');
-}
-
-function setPromptBuilderMode(mode) {
-    var textarea = document.getElementById('pbInstruction');
-    if (!textarea) return;
-
-    if (mode === 'exact') {
-        textarea.value = 'Write the exact prompt to recreate this scene precisely as shown, describe every visible detail, materials, lighting, camera angle';
-    } else if (mode === 'interpret') {
-        textarea.value = 'Interpret this scene creatively, suggest design improvements, better materials, enhanced lighting, and unique decorative elements';
-    } else if (mode === 'interior') {
-        textarea.value = 'Create a detailed prompt for a luxury modern interior design, include specific materials, lighting conditions, furniture styles, and atmospheric details';
-    } else if (mode === 'exterior') {
-        textarea.value = 'Create a detailed prompt for a stunning exterior architectural visualization, include landscape, lighting, materials, surrounding environment';
-    }
-
-    textarea.dispatchEvent(new Event('input', { bubbles: true }));
 }
