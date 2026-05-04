@@ -794,6 +794,9 @@ function addEmptyItemBox() {
     wrapper.className = 'h-24 lg:h-28 border border-white/30 border-dashed rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-white/10 transition overflow-hidden relative';
     wrapper.innerHTML = `<input type="file" id="${fileId}" hidden accept="image/*"><span class="text-xl mb-1">+</span><span class="text-[0.55rem] tracking-widest uppercase font-bold text-center px-1" data-i18n="addItem">ADD ITEM</span>`;
     wrapper.onclick = function() { document.getElementById(fileId).click(); };
+    wrapper.ondragover = function(e) { e.preventDefault(); wrapper.style.borderColor = 'rgba(255,255,255,0.5)'; };
+    wrapper.ondragleave = function() { wrapper.style.borderColor = ''; };
+    wrapper.ondrop = function(e) { e.preventDefault(); wrapper.style.borderColor = ''; handleDroppedFile(e, wrapper); };
     container.appendChild(wrapper);
 
     document.getElementById(fileId).addEventListener('change', function(e) {
@@ -832,6 +835,9 @@ function removeItemBox(idx) {
         const fileId = 'fileItem_' + idx;
         box.innerHTML = `<input type="file" id="${fileId}" hidden accept="image/*"><span class="text-xl mb-1">+</span><span class="text-[0.55rem] tracking-widest uppercase font-bold text-center px-1" data-i18n="addItem">ADD ITEM</span>`;
         box.onclick = function() { document.getElementById(fileId).click(); };
+        box.ondragover = function(e) { e.preventDefault(); box.style.borderColor = 'rgba(255,255,255,0.5)'; };
+        box.ondragleave = function() { box.style.borderColor = ''; };
+        box.ondrop = function(e) { e.preventDefault(); box.style.borderColor = ''; handleDroppedFile(e, box); };
         document.getElementById(fileId).addEventListener('change', function(e) {
             handleItemUpload(e, idx);
         });
