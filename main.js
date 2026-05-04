@@ -1139,48 +1139,46 @@ async function exportToGLB() {
 
 const quickPromptData = {
     'INTERIOR': [
-        'place items into the room naturally, match perspective lighting and scale perfectly',
-        'place items into a darker interior with balanced shadow and readable mid-tones, materials tactile and singular, lighting creates depth without hiding detail, composition compact but breathable, no repeated props',
-        'place items into an interior driven by metallic or lacquered finishes, surfaces smooth and continuous, reflections controlled not mirror-like, edges clean, lighting must create gradients across surfaces, focus on finish quality and surface precision',
-        'place items as current trend: deep rich tones, overstuffed cushions, sculptural brass lighting, travertine surfaces, shag carpet, layered textiles with contrast fabric pairings',
-        'place items as Mediterranean nautical style: woven textures, coastal stone, lime wash walls, warm amber lighting, rope details, artisanal craftsmanship'
+        'place items into the room naturally, match perspective lighting and scale perfectly, one dominant material leads the scene',
+        'place items into a darker interior with balanced shadow and readable mid-tones, materials tactile and singular, lighting creates depth without hiding detail, no repeated props, no filler objects',
+        'place items into an interior with lacquered or metallic finishes, surfaces smooth and continuous, reflections controlled not mirror-like, lighting creates gradients across surfaces, maximum 5 elements in scene',
+        'place items with Mediterranean warmth: lime wash walls, tactile linen and natural stone, warm amber layered lighting, one broad-leaf plant as focal accent',
+        'place items with craft-focused detail: visible stitching on leather, hand-troweled plaster walls, uneven ceramic glaze, one accent color only, architecture is hero'
     ],
     'EXTERIOR': [
-        'place the uploaded object into the outdoor scene, match terrain lighting and perspective',
-        'place object into an exterior scene with controlled contrast, one main material and one supporting element only, no texture overload, focus on form scale and integration with terrain, realistic outdoor light behavior',
-        'place structure into Mediterranean landscape, nautical rope details, flush stainless steel path lights, coastal stone, woven craft furniture, overstuffed outdoor cushions in teak frames, warm golden hour',
-        'integrate structure with landscape: travertine pathways, integrated planter lighting, marine-grade fixtures, natural ground cover variation, hyper-realistic botanical detail'
+        'place the uploaded object into the outdoor scene, match terrain lighting and perspective naturally',
+        'place object into exterior with controlled contrast, one main material and one supporting element only, focus on form scale and terrain integration, realistic outdoor light',
+        'place structure with Mediterranean landscape, coastal stone, woven craft details, flush pathway lights, warm golden hour, no decorative clutter',
+        'integrate structure with hyper-realistic botanical landscape: individual grass blade variation, volumetric tree canopy, natural ground cover, realistic soil texture'
     ],
     'ARCHITECTURE': [
         'use given empty land as base, keep terrain unchanged, place residential buildings with correct scale spacing and layout, add simple roads and landscape, match lighting and perspective',
-        'compose architecture with clear structural logic, material transitions minimal, edges sharp or intentionally softened but consistent, no decorative additions, light interacts with surfaces to reveal geometry, realistic scale and spacing',
-        'place structure using cantilever logic, strong horizontal extension with visible support relationship, underside material defined clearly, structure must feel engineered and balanced, lighting highlights overhang and shadow beneath, minimal environment',
-        'use given terrain and create architecture based on one structural idea only, either repetition extension or carving, form must be readable instantly, material consistent, lighting reveals geometry clearly, no decorative noise',
-        'place structure focusing on construction logic, every element must feel necessary, no added decoration, materials honest and consistent, proportions balanced, lighting natural and clear, architecture must feel buildable and real',
-        'place structure with a clear roof identity, roof geometry must dominate composition, facade simple and secondary, material consistent, environment minimal, lighting natural emphasizing roof form and shadow lines',
-        'place building using a sawtooth roof system, repeated structural rhythm must define the scene, vertical or angled elements create pattern, facade secondary to roof repetition, lighting directional to enhance rhythm and depth',
-        'board-formed concrete facade with travertine entrance, large format glass panels, marine-grade steel details, continuous seamless surfaces, warm golden hour lighting, architecture must feel buildable',
-        'place structure with warm wood soffit cantilever, upper volume light and calm, small base plinth in concrete as accent only, lighting highlights overhang and shadow underneath, focus on balance and engineering logic'
+        'compose architecture with clear structural logic, material transitions minimal, edges sharp, no decorative additions, light reveals geometry, realistic scale',
+        'place structure using cantilever logic, strong horizontal extension, underside material defined, structure feels engineered and balanced, lighting highlights overhang shadow',
+        'use given terrain, create architecture based on one structural idea only: repetition or extension or carving, form readable instantly, material consistent, no decorative noise',
+        'place structure focusing on construction logic, every element necessary, materials honest, proportions balanced, architecture must feel buildable and real',
+        'place structure with clear roof identity, roof geometry dominates, facade simple, one material consistent, lighting emphasizes roof form and shadow lines',
+        'place building with repeated structural rhythm, vertical or angled elements create pattern, lighting directional to enhance depth, no decorative landscape'
     ],
     'DESIGN': [
-        'high-end architectural interior, strong concept design, cinematic lighting, rich material contrast, balanced composition, realistic shadows, modern and elegant atmosphere, focused central composition',
-        'interior driven by one stone family as primary material, furniture secondary, introduce a small accent only in brushed metal or wood edge, lighting directional to reveal veining and pores, composition calm, tactile but controlled',
-        'lacquered interior with high-quality matte or satin lacquer surfaces, edges crisp, reflections controlled, palette restrained, furniture minimal and precise, lighting creates smooth gradients across planes, focus on surface perfection',
-        'living space with conversation pit curved sectional in deep burgundy velvet, overstuffed cushions, sculptural brass floor lamp with blown glass shade, travertine coffee table with organic base, collaged marble tray, layered textiles, warm cinematic atmosphere',
-        'dining space with sculptural millefeuille base table in dark marble, tubular steel frame chairs with champagne leather, gold satin-lacquered bar cabinet, hand-carved interlocking sideboard, oversized pendant in smoky Murano glass, lime wash walls',
-        'bedroom with low-slung platform bed, heavy bouclé headboard in muted earth tone, brushed gold nightstand handles, cathedral glass bedside lamp, deep forest green velvet throw, polished concrete floor with layered wool rugs, warm amber glow',
-        'home office with blackened steel desk frame, saddle leather desktop, cast brass task lamp with Pyrex glass shade, burl wood floating shelf, terrazzo floor, coffered ceiling detail, integrated planter lighting, focused and functional',
-        'outdoor terrace with overstuffed cushions in teak wood frame lounge, woven rope hanging chair, coastal stone side table, flush pathway spotlights, Mediterranean herb garden border, nautical brass hardware, warm golden hour'
+        'high-end interior, strong concept, cinematic lighting, one dominant material leads, rich contrast with one supporting material only, balanced composition, maximum 6 elements',
+        'stone-led interior using one stone family as primary surface, furniture secondary, small brushed metal or wood accent only, directional lighting reveals veining and pores, calm composition',
+        'lacquered interior with matte or satin surfaces, edges crisp, reflections controlled, palette restrained, furniture minimal, lighting creates smooth gradients, focus on surface perfection',
+        'living space with large curved sectional sofa in deep velvet, generously padded cushions, sculptural brass floor lamp with blown glass shade, travertine coffee table, one accent color only, warm cinematic atmosphere',
+        'dining space with sculptural table base in dark marble, steel frame chairs with leather, hand-carved sideboard with visible joinery, oversized pendant in smoky glass, lime wash walls',
+        'bedroom with low platform bed, heavy bouclé headboard showing individual fiber loops, brushed gold hardware, one statement lighting piece, deep velvet throw, layered wool rugs on concrete floor',
+        'home office with blackened steel desk frame, saddle leather desktop with visible stitching, cast brass task lamp, burl wood floating shelf, terrazzo floor, craft feeling throughout',
+        'outdoor terrace with overstuffed cushions in teak frame, woven rope accent chair, coastal stone side table, flush pathway spotlights, one broad-leaf plant, warm golden hour'
     ],
     'PLAN': [
-        'convert this floor plan into photorealistic 3D visualization, modern interior style',
-        'render this plan as luxury apartment, warm lighting, designer furniture, realistic materials and textures',
-        'transform this blueprint into realistic interior view, contemporary design with rich material contrast and cinematic lighting'
+        'convert this floor plan into photorealistic 3D visualization, modern interior, one dominant material per room',
+        'render this plan as luxury apartment, warm layered lighting, designer furniture with visible craft details, realistic material textures',
+        'transform this blueprint into realistic interior, contemporary design with rich material contrast, maximum 6 elements per room, cinematic lighting'
     ],
     'PRESENTATION': [
-        'create material mood board with fabric swatches, wood samples, stone textures and color palette',
-        'design presentation board showing furniture selections with dimensions and material callouts',
-        'create architectural concept board combining interior textures, finishes and spatial layout'
+        'create material mood board with fabric swatches showing real texture, wood samples with visible grain, stone with veining, color palette',
+        'design presentation board showing furniture selections with craft details, dimensions, material callouts, one dominant material theme',
+        'create architectural concept board combining tactile textures, honest finishes, layered lighting concept, spatial layout'
     ]
 };
 
