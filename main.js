@@ -1514,3 +1514,17 @@ async function quickDetailFromOriginal() {
     if (!originalImg) { alert('No render to analyze'); return; }
     quickRevision('create a detail showcase of this scene: split the image into 4 equal quadrants, each quadrant showing an extreme close-up macro photograph of a different material or texture visible in the scene, top-left shows the main furniture material in extreme detail, top-right shows the floor or wall material texture, bottom-left shows a fabric or upholstery close-up, bottom-right shows a metal or accessory detail, each quadrant must be a hyper-realistic macro photograph showing individual fibers grains veins or surface imperfections, professional product photography lighting');
 }
+
+function handleDroppedFile(event, container) {
+    var files = event.dataTransfer.files;
+    if (!files || !files.length) return;
+    var file = files[0];
+    if (!file.type.startsWith('image/')) { alert('Please drop an image file.'); return; }
+    var input = container.querySelector('input[type="file"]');
+    if (input) {
+        var dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+}
