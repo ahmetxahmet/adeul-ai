@@ -50,6 +50,10 @@ window.dict = {
         goBack: "BACK",
         viewPlansShort: "VIEW PLANS",
         step1: "SUBSCRIBE", step2: "UPLOAD", step3: "RENDER", step4: "DOWNLOAD",
+        insufficientCredits: "Insufficient credits.",
+        insufficientCreditsRevision: "Insufficient credits for revision. You need {n} credits.",
+        confirmAngle: "New angle will use {n} credits. Continue?",
+        confirmRevision: "Revision will use {n} credits. Continue?",
     },
     'TR': {
         subtitle: "Mimari Çekirdek Zekası", login: "Giriş Yap", email: "E-POSTA ADRESİ", password: "ŞİFRE", orLogin: "Veya Şununla Giriş Yap",
@@ -99,6 +103,10 @@ window.dict = {
         goBack: "GERİ DÖN",
         viewPlansShort: "PAKETLERİ GÖR",
         step1: "ABONE OL", step2: "YÜKLE", step3: "RENDER AL", step4: "İNDİR",
+        insufficientCredits: "Yetersiz kredi.",
+        insufficientCreditsRevision: "Revizyon için yetersiz kredi. {n} kredi gerekiyor.",
+        confirmAngle: "Yeni açı {n} kredi kullanacak. Devam edilsin mi?",
+        confirmRevision: "Revizyon {n} kredi kullanacak. Devam edilsin mi?",
     },
     'ES': {
         subtitle: "Inteligencia Central Arquitectónica", login: "Iniciar Sesión", email: "CORREO ELECTRÓNICO", password: "CONTRASEÑA", orLogin: "O entrar con",
@@ -148,6 +156,10 @@ window.dict = {
         goBack: "VOLVER",
         viewPlansShort: "VER PLANES",
         step1: "SUSCRÍBETE", step2: "SUBIR", step3: "RENDERIZAR", step4: "DESCARGAR",
+        insufficientCredits: "Créditos insuficientes.",
+        insufficientCreditsRevision: "Créditos insuficientes para revisión. Necesitas {n} créditos.",
+        confirmAngle: "El nuevo ángulo usará {n} créditos. ¿Continuar?",
+        confirmRevision: "La revisión usará {n} créditos. ¿Continuar?",
     },
     'DE': {
         subtitle: "Architektonische Kernintelligenz", login: "Anmelden", email: "E-MAIL", password: "PASSWORT", orLogin: "Oder anmelden mit",
@@ -197,6 +209,10 @@ window.dict = {
         goBack: "ZURÜCK",
         viewPlansShort: "PLÄNE ANSEHEN",
         step1: "ABONNIEREN", step2: "HOCHLADEN", step3: "RENDERN", step4: "HERUNTERLADEN",
+        insufficientCredits: "Nicht genug Credits.",
+        insufficientCreditsRevision: "Nicht genug Credits für die Überarbeitung. Sie benötigen {n} Credits.",
+        confirmAngle: "Neuer Blickwinkel verwendet {n} Credits. Weiter?",
+        confirmRevision: "Überarbeitung verwendet {n} Credits. Weiter?",
     },
     'FR': {
         subtitle: "Intelligence Architecturale", login: "Connexion", email: "E-MAIL", password: "MOT DE PASSE", orLogin: "Ou se connecter avec",
@@ -246,6 +262,10 @@ window.dict = {
         goBack: "RETOUR",
         viewPlansShort: "VOIR LES PLANS",
         step1: "S'ABONNER", step2: "CHARGER", step3: "RENDU", step4: "TÉLÉCHARGER",
+        insufficientCredits: "Crédits insuffisants.",
+        insufficientCreditsRevision: "Crédits insuffisants pour la révision. Vous avez besoin de {n} crédits.",
+        confirmAngle: "Le nouvel angle utilisera {n} crédits. Continuer?",
+        confirmRevision: "La révision utilisera {n} crédits. Continuer?",
     },
     'PT': {
         subtitle: "Inteligência Arquitetônica", login: "Entrar", email: "E-MAIL", password: "SENHA", orLogin: "Ou entrar com",
@@ -295,6 +315,10 @@ window.dict = {
         goBack: "VOLTAR",
         viewPlansShort: "VER PLANOS",
         step1: "ASSINAR", step2: "CARREGAR", step3: "RENDERIZAR", step4: "BAIXAR",
+        insufficientCredits: "Créditos insuficientes.",
+        insufficientCreditsRevision: "Créditos insuficientes para revisão. Você precisa de {n} créditos.",
+        confirmAngle: "Novo ângulo usará {n} créditos. Continuar?",
+        confirmRevision: "A revisão usará {n} créditos. Continuar?",
     },
     'ID': {
         subtitle: "Kecerdasan Arsitektur", login: "Masuk", email: "EMAIL", password: "KATA SANDI", orLogin: "Atau masuk dengan",
@@ -344,6 +368,10 @@ window.dict = {
         goBack: "KEMBALI",
         viewPlansShort: "LIHAT PAKET",
         step1: "BERLANGGANAN", step2: "UNGGAH", step3: "RENDER", step4: "UNDUH",
+        insufficientCredits: "Kredit tidak mencukupi.",
+        insufficientCreditsRevision: "Kredit tidak mencukupi untuk revisi. Anda membutuhkan {n} kredit.",
+        confirmAngle: "Sudut baru akan menggunakan {n} kredit. Lanjutkan?",
+        confirmRevision: "Revisi akan menggunakan {n} kredit. Lanjutkan?",
     },
     'RU': {
         subtitle: "Архитектурный ИИ", login: "Войти", email: "EMAIL", password: "ПАРОЛЬ", orLogin: "Или войти через",
@@ -393,6 +421,10 @@ window.dict = {
         goBack: "НАЗАД",
         viewPlansShort: "ПЛАНЫ",
         step1: "ПОДПИСКА", step2: "ЗАГРУЗКА", step3: "РЕНДЕР", step4: "СКАЧАТЬ",
+        insufficientCredits: "Недостаточно кредитов.",
+        insufficientCreditsRevision: "Недостаточно кредитов для ревизии. Вам нужно {n} кредитов.",
+        confirmAngle: "Новый угол использует {n} кредитов. Продолжить?",
+        confirmRevision: "Ревизия использует {n} кредитов. Продолжить?",
     },
     'AR': {
         subtitle: "الذكاء المعماري", login: "دخول", email: "البريد الإلكتروني", password: "كلمة المرور", orLogin: "أو الدخول عبر",
@@ -442,6 +474,10 @@ window.dict = {
         goBack: "رجوع",
         viewPlansShort: "عرض الخطط",
         step1: "اشترك", step2: "تحميل", step3: "تصيير", step4: "تنزيل",
+        insufficientCredits: "رصيد غير كافٍ.",
+        insufficientCreditsRevision: "رصيد غير كافٍ للمراجعة. تحتاج إلى {n} نقطة.",
+        confirmAngle: "الزاوية الجديدة ستستخدم {n} نقطة. هل تريد المتابعة؟",
+        confirmRevision: "المراجعة ستستخدم {n} نقطة. هل تريد المتابعة؟",
     },
     'IT': {
         subtitle: "Intelligenza Architettonica", login: "Accedi", email: "EMAIL", password: "PASSWORD", orLogin: "O accedi con",
@@ -491,6 +527,10 @@ window.dict = {
         goBack: "INDIETRO",
         viewPlansShort: "VEDI PIANI",
         step1: "ABBONATI", step2: "CARICA", step3: "RENDER", step4: "SCARICA",
+        insufficientCredits: "Crediti insufficienti.",
+        insufficientCreditsRevision: "Crediti insufficienti per la revisione. Hai bisogno di {n} crediti.",
+        confirmAngle: "Il nuovo angolo userà {n} crediti. Continuare?",
+        confirmRevision: "La revisione userà {n} crediti. Continuare?",
     }
 };
 

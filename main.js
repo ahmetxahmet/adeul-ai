@@ -1386,6 +1386,9 @@ async function quickRevision(command) {
         return;
     }
 
+    const _rlang = (document.getElementById('activeCode') || {}).innerText || 'EN';
+    const _rd = (window.dict && window.dict[_rlang]) || window.dict['EN'];
+
     // NEW ANGLE komutu - sıfırdan render al, revizyon değil
     if (command.includes('different camera angle') || command.includes('opposite corner')) {
         const newPrompt = (window.originalRenderPrompt || 'modern interior') + ', shot from a completely different camera angle and viewpoint';
@@ -1401,8 +1404,8 @@ async function quickRevision(command) {
         const angleCreditCost = window._currentQualityConfig?.creditCost || 12;
         const angleCreditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
         const angleCredits = parseInt(angleCreditText.replace(/[^0-9]/g, '')) || 0;
-        if (angleCredits < angleCreditCost) { alert('Insufficient credits.'); return; }
-        if (!confirm('This will use ' + angleCreditCost + ' credits. Continue?')) return;
+        if (angleCredits < angleCreditCost) { alert(_rd.insufficientCredits || 'Insufficient credits.'); return; }
+        if (!confirm((_rd.confirmAngle || 'New angle will use {n} credits. Continue?').replace('{n}', angleCreditCost))) return;
         const genBtn = document.getElementById('generateBtnUnified');
         if (genBtn) genBtn.click();
         return;
@@ -1412,10 +1415,10 @@ async function quickRevision(command) {
     const creditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
     const currentCredits = parseInt(creditText.replace(/[^0-9]/g, '')) || 0;
     if (currentCredits < creditCost) {
-        alert('Insufficient credits for revision. You need ' + creditCost + ' credits.');
+        alert((_rd.insufficientCreditsRevision || 'Insufficient credits for revision. You need {n} credits.').replace('{n}', creditCost));
         return;
     }
-    if (!confirm('Revision will use ' + creditCost + ' credits. Continue?')) return;
+    if (!confirm((_rd.confirmRevision || 'Revision will use {n} credits. Continue?').replace('{n}', creditCost))) return;
 
     const renderImg = document.getElementById('renderImage') || document.querySelector('#renderImgContainer img');
     if (!renderImg || !renderImg.src) { alert('No render to revise'); return; }
