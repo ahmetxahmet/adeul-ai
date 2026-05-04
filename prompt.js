@@ -61,7 +61,7 @@
             '</div>' +
 
             // Upload Box
-            '<div id="pbUploadBox" onclick="pbClickUpload()" style="width:100%;height:180px;border:1px dashed rgba(255,255,255,0.2);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.02);" onmouseenter="this.style.background=\'rgba(255,255,255,0.06)\'" onmouseleave="this.style.background=\'rgba(255,255,255,0.02)\'">' +
+            '<div id="pbUploadBox" onclick="pbClickUpload()" ondragover="event.preventDefault(); this.style.borderColor=\'rgba(255,255,255,0.5)\'" ondragleave="this.style.borderColor=\'rgba(255,255,255,0.2)\'" ondrop="event.preventDefault(); this.style.borderColor=\'rgba(255,255,255,0.2)\'; pbHandleDrop(event)" style="width:100%;height:180px;border:1px dashed rgba(255,255,255,0.2);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;background:rgba(255,255,255,0.02);" onmouseenter="this.style.background=\'rgba(255,255,255,0.06)\'" onmouseleave="this.style.background=\'rgba(255,255,255,0.02)\'">' +
             '<span style="font-size:28px;margin-bottom:8px;opacity:0.4;">↑</span>' +
             '<span style="font-size:9px;font-weight:700;letter-spacing:0.25em;color:rgba(255,255,255,0.4);text-transform:uppercase;">' + L.upload + '</span>' +
             '</div>' +
@@ -128,6 +128,20 @@
                 }
             };
             reader.readAsDataURL(input.files[0]);
+        }
+    };
+
+    window.pbHandleDrop = function(event) {
+        var files = event.dataTransfer.files;
+        if (!files || !files.length) return;
+        var file = files[0];
+        if (!file.type.startsWith('image/')) { alert('Please drop an image file.'); return; }
+        var input = document.getElementById('pbFileInput');
+        if (input) {
+            var dt = new DataTransfer();
+            dt.items.add(file);
+            input.files = dt.files;
+            pbHandleFile(input);
         }
     };
 
