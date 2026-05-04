@@ -70,11 +70,8 @@
             // Instruction Input
             '<textarea id="pbInstruction" placeholder="' + L.instruction + '" style="width:100%;height:70px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;color:rgba(255,255,255,0.8);outline:none;font-size:10px;letter-spacing:0.05em;resize:none;font-family:inherit;box-sizing:border-box;transition:border-color 0.2s;" onfocus="this.style.borderColor=\'rgba(255,255,255,0.25)\'" onblur="this.style.borderColor=\'rgba(255,255,255,0.08)\'"></textarea>' +
 
-            // Generate Buttons (two modes)
-            '<div style="display:flex;gap:8px;">' +
-            '<button id="pbGenerateBtn" onclick="pbGenerate(\'exact\')" style="flex:1;background:rgba(255,255,255,0.9);color:#000;font-weight:700;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;padding:14px;border:none;border-radius:12px;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseenter="this.style.background=\'#fff\'" onmouseleave="this.style.background=\'rgba(255,255,255,0.9)\'">📋 EXACT PROMPT</button>' +
-            '<button onclick="pbGenerate(\'interpret\')" style="flex:1;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);font-weight:700;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;padding:14px;border:1px solid rgba(255,255,255,0.1);border-radius:12px;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseenter="this.style.background=\'rgba(255,255,255,0.15)\';this.style.color=\'#fff\'" onmouseleave="this.style.background=\'rgba(255,255,255,0.08)\';this.style.color=\'rgba(255,255,255,0.7)\'">💡 INTERPRET</button>' +
-            '</div>' +
+            // Generate Button
+            '<button id="pbGenerateBtn" onclick="pbGenerate()" style="width:100%;background:rgba(255,255,255,0.9);color:#000;font-weight:700;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;padding:14px;border:none;border-radius:12px;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseenter="this.style.background=\'#fff\'" onmouseleave="this.style.background=\'rgba(255,255,255,0.9)\'">' + L.generate + '</button>' +
 
             // Output Area
             '<div id="pbOutputArea" style="display:none;flex-direction:column;gap:10px;">' +
@@ -148,7 +145,7 @@
     // ============================================================
     // GENERATE PROMPT (N8N webhook)
     // ============================================================
-    window.pbGenerate = async function(mode) {
+    window.pbGenerate = async function() {
         var L = getL();
 
         if (!_pbImageBase64) {
@@ -158,11 +155,6 @@
 
         var btn = document.getElementById('pbGenerateBtn');
         var instruction = (document.getElementById('pbInstruction') || {}).value || '';
-        instruction = instruction.replace(/\{\{/g, '').replace(/\}\}/g, '').replace(/\{/g, '').replace(/\}/g, '');
-
-        var modeInstruction = (mode === 'interpret')
-            ? 'Interpret the design concept freely and creatively. ' + instruction
-            : 'Use the exact prompt as written. ' + instruction;
 
         btn.innerText = L.generating;
         btn.style.pointerEvents = 'none';
@@ -176,9 +168,8 @@
 
             var payload = {
                 action: 'prompt_builder',
-                mode: mode || 'exact',
                 images: { boxRef: _pbImageBase64 },
-                prompt: modeInstruction,
+                prompt: instruction,
                 language: activeLang,
                 user_token: authToken,
                 user_id: window.currentUserId || 'guest'
