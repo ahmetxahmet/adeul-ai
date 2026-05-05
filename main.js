@@ -116,29 +116,54 @@ function toggleUserMenu() {
     document.getElementById('userSidePanel').classList.toggle('open');
 }
 
+function compressImage(file, maxWidth, maxHeight, quality, callback) {
+    maxWidth = maxWidth || 1536;
+    maxHeight = maxHeight || 1536;
+    quality = quality || 0.75;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+            var w = img.width;
+            var h = img.height;
+            if (w > maxWidth || h > maxHeight) {
+                var ratio = Math.min(maxWidth / w, maxHeight / h);
+                w = Math.round(w * ratio);
+                h = Math.round(h * ratio);
+            }
+            var canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            var compressed = canvas.toDataURL('image/jpeg', quality);
+            callback(compressed);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
 function previewImage(input, boxId) {
     playSound();
     if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const rawDataUrl = e.target.result;
-            const rawBase64 = rawDataUrl.split(',')[1];
+        compressImage(input.files[0], 1536, 1536, 0.75, function(compressed) {
+            const rawBase64 = compressed.split(',')[1];
             window.uploadedBase64[boxId] = rawBase64;
 
             const box = document.getElementById(boxId);
             Array.from(box.children).forEach(child => child.style.display = 'none');
-            
+
             const previewDiv = document.createElement('div');
             previewDiv.className = 'preview-container absolute inset-0 w-full h-full';
             previewDiv.innerHTML = `
-            <img src="${rawDataUrl}" class="absolute inset-0 w-full h-full object-contain opacity-80 rounded-xl">
+            <img src="${compressed}" class="absolute inset-0 w-full h-full object-contain opacity-80 rounded-xl">
             <button onclick="removeImage(event, '${boxId}')" class="absolute top-2 right-2 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm hover:bg-red-500 z-50 shadow-lg border border-white/20">✕</button>
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
             <span class="bg-black/70 px-4 py-2 rounded-lg text-[0.6rem] font-bold tracking-widest text-white shadow-lg uppercase">LOADED</span>
             </div>`;
             box.appendChild(previewDiv);
-        };
-        reader.readAsDataURL(input.files[0]);
+        });
     }
 }
 
@@ -809,14 +834,12 @@ function addEmptyItemBox() {
 function handleItemUpload(event, idx) {
     const file = event.target.files[0];
     if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const base64 = e.target.result;
-        window._itemBoxes[idx].base64 = base64;
+    compressImage(file, 1536, 1536, 0.75, function(compressed) {
+        window._itemBoxes[idx].base64 = compressed;
 
         const box = document.getElementById('boxItem_' + idx);
         if(box) {
-            box.innerHTML = `<img src="${base64}" class="absolute inset-0 w-full h-full object-cover rounded-xl"><button onclick="event.stopPropagation();removeItemBox(${idx})" class="absolute top-1 right-1 bg-black/70 text-white w-5 h-5 rounded-full text-[0.6rem] z-10">✕</button>`;
+            box.innerHTML = `<img src="${compressed}" class="absolute inset-0 w-full h-full object-cover rounded-xl"><button onclick="event.stopPropagation();removeItemBox(${idx})" class="absolute top-1 right-1 bg-black/70 text-white w-5 h-5 rounded-full text-[0.6rem] z-10">✕</button>`;
             box.onclick = null;
         }
 
@@ -824,8 +847,7 @@ function handleItemUpload(event, idx) {
         if(filledCount < window._maxItems && filledCount === window._itemBoxes.length) {
             addEmptyItemBox();
         }
-    };
-    reader.readAsDataURL(file);
+    });
 }
 
 function removeItemBox(idx) {

@@ -115,16 +115,14 @@
 
     window.pbHandleFile = function(input) {
         if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                _pbImageBase64 = e.target.result.split(',')[1];
+            compressImage(input.files[0], 1536, 1536, 0.75, function(compressed) {
+                _pbImageBase64 = compressed.split(',')[1];
                 var box = document.getElementById('pbUploadBox');
                 if (box) {
-                    box.innerHTML = '<img src="' + e.target.result + '" style="max-width:100%;max-height:160px;object-fit:contain;border-radius:10px;opacity:0.8;">' +
+                    box.innerHTML = '<img src="' + compressed + '" style="max-width:100%;max-height:160px;object-fit:contain;border-radius:10px;opacity:0.8;">' +
                         '<span style="font-size:7px;color:rgba(255,255,255,0.3);letter-spacing:0.2em;margin-top:6px;text-transform:uppercase;">Click to change</span>';
                 }
-            };
-            reader.readAsDataURL(input.files[0]);
+            });
         }
     };
 

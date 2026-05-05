@@ -169,10 +169,8 @@
 
     window.sunumPreviewImage = function(input) {
         if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var dataUrl = e.target.result;
-                window._sunumImageBase64 = dataUrl.split(',')[1];
+            compressImage(input.files[0], 1536, 1536, 0.75, function(compressed) {
+                window._sunumImageBase64 = compressed.split(',')[1];
                 var box = document.getElementById('boxSunumImage');
                 var old = box.querySelector('.sunum-preview');
                 if (old) old.remove();
@@ -182,12 +180,11 @@
                 }
                 var prev = document.createElement('div');
                 prev.className = 'sunum-preview absolute inset-0 w-full h-full';
-                prev.innerHTML = '<img src="' + dataUrl + '" class="absolute inset-0 w-full h-full object-contain opacity-90 rounded-2xl">' +
+                prev.innerHTML = '<img src="' + compressed + '" class="absolute inset-0 w-full h-full object-contain opacity-90 rounded-2xl">' +
                     '<button onclick="event.stopPropagation(); sunumRemoveImage()" class="absolute top-2 right-2 bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm hover:bg-red-500 z-50 shadow-lg border border-white/20">✕</button>' +
                     '<div class="absolute bottom-2 left-1/2 -translate-x-1/2 pointer-events-none"><span class="bg-black/70 px-4 py-1.5 rounded-lg text-[0.55rem] font-bold tracking-widest text-green-300 shadow-lg uppercase">LOADED</span></div>';
                 box.appendChild(prev);
-            };
-            reader.readAsDataURL(input.files[0]);
+            });
         }
     };
 
