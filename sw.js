@@ -1,4 +1,4 @@
-const CACHE_NAME = 'adeull-v3';
+const CACHE_NAME = 'adeull-v4';
 const urlsToCache = ['/', '/index.html', '/style.css', '/main.js'];
 
 self.addEventListener('install', event => {
@@ -8,6 +8,8 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  if (event.request.url.includes('/api/')) return;
   event.respondWith(
     fetch(event.request).then(response => {
       const clone = response.clone();
