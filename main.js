@@ -518,8 +518,8 @@ async function simulateAPIConnection(btnId, is8K = false) {
         aspectRatio: window.currentRatio,
         imageSize: "4K",
         output_mime_type: "image/png",
-        resolution: window._currentQualityConfig?.resolution || (is8K ? '8K_upscale' : '4096x4096'),
-        creditCost: window._currentQualityConfig?.creditCost || (is8K ? 30 : 12),
+        resolution: window._currentQualityConfig?.resolution || '1024x1024',
+        creditCost: window._currentQualityConfig?.creditCost || (is8K ? 30 : 2),
         user_id: window.currentUserId || "guest",
         user_token: authToken
     };
@@ -783,7 +783,7 @@ window.simulateAPIConnectionUnified = async function() {
 
     const quality = window.selectedQuality || '4K';
     const qualityMap = {
-        '1K': { resolution: '1024x1024', creditCost: 1 },
+        '1K': { resolution: '1024x1024', creditCost: 2 },
         '4K': { resolution: '4096x4096', creditCost: 12 },
         '8K': { resolution: '8K_upscale', creditCost: 30 }
     };
