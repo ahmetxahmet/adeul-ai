@@ -58,6 +58,18 @@ export default async function handler(req, res) {
   }
 }
 
+async function uploadRender(b64) {
+  const fileName = 'render_' + Date.now() + '.png';
+  const buf = Buffer.from(b64, 'base64');
+  const uploadRes = await fetch(SUPABASE_URL + '/storage/v1/object/renders/' + fileName, {
+    method: 'POST',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'image/png' },
+    body: buf
+  });
+  if (uploadRes.ok) return SUPABASE_URL + '/storage/v1/object/public/renders/' + fileName;
+  return null;
+}
+
 async function enrichPrompt(rawPrompt) {
   const sysMsg = "You are an elite architectural visualization prompt engineer. Expand the user concept into a detailed 8K render prompt in English. Include: 8K 7680x4320, raw photo, DSLR 50mm f/8 ISO 100, ray tracing, volumetric lighting. Pick ONE dominant material. Maximum TWO contrasting materials per furniture. Show craftsmanship details. Boucle must show fiber loops NOT plaster. Maximum 5-7 elements per scene. ONE accent color. NEVER repeat same style twice. Add random seed word. Output ONLY the prompt text.";
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -71,7 +83,7 @@ async function enrichPrompt(rawPrompt) {
 
 async function handleRender(body, res) {
   const userPrompt = body.prompt || 'modern interior';
-  const systemRules = '8K ultra-high resolution, raw photo quality, maximum sharpness, full-frame DSLR 50mm f/8 ISO 100, global illumination, ray tracing, volumetric lighting, professional architectural photography. ONE dominant material per scene. Maximum 5-7 elements. Visible craftsmanship details. NEVER render fabric as smooth flat surface. ';
+  const systemRules = '8K ultra-high resolution, raw photo quality, maximum sharpness, full-frame DSLR 50mm f/8 ISO 100, global illumination, ray tracing, volumetric lighting, professional architectural photography. ONE dominant material per scene. Maximum 5-7 elements. Visible craftsmanship details. ';
   const fullPrompt = systemRules + userPrompt;
 
   let size = '1024x1024';
@@ -86,8 +98,11 @@ async function handleRender(body, res) {
   });
   const d = await r.json();
   if (d.error) return res.status(500).json({ success: false, message: d.error.message });
-  if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].b64_json, mimeType: 'image/png' } }] } }] });
-  return res.status(500).json({ success: false, message: 'Render failed' });
+  if (!d.data?.[0]?.b64_json) return res.status(500).json({ success: false, message: 'No image' });
+  const b64 = d.data[0].b64_json;
+  const publicUrl = await uploadRender(b64);
+  if (publicUrl) return res.status(200).json({ output_url: publicUrl });
+  return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: b64, mimeType: 'image/png' } }] } }] });
 }
 
 async function handlePlacement(body, res) {
@@ -98,10 +113,12 @@ async function handlePlacement(body, res) {
     body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1024x1024', quality: 'medium' })
   });
   const d = await r.json();
-  console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
   if (d.error) return res.status(500).json({ success: false, message: d.error.message });
-  if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].b64_json, mimeType: 'image/png' } }] } }] });
-  return res.status(500).json({ success: false, message: 'Placement failed' });
+  if (!d.data?.[0]?.b64_json) return res.status(500).json({ success: false, message: 'No image' });
+  const b64 = d.data[0].b64_json;
+  const publicUrl = await uploadRender(b64);
+  if (publicUrl) return res.status(200).json({ output_url: publicUrl });
+  return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: b64, mimeType: 'image/png' } }] } }] });
 }
 
 async function handleRevision(body, res) {
@@ -112,10 +129,12 @@ async function handleRevision(body, res) {
     body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1024x1024', quality: 'medium' })
   });
   const d = await r.json();
-  console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
   if (d.error) return res.status(500).json({ success: false, message: d.error.message });
-  if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].b64_json, mimeType: 'image/png' } }] } }] });
-  return res.status(500).json({ success: false, message: 'Revision failed' });
+  if (!d.data?.[0]?.b64_json) return res.status(500).json({ success: false, message: 'No image' });
+  const b64 = d.data[0].b64_json;
+  const publicUrl = await uploadRender(b64);
+  if (publicUrl) return res.status(200).json({ output_url: publicUrl });
+  return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: b64, mimeType: 'image/png' } }] } }] });
 }
 
 async function handleSketch(body, res) {
@@ -126,10 +145,12 @@ async function handleSketch(body, res) {
     body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1024x1024', quality: 'medium' })
   });
   const d = await r.json();
-  console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
   if (d.error) return res.status(500).json({ success: false, message: d.error.message });
-  if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].b64_json, mimeType: 'image/png' } }] } }] });
-  return res.status(500).json({ success: false, message: 'Sketch failed' });
+  if (!d.data?.[0]?.b64_json) return res.status(500).json({ success: false, message: 'No image' });
+  const b64 = d.data[0].b64_json;
+  const publicUrl = await uploadRender(b64);
+  if (publicUrl) return res.status(200).json({ output_url: publicUrl });
+  return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: b64, mimeType: 'image/png' } }] } }] });
 }
 
 async function handlePromptBuilder(body, res) {
