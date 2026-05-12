@@ -15,8 +15,8 @@ window.originalRenderBase64 = null;
 window.originalRenderPrompt = '';
 window.revisionHistory = [];
 window.clickSound = document.getElementById('hoverSound');
-window.CORE_ENGINE_V2 = atob("aHR0cHM6Ly9hZGV1bC1pYS5hcHAubjhuLmNsb3VkL3dlYmhvb2svYWRldWwtYWktdjI=");
-window.CORE_UPSCALE = atob("aHR0cHM6Ly9hZGV1bC1pYS5hcHAubjhuLmNsb3VkL3dlYmhvb2svdXBzY2FsZQ==");
+window.CORE_ENGINE_V2 = 'https://adeull.com/api/render';
+window.UPSCALE_URL = 'https://adeull.com/api/upscale';
 
 // ==============================================================
 // GÜVENLİK: ANTI-TAMPERING (MANİPÜLASYON TESPİTİ)
@@ -325,7 +325,7 @@ async function ADEULL_UPSCALE(imageUrl) {
         const sessionData = await window.supabaseClient.auth.getSession();
         const authToken = sessionData?.data?.session?.access_token || '';
 
-        const response = await fetch(window.CORE_UPSCALE, {
+        const response = await fetch(window.UPSCALE_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ image: publicUrl, user_token: authToken })
