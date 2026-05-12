@@ -1,3 +1,4 @@
+const SUPABASE_ANON = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
 const FAL_KEY = '1a1d33bb-6d88-48e0-9fcd-a8689814b54a:9c5fa77a856618fb8f126a41ecb89ce5';
 const SUPABASE_URL = 'https://wcqwkagktddvqjxzjxbj.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -11,7 +12,7 @@ export default async function handler(req, res) {
   try {
     const { user_token, image } = req.body;
     const userRes = await fetch(SUPABASE_URL + '/auth/v1/user', {
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + user_token }
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + user_token }
     });
     const userData = await userRes.json();
     if (!userData.id) return res.status(401).json({ success: false, message: 'Unauthorized' });

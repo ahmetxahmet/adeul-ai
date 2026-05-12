@@ -1,3 +1,4 @@
+const SUPABASE_ANON = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
 const OPENAI_KEY = process.env.OPENAI_API_KEY;
 const SUPABASE_URL = 'https://wcqwkagktddvqjxzjxbj.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
@@ -20,14 +21,14 @@ export default async function handler(req, res) {
     const images = body.images || {};
 
     const userRes = await fetch(SUPABASE_URL + '/auth/v1/user', {
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + userToken }
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + userToken }
     });
     const userData = await userRes.json();
     if (!userData.id) return res.status(401).json({ success: false, message: 'Unauthorized' });
 
     const rlRes = await fetch(SUPABASE_URL + '/rest/v1/rpc/check_rate_limit', {
       method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + userToken, 'Content-Type': 'application/json' },
+      headers: { 'apikey': 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA', 'Authorization': 'Bearer ' + userToken, 'Content-Type': 'application/json' },
       body: JSON.stringify({ p_user_id: userData.id, p_window_seconds: 60, p_max_requests: 5 })
     });
     const rlData = await rlRes.json();
@@ -36,7 +37,7 @@ export default async function handler(req, res) {
     const deductAmount = action === 'prompt_builder' ? 4 : action === 'chat' ? 1 : creditCost;
     const creditRes = await fetch(SUPABASE_URL + '/rest/v1/rpc/secure_deduct_credit', {
       method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + userToken, 'Content-Type': 'application/json' },
+      headers: { 'apikey': 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA', 'Authorization': 'Bearer ' + userToken, 'Content-Type': 'application/json' },
       body: JSON.stringify({ p_amount: deductAmount, p_action: action })
     });
     const creditData = await creditRes.json();
