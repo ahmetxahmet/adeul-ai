@@ -74,12 +74,12 @@ async function handleRender(body, res) {
   const r = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: body.resolution === '1024x1024' ? '1024x1024' : '1536x1024', quality: 'medium', response_format: 'url' })
+    body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1024x1024', quality: 'medium' })
   });
   const d = await r.json();
   console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
   if (d.error) return res.status(500).json({ success: false, message: d.error.message });
-  if (d.data?.[0]) return res.status(200).json({ output_url: d.data[0].url });
+  if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].b64_json, mimeType: 'image/png' } }] } }] });
   return res.status(500).json({ success: false, message: 'Render failed' });
 }
 
@@ -88,12 +88,12 @@ async function handlePlacement(body, res) {
   const r = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1536x1024', quality: 'medium', response_format: 'url' })
+    body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1024x1024', quality: 'medium' })
   });
   const d = await r.json();
   console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
   if (d.error) return res.status(500).json({ success: false, message: d.error.message });
-  if (d.data?.[0]) return res.status(200).json({ output_url: d.data[0].url });
+  if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].b64_json, mimeType: 'image/png' } }] } }] });
   return res.status(500).json({ success: false, message: 'Placement failed' });
 }
 
@@ -102,12 +102,12 @@ async function handleRevision(body, res) {
   const r = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1536x1024', quality: 'medium', response_format: 'url' })
+    body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1024x1024', quality: 'medium' })
   });
   const d = await r.json();
   console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
   if (d.error) return res.status(500).json({ success: false, message: d.error.message });
-  if (d.data?.[0]) return res.status(200).json({ output_url: d.data[0].url });
+  if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].b64_json, mimeType: 'image/png' } }] } }] });
   return res.status(500).json({ success: false, message: 'Revision failed' });
 }
 
@@ -116,12 +116,12 @@ async function handleSketch(body, res) {
   const r = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1536x1024', quality: 'medium', response_format: 'url' })
+    body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1024x1024', quality: 'medium' })
   });
   const d = await r.json();
   console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
   if (d.error) return res.status(500).json({ success: false, message: d.error.message });
-  if (d.data?.[0]) return res.status(200).json({ output_url: d.data[0].url });
+  if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].b64_json, mimeType: 'image/png' } }] } }] });
   return res.status(500).json({ success: false, message: 'Sketch failed' });
 }
 
@@ -149,7 +149,7 @@ async function handlePresentation(body, res) {
   const texR = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-image-2', prompt: 'Material analysis board with magnified circular lens callouts showing textures. Clean white background. Professional architectural material board.', size: '1536x1024', quality: 'medium', response_format: 'url' })
+    body: JSON.stringify({ model: 'gpt-image-2', prompt: 'Material analysis board with magnified circular lens callouts showing textures. Clean white background. Professional architectural material board.', size: '1024x1024', quality: 'medium' })
   });
   const texD = await texR.json();
   console.log('OpenAI response:', JSON.stringify(texD).substring(0, 200));
@@ -162,5 +162,5 @@ async function handlePresentation(body, res) {
   const anaD = await anaR.json();
   let analysis = {};
   try { analysis = JSON.parse((anaD.choices?.[0]?.message?.content || '{}').replace(/```json/g,'').replace(/```/g,'').trim()); } catch(e) { analysis = { projectName: 'ANALYSIS', materials: [], colors: [] }; }
-  return res.status(200).json({ textureImage: texD.data?.[0]?.url || '', analysis });
+  return res.status(200).json({ textureImage: texD.data?.[0]?.b64_json || '', analysis });
 }
