@@ -70,11 +70,11 @@ async function enrichPrompt(rawPrompt) {
 }
 
 async function handleRender(body, res) {
-  const enriched = await enrichPrompt(body.prompt || 'modern interior');
+  const enriched = body.prompt || 'modern interior';
   const r = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1024x1024', quality: 'medium' })
+    body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1024x1024', quality: 'low' })
   });
   const d = await r.json();
   console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
