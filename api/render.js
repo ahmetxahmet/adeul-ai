@@ -77,7 +77,9 @@ async function handleRender(body, res) {
     body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: body.resolution === '1024x1024' ? '1024x1024' : '1536x1024', quality: 'medium', response_format: 'url' })
   });
   const d = await r.json();
-  if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].url, mimeType: 'image/png', isUrl: true } }] } }] });
+  console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
+  if (d.error) return res.status(500).json({ success: false, message: d.error.message });
+  if (d.data?.[0]) return res.status(200).json({ output_url: d.data[0].url });
   return res.status(500).json({ success: false, message: 'Render failed' });
 }
 
@@ -89,7 +91,9 @@ async function handlePlacement(body, res) {
     body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1536x1024', quality: 'medium', response_format: 'url' })
   });
   const d = await r.json();
-  if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].url, mimeType: 'image/png', isUrl: true } }] } }] });
+  console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
+  if (d.error) return res.status(500).json({ success: false, message: d.error.message });
+  if (d.data?.[0]) return res.status(200).json({ output_url: d.data[0].url });
   return res.status(500).json({ success: false, message: 'Placement failed' });
 }
 
@@ -101,7 +105,9 @@ async function handleRevision(body, res) {
     body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1536x1024', quality: 'medium', response_format: 'url' })
   });
   const d = await r.json();
-  if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].url, mimeType: 'image/png', isUrl: true } }] } }] });
+  console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
+  if (d.error) return res.status(500).json({ success: false, message: d.error.message });
+  if (d.data?.[0]) return res.status(200).json({ output_url: d.data[0].url });
   return res.status(500).json({ success: false, message: 'Revision failed' });
 }
 
@@ -113,7 +119,9 @@ async function handleSketch(body, res) {
     body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1536x1024', quality: 'medium', response_format: 'url' })
   });
   const d = await r.json();
-  if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].url, mimeType: 'image/png', isUrl: true } }] } }] });
+  console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
+  if (d.error) return res.status(500).json({ success: false, message: d.error.message });
+  if (d.data?.[0]) return res.status(200).json({ output_url: d.data[0].url });
   return res.status(500).json({ success: false, message: 'Sketch failed' });
 }
 
@@ -144,6 +152,8 @@ async function handlePresentation(body, res) {
     body: JSON.stringify({ model: 'gpt-image-2', prompt: 'Material analysis board with magnified circular lens callouts showing textures. Clean white background. Professional architectural material board.', size: '1536x1024', quality: 'medium', response_format: 'url' })
   });
   const texD = await texR.json();
+  console.log('OpenAI response:', JSON.stringify(texD).substring(0, 200));
+  if (texD.error) return res.status(500).json({ success: false, message: texD.error.message });
   const anaR = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
