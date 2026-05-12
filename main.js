@@ -557,7 +557,12 @@ async function simulateAPIConnection(btnId, is8K = false) {
         } else if (result.output && typeof result.output === 'string') {
             rawOutput = result.output;
         } else if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0].inlineData) {
-            rawOutput = result.candidates[0].content.parts[0].inlineData.data;
+            const inlineData = result.candidates[0].content.parts[0].inlineData;
+            if (inlineData.isUrl) {
+                rawOutput = inlineData.data;
+            } else {
+                rawOutput = inlineData.data;
+            }
         } else if (result.url) {
             rawOutput = result.url;
         }
@@ -1495,7 +1500,12 @@ async function quickRevision(command) {
         let result = Array.isArray(data) ? data[0] : data;
         let rawOutput = result.output_url || result.output || '';
         if (result.candidates && result.candidates[0]?.content?.parts[0]?.inlineData) {
-            rawOutput = result.candidates[0].content.parts[0].inlineData.data;
+            const inlineData = result.candidates[0].content.parts[0].inlineData;
+            if (inlineData.isUrl) {
+                rawOutput = inlineData.data;
+            } else {
+                rawOutput = inlineData.data;
+            }
         }
 
         if (rawOutput && renderImg) {
