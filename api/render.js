@@ -70,14 +70,24 @@ async function enrichPrompt(rawPrompt) {
 }
 
 async function handleRender(body, res) {
-  const enriched = body.prompt || 'modern interior';
+  console.log('RENDER START');
+  const enriched = await enrichPrompt(body.prompt || 'modern interior');
+  console.log('ENRICH DONE');
+
+  let size = '1024x1024';
+  const ratio = body.aspectRatio || '16:9';
+  if (ratio === '16:9') size = '1536x1024';
+  else if (ratio === '9:16') size = '1024x1536';
+  else if (ratio === '1:1') size = '1024x1024';
+
+  console.log('CALLING OPENAI - size:', size);
   const r = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: '1024x1024', quality: 'low' })
+    body: JSON.stringify({ model: 'gpt-image-2', prompt: enriched, size: size, quality: 'medium' })
   });
   const d = await r.json();
-  console.log('OpenAI response:', JSON.stringify(d).substring(0, 200));
+  console.log('OPENAI DONE - has data:', !!d.data);
   if (d.error) return res.status(500).json({ success: false, message: d.error.message });
   if (d.data?.[0]) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].b64_json, mimeType: 'image/png' } }] } }] });
   return res.status(500).json({ success: false, message: 'Render failed' });
