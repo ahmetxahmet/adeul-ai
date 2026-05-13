@@ -4,7 +4,6 @@ export const maxDuration = 300;
 const OPENAI_KEY = process.env.OPENAI_API_KEY;
 const SUPABASE_URL = 'https://wcqwkagktddvqjxzjxbj.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://adeull.com');
@@ -23,14 +22,12 @@ export default async function handler(req, res) {
     const isSketch = body.isSketch === 'EVET';
     const images = body.images || {};
 
-    // Auth
     const userRes = await fetch(SUPABASE_URL + '/auth/v1/user', {
       headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + userToken }
     });
     const userData = await userRes.json();
     if (!userData.id) return res.status(401).json({ success: false, message: 'Unauthorized' });
 
-    // Rate limit
     const rlRes = await fetch(SUPABASE_URL + '/rest/v1/rpc/check_rate_limit', {
       method: 'POST',
       headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + userToken, 'Content-Type': 'application/json' },
@@ -39,7 +36,6 @@ export default async function handler(req, res) {
     const rlData = await rlRes.json();
     if (String(rlData.allowed) !== 'true') return res.status(429).json({ success: false, message: 'Too many requests' });
 
-    // Deduct credit
     const deductAmount = action === 'prompt_builder' ? 4 : action === 'chat' ? 1 : creditCost;
     const creditRes = await fetch(SUPABASE_URL + '/rest/v1/rpc/secure_deduct_credit', {
       method: 'POST',
@@ -49,104 +45,158 @@ export default async function handler(req, res) {
     const creditData = await creditRes.json();
     if (String(creditData.success) !== 'true') return res.status(402).json({ success: false, message: 'Insufficient credits' });
 
-    // Route
     if (action === 'chat') return handleChat(body, res);
     if (action === 'prompt_builder') return handlePromptBuilder(body, res);
     if (action === 'presentation') return handlePresentation(body, res);
-    if (isRevision) return handleRevision(body, res);
-    if (isSketch) return handleSketch(body, res);
+    if (isRevision && images.currentRender) return handleRevision(body, res);
+    if (isSketch && body.sketchData) return handleSketch(body, res);
     if (images.boxScene && images.boxItem) return handlePlacement(body, res);
     return handleRender(body, res);
   } catch (error) {
-    console.error('Handler error:', error);
+    console.error('Error:', error);
     return res.status(500).json({ success: false, message: error.message });
   }
 }
 
-function getSize(ratio) {
+function getSize(ratio, resolution) {
+  if (resolution === '1024x1024') {
+    if (ratio === '9:16') return '1024x1536';
+    if (ratio === '16:9') return '1536x1024';
+    return '1024x1024';
+  }
   if (ratio === '9:16') return '1024x1536';
   if (ratio === '16:9') return '1536x1024';
   return '1024x1024';
 }
 
-async function generateImage(prompt, size) {
+async function gptImage(prompt, size) {
   const r = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: 'gpt-image-2', prompt: prompt, size: size || '1024x1024', quality: 'medium' })
   });
-  return await r.json();
+  return r.json();
 }
 
-async function uploadToSupabase(b64) {
-  try {
-    const fileName = 'r_' + Date.now() + '.png';
-    const buf = Buffer.from(b64, 'base64');
-    const r = await fetch(SUPABASE_URL + '/storage/v1/object/renders/' + fileName, {
-      method: 'POST',
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'image/png' },
-      body: buf
-    });
-    if (r.ok) return SUPABASE_URL + '/storage/v1/object/public/renders/' + fileName;
-  } catch (e) { console.error('Upload error:', e); }
-  return null;
+async function gptImageWithRef(prompt, imageB64, size) {
+  const messages = [{ role: 'user', content: [
+    { type: 'text', text: prompt },
+    { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,' + imageB64 } }
+  ]}];
+  const r = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'gpt-4o', messages: messages, max_tokens: 1500 })
+  });
+  const analysis = await r.json();
+  const desc = analysis.choices?.[0]?.message?.content || prompt;
+  return gptImage(desc, size);
 }
 
 function sendImage(res, d) {
   if (d.error) return res.status(500).json({ success: false, message: d.error.message });
-  if (!d.data?.[0]?.b64_json) return res.status(500).json({ success: false, message: 'No image generated' });
-  const b64 = d.data[0].b64_json;
-  return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: b64, mimeType: 'image/png' } }] } }] });
+  if (!d.data?.[0]?.b64_json) return res.status(500).json({ success: false, message: 'No image' });
+  return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: d.data[0].b64_json, mimeType: 'image/png' } }] } }] });
 }
 
 async function handleRender(body, res) {
-  const rules = '8K ultra-high resolution, raw photo, DSLR 50mm f/8 ISO 100, ray tracing, volumetric lighting, architectural photography. ONE dominant material. Max 5-7 elements. Craftsmanship details visible. ';
-  const d = await generateImage(rules + (body.prompt || 'modern interior'), getSize(body.aspectRatio));
+  const rules = '8K ultra-high resolution, raw photo, DSLR 50mm f/8 ISO 100, ray tracing, volumetric lighting, architectural photography. ONE dominant material. Max 5-7 elements. Craftsmanship details. Boucle must show fiber loops not plaster. Velvet must show pile sheen. Leather must show grain. ';
+  const size = getSize(body.aspectRatio, body.resolution);
+  const d = await gptImage(rules + (body.prompt || 'modern interior'), size);
   return sendImage(res, d);
 }
 
 async function handlePlacement(body, res) {
-  const d = await generateImage('Seamlessly integrate object into architectural scene. Match perspective lighting scale shadows perfectly. ' + (body.prompt || ''), getSize(body.aspectRatio));
+  const scene = body.images.boxScene;
+  const item = body.images.boxItem;
+  const prompt = 'Analyze this architectural scene image. Then seamlessly integrate the following object into it. Match perspective, lighting direction, color temperature, scale relative to room dimensions, contact shadows, ambient occlusion, reflections. Do NOT change room architecture. Do NOT add extra objects. User instruction: ' + (body.prompt || 'place naturally') + '. Describe the final scene in extreme detail for photorealistic rendering.';
+  const size = getSize(body.aspectRatio, body.resolution);
+  if (scene && scene.length > 100) {
+    const d = await gptImageWithRef(prompt, scene, size);
+    return sendImage(res, d);
+  }
+  const d = await gptImage('Place object into architectural scene. ' + (body.prompt || ''), size);
   return sendImage(res, d);
 }
 
 async function handleRevision(body, res) {
-  const d = await generateImage('Edit architectural render: ' + (body.prompt || '') + '. Keep everything else identical. Photorealistic.', getSize(body.aspectRatio));
+  const currentRender = body.images.currentRender;
+  const prompt = 'Look at this architectural render image. Make ONLY this change: ' + (body.prompt || 'edit') + '. Keep EVERYTHING else identical - same composition, lighting, camera angle, materials, all other objects, background, shadows. Return the edited scene description in extreme detail.';
+  const size = getSize(body.aspectRatio, body.resolution);
+  if (currentRender && currentRender.length > 100) {
+    const d = await gptImageWithRef(prompt, currentRender, size);
+    return sendImage(res, d);
+  }
+  const d = await gptImage('Edit architectural render: ' + (body.prompt || '') + '. Photorealistic.', size);
   return sendImage(res, d);
 }
 
 async function handleSketch(body, res) {
-  const d = await generateImage('Transform rough sketch into photorealistic architectural render, preserve geometry. ' + (body.prompt || ''), getSize(body.aspectRatio));
+  const sketch = body.sketchData;
+  const prompt = 'This is a rough architectural sketch. Transform it into a photorealistic render preserving the exact geometry and layout. Add realistic materials, lighting, textures. ' + (body.prompt || '');
+  const size = getSize(body.aspectRatio, body.resolution);
+  if (sketch && sketch.length > 100) {
+    const d = await gptImageWithRef(prompt, sketch, size);
+    return sendImage(res, d);
+  }
+  const d = await gptImage('Transform sketch into photorealistic architectural render. ' + (body.prompt || ''), size);
   return sendImage(res, d);
 }
 
 async function handlePromptBuilder(body, res) {
+  const images = body.images || {};
+  const ref = images.boxRef || images.boxScene || images.boxDesign || '';
+  let messages = [];
+  if (ref && ref.length > 100) {
+    messages = [{ role: 'user', content: [
+      { type: 'text', text: 'SCAN THIS IMAGE PIXEL BY PIXEL. ' + (body.prompt || 'Write the exact prompt to recreate this scene') + '. Start with lowercase. NEVER reference the image. Describe ONLY what you see. Every material must be specific. Describe lighting direction and color temperature. End with: 8K ultra-high resolution, DSLR 50mm f/8 ISO 100, ray tracing, volumetric light, extreme photorealism.' },
+      { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,' + ref } }
+    ]}];
+  } else {
+    messages = [{ role: 'user', content: (body.prompt || 'Write a detailed architectural visualization prompt') }];
+  }
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: 'Write exact prompt to recreate this scene. ' + (body.prompt || '') }], temperature: 0.4, max_tokens: 4096 })
+    body: JSON.stringify({ model: 'gpt-4o-mini', messages: messages, temperature: 0.4, max_tokens: 4096 })
   });
   const d = await r.json();
   return res.status(200).json({ candidates: [{ content: { parts: [{ text: d.choices?.[0]?.message?.content || '' }] } }] });
 }
 
 async function handleChat(body, res) {
+  const sysPrompt = 'You are ADEULL AI, a powerful architectural visualization platform assistant. You ARE a render engine. Rules: 1. Be concise, professional. 2. You generate renders, presentations, material boards. 3. Features: INTERIOR, EXTERIOR, ARCHITECTURE, DESIGN, PLAN RESIZE, PRESENTATION, 8K upscale, Prompt Builder. 4. Plans: Starter $9/mo (20 credits), Pro $19/mo (60 credits), Studio $39/mo (150 credits), Agency $79/mo (350 credits). 5. If error reported: suggest refresh page, clear cache, try different image format. 6. Report bugs via button at bottom right. Language: ' + (body.language || 'EN');
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'system', content: 'You are ADEULL AI, architectural visualization assistant. Concise. Language: ' + (body.language || 'EN') }, { role: 'user', content: body.prompt || '' }], temperature: 0.5, max_tokens: 1024 })
+    body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'system', content: sysPrompt }, { role: 'user', content: body.prompt || '' }], temperature: 0.5, max_tokens: 1024 })
   });
   const d = await r.json();
   return res.status(200).json({ candidates: [{ content: { parts: [{ text: d.choices?.[0]?.message?.content || '' }] } }] });
 }
 
 async function handlePresentation(body, res) {
-  const texD = await generateImage('Material analysis board with magnified circular lens callouts showing textures. Clean white background. Professional material board.', '1024x1024');
+  const ref = body.images?.boxRef || '';
+  let texPrompt = 'Create a professional material analysis board with magnified circular lens callouts showing extreme close-up textures. Clean white background. 3-5 material callouts with thin arrows.';
+  if (ref && ref.length > 100) {
+    const analysisR = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: [
+        { type: 'text', text: 'Analyze this image. List all visible materials with specific names (e.g. Carrara marble, brushed brass, bouclé wool). Describe each texture in detail.' },
+        { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,' + ref } }
+      ]}], temperature: 0.3, max_tokens: 1000 })
+    });
+    const analysisD = await analysisR.json();
+    texPrompt += ' Materials found: ' + (analysisD.choices?.[0]?.message?.content || '');
+  }
+  const texD = await gptImage(texPrompt, '1024x1024');
   if (texD.error) return res.status(500).json({ success: false, message: texD.error.message });
+
   const anaR = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: 'Analyze materials. Return ONLY JSON: {projectName, colors:[{hex,ral,name}], materials:[{title,desc,hex}]}. Language: ' + (body.language || 'EN') }], temperature: 0.3, max_tokens: 2000 })
+    body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: 'Return ONLY valid JSON, no markdown. Structure: {"projectName":"name","colors":[{"hex":"#HEX","ral":"RAL XXXX","name":"Color Name"}],"materials":[{"title":"Material","desc":"Description","hex":"#HEX"}]}. Translate to: ' + (body.language || 'EN') + '. Analyze architectural materials.' }], temperature: 0.3, max_tokens: 2000 })
   });
   const anaD = await anaR.json();
   let analysis = {};
