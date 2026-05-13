@@ -516,7 +516,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
         images: window.uploadedBase64,
         language: activeLangCode,
         aspectRatio: window.currentRatio,
-        imageSize: "4K",
+        imageSize: "1K",
         output_mime_type: "image/png",
         resolution: window._currentQualityConfig?.resolution || '1024x1024',
         creditCost: window._currentQualityConfig?.creditCost || (is8K ? 30 : 2),
@@ -781,13 +781,13 @@ window.simulateAPIConnectionUnified = async function() {
         } catch(e) { console.warn('Credit sync failed:', e); }
     }
 
-    const quality = window.selectedQuality || '4K';
+    const quality = window.selectedQuality || '1K';
     const qualityMap = {
         '1K': { resolution: '1024x1024', creditCost: 2 },
-        '4K': { resolution: '4096x4096', creditCost: 12 },
-        '8K': { resolution: '8K_upscale', creditCost: 30 }
+        '2K': { resolution: '1536x1024', creditCost: 6 },
+        '4K': { resolution: '1536x1024', creditCost: 12 }
     };
-    const config = qualityMap[quality] || qualityMap['4K'];
+    const config = qualityMap[quality] || qualityMap['1K'];
     const is8K = (quality === '8K');
     window._currentQualityConfig = config;
 
@@ -1488,7 +1488,7 @@ async function quickRevision(command) {
                 images: { currentRender: base64Data },
                 language: (document.getElementById('activeCode') || {}).innerText || 'EN',
                 aspectRatio: window.currentRatio || '16:9',
-                resolution: window._currentQualityConfig?.resolution || '4096x4096',
+                resolution: window._currentQualityConfig?.resolution || '1024x1024',
                 creditCost: creditCost,
                 user_id: window.currentUserId,
                 user_token: authToken

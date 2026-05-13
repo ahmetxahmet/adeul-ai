@@ -333,7 +333,7 @@
             '</p></div></div>' +
 
             '<div style="padding:12px 16px;border-top:1px solid rgba(255,255,255,0.06);display:flex;gap:8px;">' +
-            '<input type="text" id="chatInput" placeholder="' + (L.title === 'PROMPT OLUŞTURUCU' ? 'Mesajınızı yazın...' : 'Type your message...') + '" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;color:#fff;outline:none;font-size:10px;letter-spacing:0.03em;font-family:inherit;box-sizing:border-box;" onkeypress="if(event.key===\'Enter\')sendChatMessage()">' +
+            '<input type="text" id="chatInput" placeholder="' + (L.title === 'PROMPT OLUŞTURUCU' ? 'Mesajınızı yazın...' : 'Type your message...') + '" style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 14px;color:#fff;outline:none;font-size:10px;letter-spacing:0.03em;font-family:inherit;box-sizing:border-box;" onkeypress="if(event.key===\'Enter\' && !event.shiftKey){event.preventDefault();sendChatMessage();}">' +
             '<button onclick="sendChatMessage()" style="background:rgba(255,255,255,0.9);color:#000;border:none;border-radius:12px;padding:12px 16px;font-size:9px;font-weight:700;letter-spacing:0.15em;cursor:pointer;font-family:inherit;">→</button>' +
             '</div>' +
 
