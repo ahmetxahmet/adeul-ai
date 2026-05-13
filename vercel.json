@@ -1,11 +1,11 @@
 {
   "functions": {
     "api/render.js": {
-      "maxDuration": 60,
+      "maxDuration": 300,
       "memory": 1024
     },
     "api/upscale.js": {
-      "maxDuration": 60
+      "maxDuration": 300
     },
     "api/lemon.js": {
       "maxDuration": 10
