@@ -109,37 +109,80 @@ async function handleRender(body, res) {
 async function handlePlacement(body, res) {
   const scene = body.images.boxScene;
   const item = body.images.boxItem;
-  const prompt = 'Analyze this architectural scene image. Then seamlessly integrate the following object into it. Match perspective, lighting direction, color temperature, scale relative to room dimensions, contact shadows, ambient occlusion, reflections. Do NOT change room architecture. Do NOT add extra objects. User instruction: ' + (body.prompt || 'place naturally') + '. Describe the final scene in extreme detail for photorealistic rendering.';
+  const prompt = 'Seamlessly integrate the object from the second reference image into the scene shown in the first reference image. Match perspective, lighting direction, color temperature, scale relative to room dimensions, contact shadows, ambient occlusion. Do NOT change room architecture walls ceiling windows. Do NOT add extra objects. ' + (body.prompt || 'place naturally');
   const size = getSize(body.aspectRatio, body.resolution);
+
+  const formData = new FormData();
   if (scene && scene.length > 100) {
-    const d = await gptImageWithRef(prompt, scene, size);
-    return sendImage(res, d);
+    const sceneBuf = Buffer.from(scene, 'base64');
+    formData.append('image[]', new Blob([sceneBuf], {type: 'image/png'}), 'scene.png');
   }
-  const d = await gptImage('Place object into architectural scene. ' + (body.prompt || ''), size);
+  if (item && item.length > 100) {
+    const itemBuf = Buffer.from(item, 'base64');
+    formData.append('image[]', new Blob([itemBuf], {type: 'image/png'}), 'item.png');
+  }
+  formData.append('model', 'gpt-image-2');
+  formData.append('prompt', prompt);
+  formData.append('size', size);
+  formData.append('quality', 'medium');
+
+  const r = await fetch('https://api.openai.com/v1/images/edits', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + OPENAI_KEY },
+    body: formData
+  });
+  const d = await r.json();
+  console.log('Placement response:', JSON.stringify(d).substring(0, 200));
   return sendImage(res, d);
 }
 
 async function handleRevision(body, res) {
   const currentRender = body.images.currentRender;
-  const prompt = 'Look at this architectural render image. Make ONLY this change: ' + (body.prompt || 'edit') + '. Keep EVERYTHING else identical - same composition, lighting, camera angle, materials, all other objects, background, shadows. Return the edited scene description in extreme detail.';
+  const prompt = 'Edit this architectural render. Make ONLY this change: ' + (body.prompt || 'edit') + '. Keep EVERYTHING else identical - composition, lighting, camera angle, materials, all other objects, background, shadows, reflections.';
   const size = getSize(body.aspectRatio, body.resolution);
+
+  const formData = new FormData();
   if (currentRender && currentRender.length > 100) {
-    const d = await gptImageWithRef(prompt, currentRender, size);
-    return sendImage(res, d);
+    const buf = Buffer.from(currentRender, 'base64');
+    formData.append('image[]', new Blob([buf], {type: 'image/png'}), 'render.png');
   }
-  const d = await gptImage('Edit architectural render: ' + (body.prompt || '') + '. Photorealistic.', size);
+  formData.append('model', 'gpt-image-2');
+  formData.append('prompt', prompt);
+  formData.append('size', size);
+  formData.append('quality', 'medium');
+
+  const r = await fetch('https://api.openai.com/v1/images/edits', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + OPENAI_KEY },
+    body: formData
+  });
+  const d = await r.json();
+  console.log('Revision response:', JSON.stringify(d).substring(0, 200));
   return sendImage(res, d);
 }
 
 async function handleSketch(body, res) {
   const sketch = body.sketchData;
-  const prompt = 'This is a rough architectural sketch. Transform it into a photorealistic render preserving the exact geometry and layout. Add realistic materials, lighting, textures. ' + (body.prompt || '');
+  const prompt = 'Transform this rough architectural sketch into a highly detailed photorealistic render. Preserve the exact geometry and layout of the sketch. Add realistic materials, textures, lighting. ' + (body.prompt || '');
   const size = getSize(body.aspectRatio, body.resolution);
+
+  const formData = new FormData();
   if (sketch && sketch.length > 100) {
-    const d = await gptImageWithRef(prompt, sketch, size);
-    return sendImage(res, d);
+    const buf = Buffer.from(sketch, 'base64');
+    formData.append('image[]', new Blob([buf], {type: 'image/png'}), 'sketch.png');
   }
-  const d = await gptImage('Transform sketch into photorealistic architectural render. ' + (body.prompt || ''), size);
+  formData.append('model', 'gpt-image-2');
+  formData.append('prompt', prompt);
+  formData.append('size', size);
+  formData.append('quality', 'medium');
+
+  const r = await fetch('https://api.openai.com/v1/images/edits', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + OPENAI_KEY },
+    body: formData
+  });
+  const d = await r.json();
+  console.log('Sketch response:', JSON.stringify(d).substring(0, 200));
   return sendImage(res, d);
 }
 
@@ -149,11 +192,11 @@ async function handlePromptBuilder(body, res) {
   let messages = [];
   if (ref && ref.length > 100) {
     messages = [{ role: 'user', content: [
-      { type: 'text', text: 'SCAN THIS IMAGE PIXEL BY PIXEL. ' + (body.prompt || 'Write the exact prompt to recreate this scene') + '. Start with lowercase. NEVER reference the image. Describe ONLY what you see. Every material must be specific. Describe lighting direction and color temperature. End with: 8K ultra-high resolution, DSLR 50mm f/8 ISO 100, ray tracing, volumetric light, extreme photorealism.' },
+      { type: 'text', text: 'SCAN THIS IMAGE PIXEL BY PIXEL. ' + (body.prompt || 'Write the exact prompt to recreate this scene') + '. Start with lowercase letter. NEVER reference the image file. Describe ONLY what you see. Every material must be specific like natural white oak with matte lacquer. Describe lighting direction color temperature shadows. End with: 8K ultra-high resolution, DSLR 50mm f/8 ISO 100, ray tracing, volumetric light, extreme photorealism.' },
       { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,' + ref } }
     ]}];
   } else {
-    messages = [{ role: 'user', content: (body.prompt || 'Write a detailed architectural visualization prompt') }];
+    messages = [{ role: 'user', content: body.prompt || 'Write a detailed architectural visualization prompt' }];
   }
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
