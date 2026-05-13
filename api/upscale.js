@@ -1,5 +1,5 @@
 const SUPABASE_ANON = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
-const FAL_KEY = '1a1d33bb-6d88-48e0-9fcd-a8689814b54a:9c5fa77a856618fb8f126a41ecb89ce5';
+const FAL_KEY = process.env.FAL_API_KEY;
 const SUPABASE_URL = 'https://wcqwkagktddvqjxzjxbj.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
