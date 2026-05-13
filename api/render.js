@@ -84,7 +84,7 @@ RULES:
 
 BANNED unless user asks: egg chair, sunken pit, conversation pit, decorative plaster walls, travertine table
 
-For fabric: say thick chunky woven textile with visible yarn texture, NOT boucle or shearling
+For fabric textures: boucle has TINY loops under 1mm each, tightly packed like fine curly wool fleece, NOT large chunky loops. It looks like soft dense curly sheepskin at distance. Velvet has directional pile sheen. Leather shows fine grain and natural creasing. NEVER render fabric as smooth flat plaster or large chunky loops.
 
 Output ONLY the prompt. Nothing else.`;
 
