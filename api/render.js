@@ -100,7 +100,7 @@ function sendImage(res, d) {
 }
 
 async function handleRender(body, res) {
-  const rules = '8K ultra-high resolution, raw photo, DSLR 50mm f/8 ISO 100, ray tracing, volumetric lighting, architectural photography. ONE dominant material. Max 5-7 elements. Craftsmanship details. Boucle must show fiber loops not plaster. Velvet must show pile sheen. Leather must show grain. ';
+  const rules = '8K ultra-high resolution, raw photo, DSLR 50mm f/8 ISO 100, ray tracing, volumetric lighting, architectural photography. ONE dominant material per scene, others support it. Max 5-7 elements, no clutter. Craftsmanship details visible: saddle stitching on leather, dovetail joints on wood, welded seams on metal. FABRIC TEXTURE CRITICAL: Boucle MUST show individual yarn fiber loops with dimensional depth NOT flat plaster or stucco. Velvet MUST show pile sheen. Leather MUST show grain and natural patina. Linen MUST show weave pattern. NEVER render any fabric as smooth flat surface. DIVERSITY: NEVER repeat same decorative objects, vary between sculptural metal art, framed photography, glass sculptures, stacked books, geometric candle holders, brass bowls, bonsai trees. ONE accent color only per scene. Architecture is hero, decoration is supporting cast. ';
   const size = getSize(body.aspectRatio, body.resolution);
   const d = await gptImage(rules + (body.prompt || 'modern interior'), size);
   return sendImage(res, d);
