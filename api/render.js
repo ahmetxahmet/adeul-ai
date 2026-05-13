@@ -112,7 +112,7 @@ function sendImage(res, d) {
 
 async function handleRender(body, res) {
   const userPrompt = body.prompt || 'modern interior';
-  const prefix = 'STRICT RULES: Do NOT use boucle egg chair, travertine coffee table, or curved sectional unless user specifically asked. Do NOT repeat same furniture or materials. Vary everything. Use unexpected material combinations. Show craftsmanship: visible stitching, joints, hand-troweled surfaces. ONE dominant material, ONE accent color only. Max 5-7 elements. Architecture is hero. Fabric must show real texture not plaster. Professional architectural photography, DSLR 50mm f/8, ray tracing, volumetric lighting. RENDER THIS: ';
+  const prefix = 'RULES: Do NOT automatically default to boucle egg chair, travertine table, or curved sectional. Use these ONLY if user explicitly requests them. Actively choose from full range of materials and furniture forms each time. Show craftsmanship: visible stitching, joints, hand-troweled surfaces. ONE dominant material, ONE accent color only. Max 5-7 elements. Architecture is hero. Fabric must show real fiber texture not smooth plaster. Professional architectural photography, DSLR 50mm f/8, ray tracing, volumetric lighting. RENDER THIS: ';
   const size = getSize(body.aspectRatio, body.resolution);
   const d = await gptImage(prefix + userPrompt, size);
   return sendImage(res, d);
