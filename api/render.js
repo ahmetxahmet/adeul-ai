@@ -69,6 +69,17 @@ function getSize(ratio, resolution) {
   return '1024x1024';
 }
 
+async function enrichPrompt(rawPrompt) {
+  const sysMsg = "You are an elite architectural visualization prompt engineer. Expand the user concept into a detailed render prompt in English. Include: raw photo, DSLR 50mm f/8 ISO 100, ray tracing, volumetric lighting. ONE dominant material. Maximum TWO contrasting materials per furniture. Show craftsmanship details. Boucle must show fiber loops NOT plaster. Maximum 5-7 elements per scene. ONE accent color. NEVER repeat same style twice. Add random seed word. Output ONLY the prompt text.";
+  const r = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'system', content: sysMsg }, { role: 'user', content: rawPrompt }], temperature: 0.4, max_tokens: 1000 })
+  });
+  const d = await r.json();
+  return d.choices?.[0]?.message?.content || rawPrompt;
+}
+
 async function gptImage(prompt, size) {
   const r = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
@@ -100,9 +111,9 @@ function sendImage(res, d) {
 }
 
 async function handleRender(body, res) {
-  const rules = '8K ultra-high resolution, raw photo, DSLR 50mm f/8 ISO 100, ray tracing, volumetric lighting, architectural photography. ONE dominant material per scene, others support it. Max 5-7 elements, no clutter. Craftsmanship details visible: saddle stitching on leather, dovetail joints on wood, welded seams on metal. FABRIC TEXTURE CRITICAL: Boucle MUST show individual yarn fiber loops with dimensional depth NOT flat plaster or stucco. Velvet MUST show pile sheen. Leather MUST show grain and natural patina. Linen MUST show weave pattern. NEVER render any fabric as smooth flat surface. DIVERSITY: NEVER repeat same decorative objects, vary between sculptural metal art, framed photography, glass sculptures, stacked books, geometric candle holders, brass bowls, bonsai trees. ONE accent color only per scene. Architecture is hero, decoration is supporting cast. ';
+  const enriched = await enrichPrompt(body.prompt || 'modern interior');
   const size = getSize(body.aspectRatio, body.resolution);
-  const d = await gptImage(rules + (body.prompt || 'modern interior'), size);
+  const d = await gptImage(enriched, size);
   return sendImage(res, d);
 }
 
