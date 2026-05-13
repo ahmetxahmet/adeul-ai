@@ -351,13 +351,17 @@
         }
     };
 
+    var _chatSending = false;
     window.sendChatMessage = async function() {
+        if (_chatSending) return;
         var input = document.getElementById('chatInput');
         var messages = document.getElementById('chatMessages');
         if (!input || !messages) return;
         var text = input.value.trim();
         if (!text) return;
+        _chatSending = true;
         input.value = '';
+        input.disabled = true;
 
         // Kullanıcı mesajı
         var userMsg = document.createElement('div');
@@ -405,6 +409,9 @@
             loadingMsg.innerHTML = '<p style="font-size:10px;color:rgba(255,255,255,0.7);line-height:1.6;margin:0;letter-spacing:0.02em;">' + (reply || 'Sorry, I could not process your request.').replace(/</g,'&lt;').replace(/\n/g,'<br>') + '</p>';
         } catch(e) {
             loadingMsg.innerHTML = '<p style="font-size:10px;color:rgba(255,100,100,0.7);margin:0;">Connection error. Please try again.</p>';
+        } finally {
+            _chatSending = false;
+            if (input) input.disabled = false;
         }
         messages.scrollTop = messages.scrollHeight;
     };
