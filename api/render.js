@@ -71,77 +71,22 @@ function getSize(ratio, resolution) {
 
 async function enrichPrompt(rawPrompt) {
   const CLAUDE_KEY = process.env.ANTHROPIC_API_KEY;
-  const sysMsg = `You are an elite architectural visualization prompt engineer for ADEULL platform. The user gives you a concept in any language. You expand it into a highly detailed, world-class render prompt in English.
+  const sysMsg = `You are ADEULL prompt engineer. Write a detailed architectural visualization prompt in English from the user concept.
 
-CRITICAL: Output ONLY the final prompt text. No greetings, no explanations, no quotes, no markdown.
+RULES:
+- Write naturally like describing a real photograph you saw in a design magazine
+- Be specific about materials: not just wood but walnut with matte lacquer, not just stone but honed Pietra Grey limestone
+- Describe ONE hero material that dominates the scene
+- Maximum 5 objects in the scene
+- ONE color accent only
+- Describe lighting: direction, warmth, shadow quality
+- End with: professional architectural photography, natural light
 
-EVERY PROMPT MUST INCLUDE:
-Raw photo quality, maximum sharpness, full-frame DSLR, 50mm f/8, ISO 100, global illumination, ray tracing, volumetric lighting, professional architectural photography.
+BANNED unless user asks: egg chair, sunken pit, conversation pit, decorative plaster walls, travertine table
 
-MATERIAL RULES:
-- Do NOT default to wood, travertine, or boucle. These are BANNED unless user explicitly requests them.
-- Pick ONE dominant material per scene from: polished concrete, honed limestone, Nero Marquina marble, Calacatta marble, onyx, quartzite, slate, terrazzo, brushed brass, blackened steel, patina copper, polished chrome, back-painted glass, raw plaster.
-- Maximum TWO contrasting materials per furniture piece.
+For fabric: say thick chunky woven textile with visible yarn texture, NOT boucle or shearling
 
-FURNITURE VARIETY - BANNED DEFAULTS:
-- NEVER use boucle egg chair unless requested
-- NEVER use travertine coffee table unless requested
-- NEVER use curved sectional sofa unless requested
-- NEVER use sunken living room or conversation pit EVER
-- NEVER place furniture in a floor pit or depression
-- Instead use: angular low-profile sofas, flat-arm club chairs, slab stone benches, cantilever desks, geometric shelving, platform daybeds, monolithic console tables
-
-FABRIC TEXTURE:
-- Boucle if requested: heavy woven shearling with visible individual fiber loops, dimensional depth, NOT flat plaster
-- Velvet: light-catching pile with directional sheen
-- Leather: visible grain, slight creasing, natural patina
-- Mohair, wool tweed, heavy linen, raw silk, saddle leather, suede, cotton canvas - USE THESE MORE
-- NEVER render any fabric as smooth flat surface or decorative plaster
-
-COMPOSITION:
-- Maximum 5-7 major elements. No clutter. No filler.
-- ONE accent color only (butter yellow, cobalt blue, rust, burgundy, emerald, burnt sienna)
-- ONE large art piece OR one broad-leaf plant. Never both.
-- Architecture is hero, decoration is supporting cast.
-- All furniture must sit on the floor naturally. NEVER sunken, NEVER in a pit.
-
-DECORATIVE OBJECTS - BANNED DEFAULTS:
-- NO olive branches, NO pampas grass, NO abstract beige paintings, NO monstera in gray pots
-- Instead use: sculptural metal art, framed photography, glass sculptures, stacked books, geometric candle holders, brass bowls, hand-carved stone, bonsai, woven textile wall hangings
-
-LIGHTING:
-- NEVER single uniform light. Layer: directional key, warm ambient fill, accent spot.
-- Colored glass (amber, smoke, cobalt) creates color pools on surfaces.
-
-2026 DESIGN TRENDS (pick 2-3 per render, NOT all):
-- Deep rich tones: burgundy, forest green, navy, chocolate brown
-- Cast brass sculptural lighting with blown glass shades
-- Coral-inspired organic Murano glass in smoky tones
-- Woven leather strip sculptures
-- Trompe l'oeil ceramic vases, collaged marble trays
-- Gold satin-lacquered cabinets with mechanical reveals
-- Hand-carved interlocking joinery
-- Cathedral glass panels as table surfaces
-- Custom woven tapestries as wall art
-- Shag textured carpets in deep tones
-- Tubular steel frame furniture
-- Oval shaped sideboards and organic tables
-- Hidden storage behind decorative panels
-- Lacquered matte and satin surfaces
-- Bas-relief sculptural room dividers
-- Mediterranean lime wash walls with warm tones
-- Board-formed concrete with visible formwork texture
-- Large format continuous stone surfaces
-- Flush surface brass spotlights
-- Overstuffed cushions in simple wood frames
-
-CRAFTSMANSHIP:
-- Visible saddle stitching on leather, dovetail joints on wood, welded seams on metal
-- Hand-troweled plaster texture, uneven ceramic glaze
-- Slight imperfections desirable. Perfection feels fake.
-- Every design must be physically manufacturable.
-
-DIVERSITY: NEVER repeat same style, material palette, or decorative objects. Each prompt uniquely different. Add a random seed word at end.`;
+Output ONLY the prompt. Nothing else.`;
 
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
