@@ -272,73 +272,48 @@ async function ADEULL_UPSCALE(imageUrl, skipCreditCheck = false) {
     }
 
     try {
-        // Görseli blob olarak al
-        let blob;
-        if (imageUrl.startsWith('blob:')) {
-            const res = await fetch(imageUrl);
-            blob = await res.blob();
-        } else if (imageUrl.startsWith('data:')) {
-            const res = await fetch(imageUrl);
-            blob = await res.blob();
-        } else {
-            const res = await fetch(imageUrl);
-            blob = await res.blob();
-        }
+        // Blob al
+        const fetchRes = await fetch(imageUrl);
+        const blob = await fetchRes.blob();
 
-        // JPEG olarak sıkıştır
-        const jpegBlob = await new Promise((resolve) => {
+        // JPEG base64'e çevir
+        const base64 = await new Promise((resolve) => {
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onload = function() {
                 const c = document.createElement('canvas');
                 const maxDim = 3072;
-                let w = img.naturalWidth;
-                let h = img.naturalHeight;
+                let w = img.naturalWidth, h = img.naturalHeight;
                 if (w > maxDim || h > maxDim) {
                     const scale = Math.min(maxDim / w, maxDim / h);
-                    w = Math.round(w * scale);
-                    h = Math.round(h * scale);
+                    w = Math.round(w * scale); h = Math.round(h * scale);
                 }
-                c.width = w;
-                c.height = h;
+                c.width = w; c.height = h;
                 c.getContext('2d').drawImage(img, 0, 0, w, h);
-                c.toBlob((b) => resolve(b), 'image/jpeg', 0.92);
+                const dataUrl = c.toDataURL('image/jpeg', 0.92);
+                resolve(dataUrl.replace('data:image/jpeg;base64,', ''));
             };
-            img.onerror = function() { resolve(blob); };
+            img.onerror = function() { resolve(''); };
             img.src = URL.createObjectURL(blob);
         });
 
-        // Supabase Storage'a yükle
-        const fileName = 'upscale_' + window.currentUserId + '_' + Date.now() + '.jpg';
-        const { data: uploadData, error: uploadError } = await window.supabaseClient.storage
-            .from('renders')
-            .upload(fileName, jpegBlob, { contentType: 'image/jpeg', upsert: true });
+        if (!base64) throw new Error('Image conversion failed');
 
-        if (uploadError) throw new Error('Upload failed: ' + uploadError.message);
-
-        // Public URL al
-        const { data: urlData } = window.supabaseClient.storage
-            .from('renders')
-            .getPublicUrl(fileName);
-
-        const publicUrl = urlData.publicUrl;
-
-        // N8N webhook'a sadece URL gönder
         const sessionData = await window.supabaseClient.auth.getSession();
         const authToken = sessionData?.data?.session?.access_token || '';
 
         const response = await fetch(window.UPSCALE_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ image: publicUrl, user_token: authToken })
+            body: JSON.stringify({ image: base64, user_token: authToken })
         });
 
         if (!response.ok) throw new Error("Upscale error: " + response.status);
 
         const data = await response.json();
-        return data.output_url || data.output || data;
+        return data.output_url || '';
     } catch (error) {
-        console.error("8K Upscale error:", error);
+        console.error("Upscale error:", error);
         throw error;
     }
 }
