@@ -257,16 +257,18 @@ function b64toBlob(b64Data, contentType='', sliceSize=512) {
     return new Blob(byteArrays, {type: contentType});
 }
 
-async function ADEULL_UPSCALE(imageUrl) {
+async function ADEULL_UPSCALE(imageUrl, skipCreditCheck = false) {
     if (!window.currentUserId || window.currentUserId === 'guest') {
-        alert('Please login to use 8K rendering.');
+        if (!skipCreditCheck) alert('Please login to use 8K rendering.');
         return;
     }
-    const _upscaleCreditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
-    const _upscaleCredits = parseInt(_upscaleCreditText.replace(/[^0-9]/g, '')) || 0;
-    if (_upscaleCredits < 10) {
-        alert('Insufficient credits for 8K render.');
-        return;
+    if (!skipCreditCheck) {
+        const _upscaleCreditText = (document.getElementById('topCreditDisplay') || {}).innerText || '0';
+        const _upscaleCredits = parseInt(_upscaleCreditText.replace(/[^0-9]/g, '')) || 0;
+        if (_upscaleCredits < 10) {
+            alert('Insufficient credits for 8K render.');
+            return;
+        }
     }
 
     try {
@@ -597,9 +599,11 @@ async function simulateAPIConnection(btnId, is8K = false) {
 
                 if (window._currentQualityConfig?.needsUpscale && finalImage && !is8K) {
                     try {
-                        const upscaledUrl = await ADEULL_UPSCALE(finalImage);
+                        const upscaledUrl = await ADEULL_UPSCALE(finalImage, true);
                         if (upscaledUrl) {
                             finalImage = upscaledUrl;
+                            imgElement.crossOrigin = "Anonymous";
+                            imgElement.src = upscaledUrl;
                         }
                     } catch(upErr) {
                         console.warn('Upscale failed, using original:', upErr);
