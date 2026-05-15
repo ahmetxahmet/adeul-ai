@@ -1,9 +1,11 @@
+export const runtime = "nodejs";
+export const maxDuration = 300;
+
 const SUPABASE_ANON = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
 const FAL_KEY = process.env.FAL_API_KEY;
 const SUPABASE_URL = 'https://wcqwkagktddvqjxzjxbj.supabase.co';
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://adeull.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -22,8 +24,10 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({ image_url: image, scale: 2 })
     });
     const d = await r.json();
+    console.log('Fal response:', JSON.stringify(d).substring(0, 200));
     return res.status(200).json({ output_url: d.image?.url || '' });
   } catch (error) {
+    console.error('Upscale error:', error);
     return res.status(500).json({ success: false, message: error.message });
   }
 }

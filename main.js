@@ -799,7 +799,6 @@ window.simulateAPIConnectionUnified = async function() {
     const quality = window.selectedQuality || '1K';
     const qualityMap = {
         '1K': { resolution: '1024x1024', creditCost: 2, needsUpscale: false },
-        '2K': { resolution: '1024x1024', creditCost: 6, needsUpscale: true },
         '4K': { resolution: '1024x1024', creditCost: 12, needsUpscale: true }
     };
     const config = qualityMap[quality] || qualityMap['1K'];
