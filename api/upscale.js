@@ -21,46 +21,39 @@ export default async function handler(req, res) {
     const userData = await userRes.json();
     if (!userData.id) return res.status(401).json({ success: false, message: 'Unauthorized' });
 
-    // Upload base64 to fal.ai storage, get a public URL
+    // Upload base64 to fal.ai storage
     const buf = Buffer.from(image, 'base64');
-    const uploadRes = await fetch('https://rest.fal.run/storage/upload/initiate', {
+    const falUpload = await fetch('https://rest.fal.run/storage/upload', {
       method: 'POST',
-      headers: { 'Authorization': 'Key ' + FAL_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content_type: 'image/jpeg', file_size: buf.length })
-    });
-    const uploadData = await uploadRes.json();
-    console.log('Fal upload initiate:', JSON.stringify(uploadData).substring(0, 200));
-
-    if (!uploadData.upload_url) {
-      // Fallback: try sending data URL directly
-      const dataUrl = 'data:image/jpeg;base64,' + image;
-      const r = await fetch('https://fal.run/fal-ai/aura-sr', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Key ' + FAL_KEY },
-        body: JSON.stringify({ image_url: dataUrl, scale: 2 })
-      });
-      const d = await r.json();
-      console.log('Fal aura-sr (dataurl):', JSON.stringify(d).substring(0, 200));
-      return res.status(200).json({ output_url: d.image?.url || '' });
-    }
-
-    // Upload binary to fal storage
-    await fetch(uploadData.upload_url, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'image/jpeg' },
+      headers: {
+        'Authorization': 'Key ' + FAL_KEY,
+        'Content-Type': 'image/jpeg'
+      },
       body: buf
     });
 
-    const falImageUrl = uploadData.file_url;
+    let imageUrl;
+    if (falUpload.ok) {
+      const falUploadData = await falUpload.json();
+      console.log('Fal upload result:', JSON.stringify(falUploadData).substring(0, 300));
+      imageUrl = falUploadData.url || falUploadData.file_url;
+    }
+
+    if (!imageUrl) {
+      imageUrl = 'data:image/jpeg;base64,' + image;
+    }
 
     const r = await fetch('https://fal.run/fal-ai/aura-sr', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Key ' + FAL_KEY },
-      body: JSON.stringify({ image_url: falImageUrl, scale: 2 })
+      body: JSON.stringify({ image_url: imageUrl, scale: 2 })
     });
     const d = await r.json();
-    console.log('Fal aura-sr:', JSON.stringify(d).substring(0, 200));
-    return res.status(200).json({ output_url: d.image?.url || '' });
+    console.log('Fal aura-sr full response:', JSON.stringify(d).substring(0, 500));
+
+    // Parse all possible response formats
+    const outputUrl = d?.image?.url || d?.images?.[0]?.url || d?.output?.url || d?.url || '';
+    return res.status(200).json({ output_url: outputUrl });
 
   } catch (error) {
     console.error('Upscale error:', error);
