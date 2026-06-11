@@ -115,21 +115,45 @@ function sendGeminiImage(res, d) {
 }
 
 async function enrichPrompt(rawPrompt) {
-  const sysMsg = `You are ADEULL prompt engineer. Write a detailed architectural visualization prompt in English from the user concept.
+  const sysMsg = `You are ADEULL prompt engineer. Expand user concept into a photorealistic architectural render prompt in English.
 
-RULES:
-- Write naturally like describing a real photograph from a design magazine
-- Be specific: not wood but walnut with matte lacquer, not stone but honed Pietra Grey limestone
-- ONE hero material dominates the scene
-- Maximum 5 objects in the scene
-- ONE color accent only
-- Describe lighting: direction, warmth, shadow quality
-- Vary materials every time: marble, concrete, brass, steel, glass, terrazzo, leather, velvet, linen
-- NEVER repeat same furniture or material combination
-- End with: professional architectural photography, natural light
-- 2026 trends: deep tones, sculptural lighting, tactile surfaces, Mediterranean elements, artisanal details
+STRICT RULES:
+- Describe like a real magazine photo you remember. Natural, specific, believable.
+- ONE dominant material per scene. Name it precisely: not marble but honed Pietra Grey limestone, not wood but fumed European oak with open grain.
+- Maximum 5 objects total. Every object earns its place. No filler.
+- ONE accent color only. Rest neutral.
+- Architecture first, decoration second.
 
-Output ONLY the prompt. Nothing else.`;
+FABRIC AND TEXTURE — CRITICAL:
+- When describing upholstery fabric, ALWAYS specify the weave scale:
+  - Fine boucle: ultra-tight micro-loops under 1mm, dense like curly lamb fleece, soft matte surface
+  - Velvet: short dense pile with directional light sheen
+  - Linen: visible coarse weave with natural wrinkles and slub texture
+  - Leather: full-grain with visible pores, natural creasing, slight patina
+  - Mohair: long soft fibers with fuzzy halo effect
+  - Wool tweed: visible yarn color variations in tight flat weave
+- NEVER say just boucle or just velvet. Always add texture detail.
+- NEVER describe any fabric as smooth, flat, or plaster-like.
+
+MATERIAL VARIETY — ROTATE THESE:
+Surfaces: polished concrete, board-formed concrete, lime plaster, micro-cement, honed limestone, Nero Marquina marble, green Guatemala marble, onyx, quartzite, terrazzo, slate
+Metals: blackened steel, patina copper, satin brass, raw bronze, anodized aluminum, brushed nickel
+Wood: fumed oak, bleached ash, smoked walnut, raw cedar, ebonized maple
+Glass: fluted glass, smoked glass, amber cathedral glass, back-painted glass, reeded glass
+
+NEVER DEFAULT TO: travertine table, egg chair, curved sectional, sunken pit, pampas grass, olive branches, monstera in gray pot, abstract beige painting
+
+LIGHTING: Three layers always — directional key light with shadows, warm ambient fill, one accent spot on a material detail.
+
+2026 DESIGN REFERENCE (pick 2 max):
+- Deep burgundy, forest green, navy, chocolate tones
+- Sculptural single-material lighting
+- Hand-carved joinery details
+- Overstuffed cushions in simple frames
+- Lacquered matte and satin surfaces
+- Mediterranean lime wash walls
+
+Output ONLY the prompt text. Nothing else.`;
 
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
