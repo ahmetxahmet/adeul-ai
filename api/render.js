@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     const rlData = await rlRes.json();
     if (String(rlData.allowed) !== 'true') return res.status(429).json({ success: false, message: 'Too many requests' });
 
-    const deductAmount = action === 'prompt_builder' ? 2 : action === 'chat' ? 0 : creditCost;
+    const deductAmount = action === 'prompt_builder' ? 2 : action === 'chat' ? 0 : action === 'presentation' ? 2 : creditCost;
     const creditRes = await fetch(SUPABASE_URL + '/rest/v1/rpc/secure_deduct_credit', {
       method: 'POST',
       headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + userToken, 'Content-Type': 'application/json' },
@@ -185,20 +185,16 @@ async function handleSketch(body, res) {
 async function handlePromptBuilder(body, res) {
   const images = body.images || {};
   const ref = images.boxRef || images.boxScene || images.boxDesign || '';
-  let promptText = 'SCAN THIS IMAGE PIXEL BY PIXEL. ' + (body.prompt || 'Write the exact prompt to recreate this scene') + '. ABSOLUTE RULES: 1. Start with lowercase letter. NEVER start with A, An, The. 2. NEVER write image_0 or the attached image. Describe as if from memory. 3. Describe ONLY what you see. Do NOT add anything not visible. 4. Every material must be specific: not wood but natural white oak with matte lacquer and visible grain. Not wall but smooth matte plaster in warm ivory. 5. Describe exact lighting: source direction, color temperature, shadow softness. 6. Describe spatial depth: foreground, midground, background. 7. End with: professional architectural photography, DSLR 50mm f/8 ISO 100, ray tracing, volumetric light, extreme photorealism.';
-
+  let promptText = 'SCAN THIS IMAGE PIXEL BY PIXEL. ' + (body.prompt || 'Write the exact prompt to recreate this scene') + '. RULES: 1. Start lowercase. 2. NEVER reference the image. 3. Describe ONLY what you see. 4. Every material specific: not wood but natural white oak with matte lacquer. 5. Describe lighting direction and color temperature. 6. End with: professional architectural photography, DSLR 50mm f/8 ISO 100, ray tracing, extreme photorealism.';
   if (ref && ref.length > 100) {
     const d = await geminiGenerate(promptText, [ref], '16:9', '1K');
-    if (d.candidates?.[0]?.content?.parts) {
+    if (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) {
       for (const part of d.candidates[0].content.parts) {
-        if (part.text) {
-          return res.status(200).json({ candidates: [{ content: { parts: [{ text: part.text }] } }] });
-        }
+        if (part.text) return res.status(200).json({ candidates: [{ content: { parts: [{ text: part.text }] } }] });
       }
     }
     return res.status(200).json({ candidates: [{ content: { parts: [{ text: 'Could not analyze image' }] } }] });
   }
-
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
@@ -221,31 +217,23 @@ async function handleChat(body, res) {
 
 async function handlePresentation(body, res) {
   const ref = body.images?.boxRef || '';
-
-  const texPrompt = 'You are a world-class product visualization specialist. Analyze the product in this image and create a MATERIAL ANALYSIS RENDER. CRITICAL: 1. Keep the original product EXACTLY as it is in the CENTER. 2. Around the product create MAGNIFIED CIRCULAR LENS CALLOUTS showing extreme close-up textures of each visible material. 3. Draw thin elegant ARROWS from each material area on the product to its corresponding magnified texture circle. 4. Each magnified circle shows the material surface texture in hyper-detail. 5. Clean white background. 6. Place 3-5 material callouts around the product. 7. Do NOT alter original product colors. 8. ARROWS must point FROM the correct material area ON the product TO the matching callout circle.';
-
+  let texPrompt = 'You are a world-class product visualization specialist. Analyze the product in this image and create a MATERIAL ANALYSIS RENDER. Keep original product in CENTER. Around it create MAGNIFIED CIRCULAR LENS CALLOUTS showing extreme close-up textures. Thin elegant ARROWS from each material area to its callout circle. ARROWS must point FROM the correct material ON the product. Clean white background. 3-5 callouts. Do NOT alter original colors.';
   const texD = await geminiGenerate(texPrompt, ref.length > 100 ? [ref] : null, '1:1', '1K');
   if (texD.error) return res.status(500).json({ success: false, message: texD.error.message || JSON.stringify(texD.error) });
-
   let textureBase64 = '';
-  if (texD.candidates?.[0]?.content?.parts) {
+  if (texD.candidates && texD.candidates[0] && texD.candidates[0].content && texD.candidates[0].content.parts) {
     for (const part of texD.candidates[0].content.parts) {
       if (part.inlineData) textureBase64 = part.inlineData.data;
     }
   }
-
-  const analysisPrompt = 'You are a Senior Interior Designer and Material Expert. Analyze this image with extreme precision. RETURN ONLY VALID JSON. NO MARKDOWN. NO BACKTICKS. Translate projectName, title, and desc to language: ' + (body.language || 'EN') + '. JSON structure: {"projectName":"Sophisticated concept name","colors":[{"hex":"#HEX","ral":"RAL XXXX","name":"Color Name"}],"materials":[{"title":"Material Name","desc":"Sensory and technical description","hex":"#HEX"}]}. Extract 3-5 REAL materials visible in the image. Each hex sampled from actual pixels. Colors MUST have REAL RAL codes.';
-
-  const anaD = await geminiGenerate(analysisPrompt, ref.length > 100 ? [ref] : null, '16:9', '1K');
-  let analysisText = '';
-  if (anaD.candidates?.[0]?.content?.parts) {
-    for (const part of anaD.candidates[0].content.parts) {
-      if (part.text) analysisText = part.text;
-    }
-  }
-
+  const anaR = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: 'You are a Senior Interior Designer. Analyze architectural materials. RETURN ONLY VALID JSON. NO MARKDOWN. Translate to: ' + (body.language || 'EN') + '. Structure: {"projectName":"name","colors":[{"hex":"#HEX","ral":"RAL XXXX","name":"Name"}],"materials":[{"title":"Material","desc":"Description","hex":"#HEX"}]}. Extract 3-5 real materials with real RAL codes.' }], temperature: 0.3, max_tokens: 2000 })
+  });
+  const anaD = await anaR.json();
+  let analysisText = anaD.choices?.[0]?.message?.content || '{}';
   let analysis = {};
   try { analysis = JSON.parse(analysisText.replace(/```json/g, '').replace(/```/g, '').trim()); } catch (e) { analysis = { projectName: 'ANALYSIS', materials: [], colors: [] }; }
-
   return res.status(200).json({ textureImage: textureBase64, analysis });
 }
