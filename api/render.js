@@ -159,6 +159,7 @@ Output ONLY the prompt text. Nothing else.`;
 async function handleRender(body, res) {
   const enriched = await enrichPrompt(body.prompt || 'modern interior');
   const systemRules = 'SYSTEM: Ultra photorealistic, maximum sharpness, DSLR 50mm f/8 ISO 100, ray tracing, volumetric lighting, professional architectural photography. ';
+  console.log('RENDER CONFIG:', { ratio: body.aspectRatio, resolution: body.resolution, size: getGeminiSize(body.aspectRatio, body.resolution) });
   const d = await geminiGenerate(systemRules + enriched, null, body.aspectRatio, body.resolution);
   return sendGeminiImage(res, d);
 }
