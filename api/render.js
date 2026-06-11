@@ -217,23 +217,23 @@ async function handleChat(body, res) {
 
 async function handlePresentation(body, res) {
   const ref = body.images?.boxRef || '';
-  let texPrompt = 'You are a world-class product visualization specialist. Analyze the product in this image and create a MATERIAL ANALYSIS RENDER. Keep original product in CENTER. Around it create MAGNIFIED CIRCULAR LENS CALLOUTS showing extreme close-up textures. Thin elegant ARROWS from each material area to its callout circle. ARROWS must point FROM the correct material ON the product. Clean white background. 3-5 callouts. Do NOT alter original colors.';
-  const texD = await geminiGenerate(texPrompt, ref.length > 100 ? [ref] : null, '1:1', '1K');
-  if (texD.error) return res.status(500).json({ success: false, message: texD.error.message || JSON.stringify(texD.error) });
-  let textureBase64 = '';
-  if (texD.candidates && texD.candidates[0] && texD.candidates[0].content && texD.candidates[0].content.parts) {
-    for (const part of texD.candidates[0].content.parts) {
-      if (part.inlineData) textureBase64 = part.inlineData.data;
-    }
-  }
+
+  let texPrompt = 'Material analysis board: keep product in center, add magnified circular lens callouts showing close-up textures of each material. Thin arrows from product to callouts. Clean white background. 3-5 callouts.';
+  const texR = await fetch('https://api.openai.com/v1/images/generations', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'gpt-image-2', prompt: texPrompt, size: '1024x1024', quality: 'low' })
+  });
+  const texD = await texR.json();
+  let textureBase64 = texD.data?.[0]?.b64_json || '';
+
   const anaR = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: 'You are a Senior Interior Designer. Analyze architectural materials. RETURN ONLY VALID JSON. NO MARKDOWN. Translate to: ' + (body.language || 'EN') + '. Structure: {"projectName":"name","colors":[{"hex":"#HEX","ral":"RAL XXXX","name":"Name"}],"materials":[{"title":"Material","desc":"Description","hex":"#HEX"}]}. Extract 3-5 real materials with real RAL codes.' }], temperature: 0.3, max_tokens: 2000 })
   });
   const anaD = await anaR.json();
-  let analysisText = anaD.choices?.[0]?.message?.content || '{}';
   let analysis = {};
-  try { analysis = JSON.parse(analysisText.replace(/```json/g, '').replace(/```/g, '').trim()); } catch (e) { analysis = { projectName: 'ANALYSIS', materials: [], colors: [] }; }
+  try { analysis = JSON.parse((anaD.choices?.[0]?.message?.content || '{}').replace(/```json/g, '').replace(/```/g, '').trim()); } catch (e) { analysis = { projectName: 'ANALYSIS', materials: [], colors: [] }; }
   return res.status(200).json({ textureImage: textureBase64, analysis });
 }
