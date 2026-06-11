@@ -23,7 +23,7 @@ export default async function handler(req, res) {
 
     // Upload base64 to fal.ai storage
     const buf = Buffer.from(image, 'base64');
-    const falUpload = await fetch('https://rest.fal.run/storage/upload', {
+    const falUpload = await fetch('https://fal.run/storage/upload', {
       method: 'POST',
       headers: {
         'Authorization': 'Key ' + FAL_KEY,
