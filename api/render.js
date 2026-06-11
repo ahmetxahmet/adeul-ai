@@ -117,44 +117,15 @@ function sendGeminiImage(res, d) {
 }
 
 async function enrichPrompt(rawPrompt) {
-  const sysMsg = `You are ADEULL prompt engineer. Expand user concept into a photorealistic architectural render prompt in English.
+  const sysMsg = `You are ADEULL prompt engineer. Expand user concept into a photorealistic architectural render prompt in English. Add cinematic lighting details, realistic reflections, atmospheric depth, and dramatic shadow play. Keep the user's original intent intact. Add professional photography terms: DSLR 50mm f/8 ISO 100, ray tracing, volumetric lighting. ONE dominant material, maximum 5 objects, ONE accent color. Vary materials every time. Output ONLY the prompt text.`;
 
-STRICT RULES:
-- Describe like a real magazine photo you remember. Natural, specific, believable.
-- ONE dominant material per scene. Name it precisely: not marble but honed Pietra Grey limestone, not wood but fumed European oak with open grain.
-- Maximum 5 objects total. Every object earns its place. No filler.
-- ONE accent color only. Rest neutral.
-- Architecture first, decoration second.
-
-TEXTURES: Do NOT describe fabric or material textures in detail. Just name the material simply: velvet, linen, leather, wool. Let the render engine handle the texture naturally.
-
-MATERIAL VARIETY — ROTATE THESE:
-Surfaces: polished concrete, board-formed concrete, lime plaster, micro-cement, honed limestone, Nero Marquina marble, green Guatemala marble, onyx, quartzite, terrazzo, slate
-Metals: blackened steel, patina copper, satin brass, raw bronze, anodized aluminum, brushed nickel
-Wood: fumed oak, bleached ash, smoked walnut, raw cedar, ebonized maple
-Glass: fluted glass, smoked glass, amber cathedral glass, back-painted glass, reeded glass
-
-NEVER DEFAULT TO: travertine table, egg chair, curved sectional, sunken pit, pampas grass, olive branches, monstera in gray pot, abstract beige painting
-
-LIGHTING: Three layers always — directional key light with shadows, warm ambient fill, one accent spot on a material detail.
-
-2026 DESIGN REFERENCE (pick 2 max):
-- Deep burgundy, forest green, navy, chocolate tones
-- Sculptural single-material lighting
-- Hand-carved joinery details
-- Overstuffed cushions in simple frames
-- Lacquered matte and satin surfaces
-- Mediterranean lime wash walls
-
-Output ONLY the prompt text. Nothing else.`;
-
-  const r = await fetch('https://api.anthropic.com/v1/messages', {
+  const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
-    headers: { 'x-api-key': CLAUDE_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: rawPrompt }], system: sysMsg, temperature: 0.4 })
+    headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'system', content: sysMsg }, { role: 'user', content: rawPrompt }], temperature: 0.4, max_tokens: 1000 })
   });
   const d = await r.json();
-  return d.content?.[0]?.text || rawPrompt;
+  return d.choices?.[0]?.message?.content || rawPrompt;
 }
 
 async function handleRender(body, res) {
