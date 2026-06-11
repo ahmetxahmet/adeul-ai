@@ -158,26 +158,17 @@ Output ONLY the prompt text. Nothing else.`;
 }
 
 async function handleRender(body, res) {
-  const enriched = await enrichPrompt(body.prompt || 'modern interior');
-  const systemRules = 'SYSTEM: Ultra photorealistic, maximum sharpness, DSLR 50mm f/8 ISO 100, ray tracing, volumetric lighting, professional architectural photography. ';
-  const resolution = body.resolution || '1K';
-  const useExpensive = resolution === '4K' || resolution === '2K';
-  const url = useExpensive ? GEMINI_URL : GEMINI_CHEAP_URL;
-  const parts = [{ text: systemRules + enriched }];
-  console.log('RENDER using:', useExpensive ? '3.1-flash' : '2.5-flash', 'size:', getGeminiSize(body.aspectRatio, resolution));
-  const r = await fetch(url + GEMINI_KEY, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: parts }],
-      generationConfig: {
-        temperature: 0.4, topK: 40, topP: 0.95, maxOutputTokens: 8192,
-        responseModalities: ['IMAGE', 'TEXT'],
-        imageConfig: { imageSize: getGeminiSize(body.aspectRatio, resolution), aspectRatio: body.aspectRatio || '16:9' }
-      }
-    })
-  });
-  const d = await r.json();
+  const userPrompt = body.prompt || 'modern interior';
+  let finalPrompt;
+
+  if (userPrompt.length > 100) {
+    finalPrompt = userPrompt + ' Ultra photorealistic, maximum sharpness, professional architectural photography.';
+  } else {
+    finalPrompt = await enrichPrompt(userPrompt);
+  }
+
+  console.log('RENDER - prompt length:', userPrompt.length, 'enriched:', userPrompt.length <= 100);
+  const d = await geminiGenerate(finalPrompt, null, body.aspectRatio, body.resolution);
   return sendGeminiImage(res, d);
 }
 
