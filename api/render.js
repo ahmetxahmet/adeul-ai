@@ -7,6 +7,7 @@ const CLAUDE_KEY = process.env.ANTHROPIC_API_KEY;
 const SUPABASE_URL = 'https://wcqwkagktddvqjxzjxbj.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=';
+const GEMINI_CHEAP_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-image-generation:generateContent?key=';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://adeull.com');
@@ -159,8 +160,23 @@ Output ONLY the prompt text. Nothing else.`;
 async function handleRender(body, res) {
   const enriched = await enrichPrompt(body.prompt || 'modern interior');
   const systemRules = 'SYSTEM: Ultra photorealistic, maximum sharpness, DSLR 50mm f/8 ISO 100, ray tracing, volumetric lighting, professional architectural photography. ';
-  console.log('RENDER CONFIG:', { ratio: body.aspectRatio, resolution: body.resolution, size: getGeminiSize(body.aspectRatio, body.resolution) });
-  const d = await geminiGenerate(systemRules + enriched, null, body.aspectRatio, body.resolution);
+  const resolution = body.resolution || '1K';
+  const useExpensive = resolution === '4K' || resolution === '2K';
+  const url = useExpensive ? GEMINI_URL : GEMINI_CHEAP_URL;
+  const parts = [{ text: systemRules + enriched }];
+  const r = await fetch(url + GEMINI_KEY, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: parts }],
+      generationConfig: {
+        temperature: 0.4, topK: 40, topP: 0.95, maxOutputTokens: 8192,
+        responseModalities: ['IMAGE', 'TEXT'],
+        imageConfig: { imageSize: getGeminiSize(body.aspectRatio, resolution), aspectRatio: body.aspectRatio || '16:9' }
+      }
+    })
+  });
+  const d = await r.json();
   return sendGeminiImage(res, d);
 }
 
