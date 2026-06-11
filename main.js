@@ -572,20 +572,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
                     window.revisionHistory = [];
                 }
 
-                if (window._currentQualityConfig?.needsUpscale && finalImage && !is8K) {
-                    try {
-                        const upscaledUrl = await ADEULL_UPSCALE(finalImage, true);
-                        if (upscaledUrl) {
-                            finalImage = upscaledUrl;
-                            imgElement.crossOrigin = "Anonymous";
-                            imgElement.src = upscaledUrl;
-                        }
-                    } catch(upErr) {
-                        console.warn('Upscale failed, using original:', upErr);
-                    }
-                }
-
-                if (is8K) {
+                if (window._currentQualityConfig?.needs8KUpscale) {
                     toggleUpscaleLoader(true);
                     btn.innerHTML = '8K RENDER ALINIYOR...';
                     try {
@@ -773,8 +760,10 @@ window.simulateAPIConnectionUnified = async function() {
 
     const quality = window.selectedQuality || '1K';
     const qualityMap = {
-        '1K': { resolution: '1024x1024', creditCost: 2, needsUpscale: false },
-        '4K': { resolution: '1024x1024', creditCost: 12, needsUpscale: true }
+        '1K': { resolution: '1K', creditCost: 2 },
+        '2K': { resolution: '2K', creditCost: 6 },
+        '4K': { resolution: '4K', creditCost: 12 },
+        '8K': { resolution: '4K', creditCost: 30, needs8KUpscale: true }
     };
     const config = qualityMap[quality] || qualityMap['1K'];
     const is8K = (quality === '8K');

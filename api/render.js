@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     const rlData = await rlRes.json();
     if (String(rlData.allowed) !== 'true') return res.status(429).json({ success: false, message: 'Too many requests' });
 
-    const deductAmount = action === 'prompt_builder' ? 4 : action === 'chat' ? 1 : creditCost;
+    const deductAmount = action === 'prompt_builder' ? 2 : action === 'chat' ? 0 : creditCost;
     const creditRes = await fetch(SUPABASE_URL + '/rest/v1/rpc/secure_deduct_credit', {
       method: 'POST',
       headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + userToken, 'Content-Type': 'application/json' },
@@ -62,7 +62,8 @@ export default async function handler(req, res) {
 }
 
 function getGeminiSize(ratio, resolution) {
-  if (resolution && resolution.includes('4096')) return '4K';
+  if (resolution === '4096x4096' || resolution === '4K') return '4K';
+  if (resolution === '2048x2048' || resolution === '2K') return '2K';
   return '1K';
 }
 
@@ -124,14 +125,7 @@ STRICT RULES:
 - ONE accent color only. Rest neutral.
 - Architecture first, decoration second.
 
-FABRIC AND TEXTURE — CRITICAL:
-- Fine boucle: describe as smooth dense curly fleece surface like cashmere, NOT individual loops or knots
-- Velvet: short pile with soft directional sheen like suede
-- Linen: natural woven surface with subtle creases
-- Leather: describe as worn saddle leather with fine grain
-- NEVER use words: loops, knots, chunky, shearling, woven loops
-- NEVER describe texture mechanics, just describe how it LOOKS and FEELS
-- Fabrics should look like high-end magazine photography, not macro close-up
+TEXTURES: Do NOT describe fabric or material textures in detail. Just name the material simply: velvet, linen, leather, wool. Let the render engine handle the texture naturally.
 
 MATERIAL VARIETY — ROTATE THESE:
 Surfaces: polished concrete, board-formed concrete, lime plaster, micro-cement, honed limestone, Nero Marquina marble, green Guatemala marble, onyx, quartzite, terrazzo, slate
@@ -191,19 +185,24 @@ async function handleSketch(body, res) {
 async function handlePromptBuilder(body, res) {
   const images = body.images || {};
   const ref = images.boxRef || images.boxScene || images.boxDesign || '';
-  let messages = [];
+  let promptText = 'SCAN THIS IMAGE PIXEL BY PIXEL. ' + (body.prompt || 'Write the exact prompt to recreate this scene') + '. ABSOLUTE RULES: 1. Start with lowercase letter. NEVER start with A, An, The. 2. NEVER write image_0 or the attached image. Describe as if from memory. 3. Describe ONLY what you see. Do NOT add anything not visible. 4. Every material must be specific: not wood but natural white oak with matte lacquer and visible grain. Not wall but smooth matte plaster in warm ivory. 5. Describe exact lighting: source direction, color temperature, shadow softness. 6. Describe spatial depth: foreground, midground, background. 7. End with: professional architectural photography, DSLR 50mm f/8 ISO 100, ray tracing, volumetric light, extreme photorealism.';
+
   if (ref && ref.length > 100) {
-    messages = [{ role: 'user', content: [
-      { type: 'text', text: 'SCAN THIS IMAGE PIXEL BY PIXEL. ' + (body.prompt || 'Write the exact prompt to recreate this scene') + '. Start lowercase. NEVER reference the image. Describe ONLY what you see. Every material specific. Describe lighting direction color temperature. End with: professional architectural photography, DSLR 50mm f/8 ISO 100, ray tracing, extreme photorealism.' },
-      { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,' + ref } }
-    ]}];
-  } else {
-    messages = [{ role: 'user', content: body.prompt || 'Write a detailed architectural visualization prompt' }];
+    const d = await geminiGenerate(promptText, [ref], '16:9', '1K');
+    if (d.candidates?.[0]?.content?.parts) {
+      for (const part of d.candidates[0].content.parts) {
+        if (part.text) {
+          return res.status(200).json({ candidates: [{ content: { parts: [{ text: part.text }] } }] });
+        }
+      }
+    }
+    return res.status(200).json({ candidates: [{ content: { parts: [{ text: 'Could not analyze image' }] } }] });
   }
+
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-4o-mini', messages: messages, temperature: 0.4, max_tokens: 4096 })
+    body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: body.prompt || 'Write a detailed architectural visualization prompt' }], temperature: 0.4, max_tokens: 4096 })
   });
   const d = await r.json();
   return res.status(200).json({ candidates: [{ content: { parts: [{ text: d.choices?.[0]?.message?.content || '' }] } }] });
@@ -222,9 +221,12 @@ async function handleChat(body, res) {
 
 async function handlePresentation(body, res) {
   const ref = body.images?.boxRef || '';
-  const texPrompt = 'Create a professional material analysis board. Keep the original product in CENTER. Around it create MAGNIFIED CIRCULAR LENS CALLOUTS showing extreme close-up textures of each material. Thin elegant arrows from product to callouts. Clean white background. 3-5 material callouts. Do NOT change original product colors.';
-  const texD = await geminiGenerate(texPrompt, ref.length > 100 ? [ref] : null, '1:1', '1024x1024');
-  if (texD.error) return res.status(500).json({ success: false, message: texD.error.message });
+
+  const texPrompt = 'You are a world-class product visualization specialist. Analyze the product in this image and create a MATERIAL ANALYSIS RENDER. CRITICAL: 1. Keep the original product EXACTLY as it is in the CENTER. 2. Around the product create MAGNIFIED CIRCULAR LENS CALLOUTS showing extreme close-up textures of each visible material. 3. Draw thin elegant ARROWS from each material area on the product to its corresponding magnified texture circle. 4. Each magnified circle shows the material surface texture in hyper-detail. 5. Clean white background. 6. Place 3-5 material callouts around the product. 7. Do NOT alter original product colors. 8. ARROWS must point FROM the correct material area ON the product TO the matching callout circle.';
+
+  const texD = await geminiGenerate(texPrompt, ref.length > 100 ? [ref] : null, '1:1', '1K');
+  if (texD.error) return res.status(500).json({ success: false, message: texD.error.message || JSON.stringify(texD.error) });
+
   let textureBase64 = '';
   if (texD.candidates?.[0]?.content?.parts) {
     for (const part of texD.candidates[0].content.parts) {
@@ -232,13 +234,18 @@ async function handlePresentation(body, res) {
     }
   }
 
-  const anaR = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: 'Return ONLY valid JSON no markdown: {"projectName":"name","colors":[{"hex":"#HEX","ral":"RAL XXXX","name":"Name"}],"materials":[{"title":"Material","desc":"Description","hex":"#HEX"}]}. Translate to: ' + (body.language || 'EN') }], temperature: 0.3, max_tokens: 2000 })
-  });
-  const anaD = await anaR.json();
+  const analysisPrompt = 'You are a Senior Interior Designer and Material Expert. Analyze this image with extreme precision. RETURN ONLY VALID JSON. NO MARKDOWN. NO BACKTICKS. Translate projectName, title, and desc to language: ' + (body.language || 'EN') + '. JSON structure: {"projectName":"Sophisticated concept name","colors":[{"hex":"#HEX","ral":"RAL XXXX","name":"Color Name"}],"materials":[{"title":"Material Name","desc":"Sensory and technical description","hex":"#HEX"}]}. Extract 3-5 REAL materials visible in the image. Each hex sampled from actual pixels. Colors MUST have REAL RAL codes.';
+
+  const anaD = await geminiGenerate(analysisPrompt, ref.length > 100 ? [ref] : null, '16:9', '1K');
+  let analysisText = '';
+  if (anaD.candidates?.[0]?.content?.parts) {
+    for (const part of anaD.candidates[0].content.parts) {
+      if (part.text) analysisText = part.text;
+    }
+  }
+
   let analysis = {};
-  try { analysis = JSON.parse((anaD.choices?.[0]?.message?.content || '{}').replace(/```json/g, '').replace(/```/g, '').trim()); } catch (e) { analysis = { projectName: 'ANALYSIS', materials: [], colors: [] }; }
+  try { analysis = JSON.parse(analysisText.replace(/```json/g, '').replace(/```/g, '').trim()); } catch (e) { analysis = { projectName: 'ANALYSIS', materials: [], colors: [] }; }
+
   return res.status(200).json({ textureImage: textureBase64, analysis });
 }
