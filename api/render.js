@@ -125,15 +125,13 @@ STRICT RULES:
 - Architecture first, decoration second.
 
 FABRIC AND TEXTURE — CRITICAL:
-- When describing upholstery fabric, ALWAYS specify the weave scale:
-  - Fine boucle: ultra-tight micro-loops under 1mm, dense like curly lamb fleece, soft matte surface
-  - Velvet: short dense pile with directional light sheen
-  - Linen: visible coarse weave with natural wrinkles and slub texture
-  - Leather: full-grain with visible pores, natural creasing, slight patina
-  - Mohair: long soft fibers with fuzzy halo effect
-  - Wool tweed: visible yarn color variations in tight flat weave
-- NEVER say just boucle or just velvet. Always add texture detail.
-- NEVER describe any fabric as smooth, flat, or plaster-like.
+- Fine boucle: describe as smooth dense curly fleece surface like cashmere, NOT individual loops or knots
+- Velvet: short pile with soft directional sheen like suede
+- Linen: natural woven surface with subtle creases
+- Leather: describe as worn saddle leather with fine grain
+- NEVER use words: loops, knots, chunky, shearling, woven loops
+- NEVER describe texture mechanics, just describe how it LOOKS and FEELS
+- Fabrics should look like high-end magazine photography, not macro close-up
 
 MATERIAL VARIETY — ROTATE THESE:
 Surfaces: polished concrete, board-formed concrete, lime plaster, micro-cement, honed limestone, Nero Marquina marble, green Guatemala marble, onyx, quartzite, terrazzo, slate
