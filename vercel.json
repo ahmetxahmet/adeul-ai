@@ -1,8 +1,7 @@
 {
   "functions": {
     "api/render.js": {
-      "maxDuration": 300,
-      "memory": 1024
+      "maxDuration": 300
     },
     "api/upscale.js": {
       "maxDuration": 300
@@ -10,5 +9,14 @@
     "api/lemon.js": {
       "maxDuration": 10
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/api/render",
+      "methods": ["POST", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "https://adeull.com"
+      }
+    }
+  ]
 }
