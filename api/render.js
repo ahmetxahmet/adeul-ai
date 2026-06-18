@@ -165,19 +165,27 @@ async function handleRender(body, res) {
 }
 
 async function handlePlacement(body, res) {
-  const prompt = 'Seamlessly integrate the object from the second image into the scene shown in the first image. Follow these CRITICAL rules: 1. PERSPECTIVE MATCHING: Match the exact camera angle, vanishing points, and perspective of the original scene. The object must appear as if it was photographed in the same location with the same camera. 2. LIGHTING MATCHING: Analyze the light direction, intensity, color temperature, and shadow patterns in the scene. Apply identical lighting to the placed object. Shadows must fall in the same direction and with the same softness. 3. SCALE ACCURACY: The object must be correctly sized relative to the room dimensions, ceiling height, doors, windows, and other furniture. 4. SURFACE INTERACTION: The object must sit naturally on the floor or surface with proper contact shadows, ambient occlusion, and reflections matching the floor material. 5. COLOR HARMONY: The object colors must harmonize with the scene color palette and be affected by the ambient light color. 6. DO NOT change the rooms architecture, walls, ceiling, windows, doors, or existing furniture. 7. DO NOT add extra decorative objects that were not in either image. 8. DO NOT modify the object shape, color, or material from the second image. Place it EXACTLY as it is. User instruction: ' + (body.prompt || 'place naturally') + ' OUTPUT: Ultra-photorealistic result, as if captured by a professional architectural photographer. The integration must be invisible.';
+  const prompt = 'Place the object from the second image into the scene from the first image. Match perspective, lighting, and scale. ' + (body.prompt || 'Place naturally.') + ' Do not change anything else in the scene.';
   const d = await geminiImage(prompt, [body.images.boxScene, body.images.boxItem], body.aspectRatio, body.resolution, 0.4);
   return sendImage(res, d);
 }
 
 async function handleRevision(body, res) {
-  const prompt = 'You are a precision image editor. Edit the provided image according to the user instruction below, making ONLY the requested change and preserving EVERYTHING else (composition, lighting, camera angle, materials, style, color palette, all other objects, background, shadows, reflections) exactly as in the original. PRECISION RULES: Preserve photographic realism, original lighting direction, shadows must follow the new position of moved objects, reflections must update accordingly, perspective must remain consistent. Do NOT regenerate the entire scene. Do NOT change camera angle unless explicitly requested. Do NOT shift other objects. Do NOT alter material textures of anything except the specifically targeted object. OUTPUT: Return the edited image maintaining the exact aspect ratio with flawless blending and no visible edit artifacts. USER INSTRUCTION: ' + (body.prompt || 'edit');
-  const d = await geminiImage(prompt, [body.images.currentRender], body.aspectRatio, body.resolution, 0.15);
+  const userInstruction = body.prompt || 'edit';
+  let prompt = 'Edit this image. ' + userInstruction + '. Change nothing else.';
+
+  const imageList = [body.images.currentRender];
+  if (body.images && body.images.boxItem && body.images.boxItem.length > 100) {
+    prompt = 'Edit this image. Add the object from the second image. ' + userInstruction + '. Change nothing else.';
+    imageList.push(body.images.boxItem);
+  }
+
+  const d = await geminiImage(prompt, imageList, body.aspectRatio, body.resolution, 0.15);
   return sendImage(res, d);
 }
 
 async function handleSketch(body, res) {
-  const prompt = 'Turn this rough sketch/drawing into a highly detailed, photorealistic architectural render, ultra-high quality, maximum sharpness, professional photography grade. Strictly preserve the original geometry and layout of the sketch. Do NOT change the proportions or spatial arrangement shown in the sketch. Instruction: ' + (body.prompt || 'photorealistic render');
+  const prompt = 'Turn this sketch into a photorealistic architectural render. Keep the exact layout and proportions. ' + (body.prompt || '');
   const d = await geminiImage(prompt, [body.sketchData], body.aspectRatio, body.resolution, 0.15);
   return sendImage(res, d);
 }
