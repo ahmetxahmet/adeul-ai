@@ -14,7 +14,17 @@ window.selectedQuality = '1K'; // default
 window.originalRenderBase64 = null;
 window.originalRenderPrompt = '';
 window.revisionHistory = [];
+window.revisionImageBase64 = null;
 window.clickSound = document.getElementById('hoverSound');
+
+function handleRevisionImage(input) {
+  if (!input.files || !input.files[0]) return;
+  var file = input.files[0];
+  document.getElementById('revisionImageName').innerText = file.name;
+  compressImage(file, 1536, 1536, 0.75, function(compressed) {
+    window.revisionImageBase64 = compressed.replace(/^data:image\/[a-z]+;base64,/, '');
+  });
+}
 window.CORE_ENGINE_V2 = 'https://adeull.com/api/render';
 window.UPSCALE_URL = 'https://adeull.com/api/upscale';
 
@@ -1463,6 +1473,7 @@ async function quickRevision(command) {
                 prompt: fullPrompt,
                 isRevision: true,
                 images: { currentRender: base64Data },
+                ...(window.revisionImageBase64 ? (() => { const img = window.revisionImageBase64; window.revisionImageBase64 = null; const el = document.getElementById('revisionImageName'); if(el) el.innerText = ''; const inp = document.getElementById('revisionImageInput'); if(inp) inp.value = ''; return { images: { currentRender: base64Data, boxItem: img } }; })() : {}),
                 language: (document.getElementById('activeCode') || {}).innerText || 'EN',
                 aspectRatio: window.currentRatio || '16:9',
                 resolution: window._currentQualityConfig?.resolution || '1024x1024',

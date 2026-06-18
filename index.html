@@ -770,6 +770,13 @@ ADEULL provides cloud-based rendering services. Results are computer-generated v
       <span class="text-[0.4rem] tracking-widest uppercase text-yellow-200/50 group-hover:text-yellow-200/80">45°</span>
     </button>
   </div>
+  <div class="flex items-center gap-2 mt-2 max-w-md mx-auto">
+    <label class="bg-white/5 border border-white/10 rounded-xl px-3 py-2 cursor-pointer hover:bg-white/10 transition flex items-center gap-1">
+      <span class="text-[0.45rem] tracking-widest uppercase text-white/50">+ IMAGE</span>
+      <input type="file" accept="image/*" id="revisionImageInput" class="hidden" onchange="handleRevisionImage(this)">
+    </label>
+    <span id="revisionImageName" class="text-[0.4rem] text-white/30 tracking-widest truncate max-w-[200px]"></span>
+  </div>
   <div class="flex gap-1.5 mt-2 max-w-md mx-auto">
     <input type="text" id="customRevisionInput" placeholder="Custom edit..." class="flex-1 bg-white/5 border border-white/10 rounded-xl p-3 text-white text-[0.55rem] tracking-widest outline-none focus:border-white/30" onkeypress="if(event.key==='Enter')quickRevision(this.value)">
     <button onclick="quickRevision(document.getElementById('customRevisionInput').value)" class="bg-white/10 border border-white/20 text-white px-5 rounded-xl text-[0.55rem] tracking-widest hover:bg-white/20 transition font-bold">GO</button>
