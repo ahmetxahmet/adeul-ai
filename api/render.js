@@ -148,15 +148,32 @@ async function handlePlacement(body, res) {
   return sendImage(res, d);
 }
 
-// === REVIZYON - N8N birebir ayni, temp 0.15 ===
+// === REVIZYON - annotation destekli, temp 0.15 ===
 async function handleRevision(body, res) {
-  const parts = [
-    { inlineData: { mimeType: 'image/jpeg', data: body.images.currentRender } },
-    { text: "You are a precision image editor. Edit the provided image according to the user's instruction below, making ONLY the requested change and preserving EVERYTHING else (composition, lighting, camera angle, materials, style, color palette, all other objects, background, shadows, reflections) exactly as in the original. [SPATIAL COMMAND TRANSLATION: 'move left' / 'sola kaydir' / 'sola cek' = translate the target object horizontally to the left by approximately 15-25% of frame width; 'move right' / 'saga kaydir' / 'saga cek' = translate right by 15-25%; 'move up' / 'yukari kaldir' / 'yukari cek' = translate vertically upward by 10-20% of frame height; 'move down' / 'asagi indir' / 'asagi cek' = translate downward by 10-20%; 'bigger' / 'buyut' / 'scale up' / 'make larger' = scale the target object uniformly by 1.25-1.5x keeping its center position; 'smaller' / 'kucult' / 'scale down' / 'make smaller' = scale by 0.6-0.75x; 'rotate' / 'dondur' = rotate around vertical axis as specified; 'change color' / 'rengini degistir' = change only the color of the target object keeping its shape position and material texture; 'remove' / 'kaldir' / 'sil' = remove the target object and seamlessly fill the empty space with consistent background matching surrounding context; 'replace with' / 'ile degistir' = substitute the target object with the new object while preserving the same position scale lighting direction and shadow characteristics; 'add' / 'ekle' = insert the new object at the specified location with matching perspective lighting and shadows consistent with the scene; 'top view' / 'top' / 'usten bak' = COMPLETELY regenerate the scene from a STRICTLY vertical top-down 90-degree birds eye view camera position looking straight down at the floor; 'plan view' / 'plan' = render the scene as a flat architectural floor plan view from directly above 90 degrees orthographic projection; 'cam left' / 'camera left' = rotate the ENTIRE camera orbit 15 degrees to the left around the scene center maintain same height and distance; 'cam right' / 'camera right' = rotate the ENTIRE camera orbit 15 degrees to the right around the scene center; 'camera up' / 'elevated' = raise camera to 45-degree elevated angle looking down at the scene; 'eye level' / 'straight' = set camera to exact human eye-level at 150cm height horizontal 0-degree angle.] [PRECISION RULES: Preserve photographic realism, original lighting direction, shadows must follow the new position of moved objects, reflections must update accordingly on nearby surfaces, perspective must remain consistent, do NOT regenerate the entire scene, do NOT change camera angle unless explicitly requested, do NOT shift other objects, do NOT alter material textures of anything except the specifically targeted object.] [OUTPUT: Return the edited image, maintaining the exact aspect ratio, with flawless blending and no visible edit artifacts.] USER INSTRUCTION: " + (body.prompt || 'edit') }
-  ];
-  if (body.images && body.images.boxItem && body.images.boxItem.length > 100) {
+  const hasAnnotation = body.images.annotatedRender && body.images.annotatedRender.length > 100;
+  const hasExtraImage = body.images.boxItem && body.images.boxItem.length > 100;
+
+  let promptText;
+  if (hasAnnotation) {
+    promptText = "The FIRST image is the original clean scene - use this as the base. The SECOND image shows the same scene with RED MARKS indicating where changes should be made. Make changes ONLY in the red-marked areas. Keep everything outside the marks EXACTLY as in the first image. ";
+    if (hasExtraImage) {
+      promptText += "The THIRD image is the product/object to place in the marked area. ";
+    }
+    promptText += "USER INSTRUCTION: " + (body.prompt || 'edit');
+  } else {
+    promptText = "You are a precision image editor. Edit the provided image according to the user's instruction below, making ONLY the requested change and preserving EVERYTHING else (composition, lighting, camera angle, materials, style, color palette, all other objects, background, shadows, reflections) exactly as in the original. [SPATIAL COMMAND TRANSLATION: 'move left' / 'sola kaydir' / 'sola cek' = translate the target object horizontally to the left by approximately 15-25% of frame width; 'move right' / 'saga kaydir' / 'saga cek' = translate right by 15-25%; 'move up' / 'yukari kaldir' / 'yukari cek' = translate vertically upward by 10-20% of frame height; 'move down' / 'asagi indir' / 'asagi cek' = translate downward by 10-20%; 'bigger' / 'buyut' / 'scale up' / 'make larger' = scale the target object uniformly by 1.25-1.5x keeping its center position; 'smaller' / 'kucult' / 'scale down' / 'make smaller' = scale by 0.6-0.75x; 'rotate' / 'dondur' = rotate around vertical axis as specified; 'change color' / 'rengini degistir' = change only the color of the target object keeping its shape position and material texture; 'remove' / 'kaldir' / 'sil' = remove the target object and seamlessly fill the empty space with consistent background matching surrounding context; 'replace with' / 'ile degistir' = substitute the target object with the new object while preserving the same position scale lighting direction and shadow characteristics; 'add' / 'ekle' = insert the new object at the specified location with matching perspective lighting and shadows consistent with the scene; 'top view' / 'top' / 'usten bak' = COMPLETELY regenerate the scene from a STRICTLY vertical top-down 90-degree birds eye view camera position looking straight down at the floor; 'plan view' / 'plan' = render the scene as a flat architectural floor plan view from directly above 90 degrees orthographic projection; 'cam left' / 'camera left' = rotate the ENTIRE camera orbit 15 degrees to the left around the scene center maintain same height and distance; 'cam right' / 'camera right' = rotate the ENTIRE camera orbit 15 degrees to the right around the scene center; 'camera up' / 'elevated' = raise camera to 45-degree elevated angle looking down at the scene; 'eye level' / 'straight' = set camera to exact human eye-level at 150cm height horizontal 0-degree angle.] [PRECISION RULES: Preserve photographic realism, original lighting direction, shadows must follow the new position of moved objects, reflections must update accordingly on nearby surfaces, perspective must remain consistent, do NOT regenerate the entire scene, do NOT change camera angle unless explicitly requested, do NOT shift other objects, do NOT alter material textures of anything except the specifically targeted object.] [OUTPUT: Return the edited image, maintaining the exact aspect ratio, with flawless blending and no visible edit artifacts.] USER INSTRUCTION: " + (body.prompt || 'edit');
+  }
+
+  const parts = [];
+  parts.push({ inlineData: { mimeType: 'image/jpeg', data: body.images.currentRender } });
+  if (hasAnnotation) {
+    parts.push({ inlineData: { mimeType: 'image/jpeg', data: body.images.annotatedRender } });
+  }
+  parts.push({ text: promptText });
+  if (hasExtraImage) {
     parts.push({ inlineData: { mimeType: 'image/jpeg', data: body.images.boxItem } });
   }
+
   const d = await geminiCall(parts, {
     temperature: 0.15, topK: 32, topP: 0.90, maxOutputTokens: 8192,
     responseModalities: ['IMAGE', 'TEXT'],

@@ -605,6 +605,14 @@ async function simulateAPIConnection(btnId, is8K = false) {
         window.revisionHistory.push(cleanPrompt);
         payload.prompt = window.originalRenderPrompt + ' [APPLY ALL REVISIONS IN ORDER: ' + window.revisionHistory.join(' AND THEN ') + ']';
         payload.images = { currentRender: window.originalRenderBase64 || '' };
+        if (window.annotatedRender) {
+            payload.images.annotatedRender = window.annotatedRender;
+            window.annotatedRender = null;
+        }
+        if (window.revisionImageBase64) {
+            payload.images.boxItem = window.revisionImageBase64;
+            window.revisionImageBase64 = null;
+        }
     }
 
     try {
@@ -1565,7 +1573,7 @@ async function quickRevision(command) {
                 action: 'generate',
                 prompt: fullPrompt,
                 isRevision: true,
-                images: (() => { const cur = window.annotatedRender || base64Data; if(window.annotatedRender) window.annotatedRender = null; const imgs = { currentRender: cur }; if(window.revisionImageBase64) { imgs.boxItem = window.revisionImageBase64; window.revisionImageBase64 = null; const el = document.getElementById('revisionImageName'); if(el) el.innerText = ''; const inp = document.getElementById('revisionImageInput'); if(inp) inp.value = ''; } return imgs; })(),
+                images: (() => { const imgs = { currentRender: base64Data }; if(window.annotatedRender) { imgs.annotatedRender = window.annotatedRender; window.annotatedRender = null; } if(window.revisionImageBase64) { imgs.boxItem = window.revisionImageBase64; window.revisionImageBase64 = null; const el = document.getElementById('revisionImageName'); if(el) el.innerText = ''; const inp = document.getElementById('revisionImageInput'); if(inp) inp.value = ''; } return imgs; })(),
                 language: (document.getElementById('activeCode') || {}).innerText || 'EN',
                 aspectRatio: window.currentRatio || '16:9',
                 resolution: window._currentQualityConfig?.resolution || '1024x1024',
