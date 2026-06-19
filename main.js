@@ -15,6 +15,7 @@ window.originalRenderBase64 = null;
 window.originalRenderPrompt = '';
 window.revisionHistory = [];
 window.revisionImageBase64 = null;
+window.annotatedRender = null;
 window.clickSound = document.getElementById('hoverSound');
 
 function handleRevisionImage(input) {
@@ -24,6 +25,95 @@ function handleRevisionImage(input) {
   compressImage(file, 1536, 1536, 0.75, function(compressed) {
     window.revisionImageBase64 = compressed.replace(/^data:image\/[a-z]+;base64,/, '');
   });
+}
+
+function initDrawCanvas() {
+  var canvas = document.getElementById('drawCanvas');
+  var container = document.getElementById('renderImgContainer');
+  if (!canvas || !container) return;
+
+  canvas.width = container.offsetWidth;
+  canvas.height = container.offsetHeight;
+  canvas.classList.remove('hidden');
+
+  // Remove old listeners by cloning
+  var fresh = canvas.cloneNode(false);
+  canvas.parentNode.replaceChild(fresh, canvas);
+  canvas = fresh;
+
+  var ctx = canvas.getContext('2d');
+  var drawing = false;
+  var lastX = 0, lastY = 0;
+
+  function getPos(e) {
+    var rect = canvas.getBoundingClientRect();
+    if (e.touches) return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  function startDraw(e) {
+    drawing = true;
+    var p = getPos(e);
+    lastX = p.x; lastY = p.y;
+    e.preventDefault();
+  }
+
+  function draw(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    var p = getPos(e);
+    ctx.strokeStyle = '#ff0000';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    lastX = p.x; lastY = p.y;
+    saveAnnotation();
+  }
+
+  function endDraw() { drawing = false; }
+
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', endDraw);
+  canvas.addEventListener('mouseleave', endDraw);
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove', draw, { passive: false });
+  canvas.addEventListener('touchend', endDraw);
+}
+
+function saveAnnotation() {
+  var img = document.getElementById('renderImage');
+  var canvas = document.getElementById('drawCanvas');
+  if (!img || !canvas) return;
+  var nw = img.naturalWidth || canvas.width;
+  var nh = img.naturalHeight || canvas.height;
+  var offscreen = document.createElement('canvas');
+  offscreen.width = nw;
+  offscreen.height = nh;
+  var ctx = offscreen.getContext('2d');
+  ctx.drawImage(img, 0, 0, nw, nh);
+  // Calculate image rect within container (object-contain letterbox)
+  var contW = canvas.width, contH = canvas.height;
+  var imgRatio = nw / nh, contRatio = contW / contH;
+  var dispW, dispH, offX, offY;
+  if (imgRatio > contRatio) { dispW = contW; dispH = contW / imgRatio; }
+  else { dispH = contH; dispW = contH * imgRatio; }
+  offX = (contW - dispW) / 2;
+  offY = (contH - dispH) / 2;
+  // Scale drawing region that covers the image to natural size
+  ctx.drawImage(canvas, offX, offY, dispW, dispH, 0, 0, nw, nh);
+  window.annotatedRender = offscreen.toDataURL('image/jpeg', 0.9).replace(/^data:image\/[a-z]+;base64,/, '');
+}
+
+function clearDrawCanvas() {
+  var canvas = document.getElementById('drawCanvas');
+  if (!canvas) return;
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+  window.annotatedRender = null;
 }
 window.CORE_ENGINE_V2 = 'https://adeull.com/api/render';
 window.UPSCALE_URL = 'https://adeull.com/api/upscale';
@@ -700,13 +790,16 @@ function showRenderScreen() {
     const hint8k = document.getElementById('saveHint8K');
     if(hint8k) hint8k.style.display = 'none';
     const overlay = document.getElementById('renderOverlay');
-    if(overlay) { overlay.classList.remove('hidden'); overlay.classList.add('flex'); setTimeout(() => overlay.style.opacity = '1', 50); }
+    if(overlay) { overlay.classList.remove('hidden'); overlay.classList.add('flex'); setTimeout(() => { overlay.style.opacity = '1'; initDrawCanvas(); }, 50); }
     if(typeof resetAdjust === 'function') resetAdjust();
 }
 
 function closeRender() {
     const hint8k = document.getElementById('saveHint8K');
     if(hint8k) hint8k.style.display = 'none';
+    const canvas = document.getElementById('drawCanvas');
+    if(canvas) { canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height); canvas.classList.add('hidden'); }
+    window.annotatedRender = null;
     const overlay = document.getElementById('renderOverlay');
     if(overlay) {
         overlay.style.opacity = '0';
@@ -1472,8 +1565,7 @@ async function quickRevision(command) {
                 action: 'generate',
                 prompt: fullPrompt,
                 isRevision: true,
-                images: { currentRender: base64Data },
-                ...(window.revisionImageBase64 ? (() => { const img = window.revisionImageBase64; window.revisionImageBase64 = null; const el = document.getElementById('revisionImageName'); if(el) el.innerText = ''; const inp = document.getElementById('revisionImageInput'); if(inp) inp.value = ''; return { images: { currentRender: base64Data, boxItem: img } }; })() : {}),
+                images: (() => { const cur = window.annotatedRender || base64Data; if(window.annotatedRender) window.annotatedRender = null; const imgs = { currentRender: cur }; if(window.revisionImageBase64) { imgs.boxItem = window.revisionImageBase64; window.revisionImageBase64 = null; const el = document.getElementById('revisionImageName'); if(el) el.innerText = ''; const inp = document.getElementById('revisionImageInput'); if(inp) inp.value = ''; } return imgs; })(),
                 language: (document.getElementById('activeCode') || {}).innerText || 'EN',
                 aspectRatio: window.currentRatio || '16:9',
                 resolution: window._currentQualityConfig?.resolution || '1024x1024',
