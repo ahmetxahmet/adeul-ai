@@ -7,13 +7,7 @@ const SUPABASE_URL = 'https://wcqwkagktddvqjxzjxbj.supabase.co';
 const SUPABASE_ANON = 'sb_publishable_4WYCqs4gxci5eQoOeysLWQ_5cqkdWaA';
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=';
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '20mb'
-    }
-  }
-};
+export const config = { api: { bodyParser: { sizeLimit: '20mb' } } };
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://adeull.com');
@@ -67,71 +61,30 @@ export default async function handler(req, res) {
   }
 }
 
-function getGeminiSize(ratio, resolution) {
+function getSize(resolution) {
   if (resolution === '4096x4096' || resolution === '4K') return '4K';
   return '1K';
 }
 
-async function geminiImage(promptText, imageB64List, ratio, resolution, temp) {
-  const parts = [{ text: promptText }];
-  if (imageB64List) {
-    for (const img of imageB64List) {
-      if (img && img.length > 100) {
-        parts.push({ inlineData: { mimeType: 'image/jpeg', data: img } });
-      }
-    }
-  }
+async function geminiCall(parts, genConfig) {
   const r = await fetch(GEMINI_URL + GEMINI_KEY, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: parts }],
-      generationConfig: {
-        temperature: temp || 0.35,
-        topK: 32,
-        topP: 0.95,
-        maxOutputTokens: 8192,
-        responseModalities: ['IMAGE', 'TEXT'],
-        imageConfig: { imageSize: getGeminiSize(ratio, resolution), aspectRatio: ratio || '16:9' }
-      }
-    })
+    body: JSON.stringify({ contents: [{ parts }], generationConfig: genConfig })
   });
   return r.json();
 }
 
-async function geminiText(promptText, imageB64List) {
-  const parts = [{ text: promptText }];
-  if (imageB64List) {
-    for (const img of imageB64List) {
-      if (img && img.length > 100) {
-        parts.push({ inlineData: { mimeType: 'image/jpeg', data: img } });
-      }
-    }
-  }
-  const r = await fetch(GEMINI_URL + GEMINI_KEY, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: parts }],
-      generationConfig: { temperature: 0.4, topK: 24, topP: 0.85, maxOutputTokens: 4096 }
-    })
-  });
-  return r.json();
-}
-
-function sendImage(res, d) {
-  if (d.error) return res.status(500).json({ success: false, message: d.error.message || JSON.stringify(d.error) });
+function extractImage(d) {
   if (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) {
     for (const part of d.candidates[0].content.parts) {
-      if (part.inlineData) {
-        return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: part.inlineData.data, mimeType: 'image/png' } }] } }] });
-      }
+      if (part.inlineData) return part.inlineData.data;
     }
   }
-  return res.status(500).json({ success: false, message: 'No image generated' });
+  return null;
 }
 
-function getText(d) {
+function extractText(d) {
   if (d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts) {
     for (const part of d.candidates[0].content.parts) {
       if (part.text) return part.text;
@@ -140,8 +93,17 @@ function getText(d) {
   return '';
 }
 
+function sendImage(res, d) {
+  if (d.error) return res.status(500).json({ success: false, message: d.error.message || JSON.stringify(d.error) });
+  const img = extractImage(d);
+  if (img) return res.status(200).json({ candidates: [{ content: { parts: [{ inlineData: { data: img, mimeType: 'image/png' } }] } }] });
+  return res.status(500).json({ success: false, message: 'No image generated' });
+}
+
+// === ENRICHPROMPT - N8N AI Agent birebir aynisi ===
 async function enrichPrompt(rawPrompt) {
-  const sysMsg = "You are an elite architectural and interior design visualization prompt engineer. The user will give you a basic concept or a short phrase in any language. Your job is to expand this into a highly detailed, world-class render prompt in English.\n\nYou MUST include:\n- Photorealistic details, raw photo quality, maximum sharpness, professional photography grade.\n- Advanced lighting (global illumination, ray tracing, volumetric lighting, natural soft sunlight or cinematic atmospheric lighting).\n- Architectural composition (rule of thirds, hyper-detailed background, studio-quality composition).\n- Camera parameters: full-frame DSLR, 50mm lens, ISO 100, f/8, neutral white balance 5500K, RAW photo, eye-level perspective, architectural photography style.\n\nMATERIAL RULES:\n- Do NOT default to wood. Use marble, metal, glass, concrete, stone FIRST.\n- Pick ONE dominant material per scene. Others support it.\n- Maximum TWO contrasting materials per furniture piece.\n- Every surface must show its truth: wood grain, stone veining, fabric texture, leather grain, metal brushing.\n\nCOMPOSITION:\n- Maximum 5-7 major elements per scene. No clutter. No filler.\n- ONE accent color maximum per scene. Rest neutral.\n- Architecture is hero, decoration is supporting cast.\n\nDIVERSITY RULE: Never generate the same style, material palette, or decorative objects twice. Each prompt must be uniquely different. Vary building types, regions, seasons, lighting conditions. Add a unique random seed word at the end.\n\n2026 DESIGN TRENDS (pick 2-3 per render, NOT all):\n- Deep rich tones (burgundy, forest green, navy, chocolate)\n- Tactile surfaces and layered fabric contrasts\n- Mediterranean and nautical elements\n- Artisanal hand-carved details\n- Sculptural statement lighting in single material\n- Lacquered matte and satin surfaces\n- Large format continuous stone surfaces\n- Colored glass (amber, smoke, cobalt)\n- Board-formed concrete, lime wash plaster\n- Overstuffed cushions in simple frames\n\nOutput ONLY the final English prompt. No greetings, no explanations, no quotes. Just the raw prompt text.";
+  const sysMsg = "You are an elite architectural visualization prompt engineer. The user gives you a concept in any language. You expand it into a detailed 8K render prompt in English.\n\nEVERY PROMPT MUST INCLUDE:\n8K ultra-high resolution 7680x4320, raw photo quality, maximum sharpness, full-frame DSLR, 50mm f/8, ISO 100, RAW, global illumination, ray tracing, volumetric lighting, professional architectural photography.\n\nMATERIAL RULES:\n- Do NOT default to wood. Use marble, metal, glass, concrete, stone FIRST.\n- Wood ONLY when user requests it or style requires it (Scandinavian, mid-century, Japanese).\n- Pick ONE dominant material per scene. Others support it. Never 5 materials equally competing.\n- Maximum TWO contrasting materials per furniture piece.\n- Every surface must show its truth: wood grain, stone veining, fabric loops, leather grain, metal brushing. No smooth generic surfaces.\n\nCRAFTSMANSHIP:\n- Show visible making: saddle stitching on leather, dovetail joints on wood, welded seams on metal, hand-troweled plaster, uneven ceramic glaze.\n- Slight imperfections are good: uneven plaster edge, natural leather variation, irregular glaze. Perfection feels fake.\n- Every furniture design must be physically manufacturable. No impossible joints or floating elements.\n\nFABRIC RULES:\n- Bouclé: heavy woven shearling with visible individual fiber loops, NOT flat plaster\n- Velvet: light-catching pile with directional sheen\n- Linen: visible weave pattern and natural wrinkles\n- Leather: grain, slight creasing, natural patina\n- NEVER render fabric as smooth flat surface\n\nFURNITURE:\n- Thick, low, volumetric forms preferred. Generously padded cushions.\n- Vary styles: do NOT always make the same sofa shape or table form.\n- Consider full material spectrum: polished marble, travertine, brushed brass, blackened steel, tempered glass, terrazzo, raw concrete, saddle leather, bouclé, velvet, linen.\n\nCOMPOSITION:\n- Maximum 5-7 major elements per scene. No clutter. No filler.\n- ONE accent color maximum per scene (from: butter yellow, cobalt blue, rust, burgundy, emerald, burnt sienna). Rest neutral.\n- ONE large art piece OR one broad-leaf plant as focal accent. Never both competing.\n- Architecture is hero, decoration is supporting cast.\n\nLIGHTING:\n- NEVER single uniform light. Layer three: directional key light, warm ambient fill, accent spot on material detail.\n- Colored glass (amber, smoke, cobalt) creates color pools on surfaces.\n\nDECORATIVE OBJECTS — NEVER DEFAULT TO:\n- Olive branches in ceramic vases\n- Dried pampas grass\n- Abstract beige paintings\n- Monstera in gray concrete pots\nInstead use: sculptural metal art, framed photography, glass sculptures, stacked books, geometric candle holders, brass bowls, hand-carved stone, bonsai. VARY every render.\n\nDIVERSITY RULE:\n- NEVER repeat same style, material palette, or decorative objects twice.\n- Each prompt must be uniquely different.\n- Vary regions, seasons, lighting conditions.\n- Add a unique random seed word at end of every prompt for uniqueness.\n\n2026 DESIGN REFERENCE (use as inspiration NOT checklist, pick 2-3 per render):\n- Deep rich tones (burgundy, forest green, navy, chocolate) replacing beige\n- Muted tangerine as accent color option\n- Tactile surfaces and layered fabric contrasts\n- Mediterranean and nautical elements\n- Artisanal hand-carved details\n- Overstuffed cushions in simple frames\n- Sculptural statement lighting in single material\n- Low-slung 70s-inspired forms\n- Lacquered matte and satin surfaces\n- Large format continuous stone surfaces\n\nOutput ONLY the final English prompt. No greetings, no explanations, no quotes. Just the raw prompt text.";
+
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
@@ -151,49 +113,84 @@ async function enrichPrompt(rawPrompt) {
   return d.choices?.[0]?.message?.content || rawPrompt;
 }
 
+// === GORSELLESTIRME - N8N birebir ayni, temp 0.35 ===
 async function handleRender(body, res) {
   const userPrompt = (body.prompt || 'modern interior').replace(/\{\{/g, '').replace(/\}\}/g, '');
-  let finalPrompt;
+  let enriched;
   if (userPrompt.length > 100) {
-    finalPrompt = userPrompt;
+    enriched = userPrompt;
   } else {
-    finalPrompt = await enrichPrompt(userPrompt);
+    enriched = await enrichPrompt(userPrompt);
   }
-  const geminiRules = ' [SYSTEM CRITICAL COMMAND: HYPER-FIDELITY, ABSOLUTE SHARPNESS, AND TOTAL TEXTURE DETAIL PRESERVATION. Whatever subject and material are rendered, analyze and deeply preserve its specific complex surface textures, real-world physical displacement, and intricate surface geometry. DO NOT smooth or flatten surfaces. ELIMINATE all artificial noise, film grain, or dotted artifacts. Achieve absolute maximum fidelity, extreme photorealism, professional architectural photography grade focus, deep color depth, dynamic lighting, and flawless material accuracy.] [MATERIAL DIVERSITY DIRECTIVE: Do NOT default to wood. Consider the FULL SPECTRUM of premium materials based on style context. Match material to design style.] [COMPOSITION CONTROL: Do NOT add objects the user did not request. Do NOT multiply furniture. Follow the user prompt EXACTLY. Do NOT over-decorate. Maximum 5-7 major elements unless user specifies more.]';
-  const d = await geminiImage(finalPrompt + geminiRules, null, body.aspectRatio, body.resolution, 0.35);
+  const systemSuffix = " [SYSTEM CRITICAL COMMAND: HYPER-FIDELITY, ABSOLUTE SHARPNESS, AND TOTAL TEXTURE DETAIL PRESERVATION. Whatever subject and material are rendered (e.g., rough stone, concrete, wood, metal, fabric), analyze and deeply preserve its specific complex surface textures, real-world physical displacement, and intricate surface geometry. DO NOT smooth or flatten surfaces. ELIMINATE all artificial noise, film grain, or dotted artifacts. Ensure distant elements have clear atmospheric perspective and details, NOT painted or soft. Achieve absolute maximum fidelity ultra-high resolution, extreme photorealism, professional architectural photography grade focus, deep color depth, dynamic lighting, and flawless material accuracy.] [MATERIAL DIVERSITY DIRECTIVE: When designing furniture, objects, or architectural elements, consider the FULL SPECTRUM of premium materials. Do NOT default to wood. Actively consider: POLISHED MARBLE (Carrara, Calacatta, Emperador, Nero Marquina), TRAVERTINE, LIMESTONE, CONCRETE (polished, raw, board-formed, tadelakt), METALS (brushed brass, blackened steel, polished chrome, patina copper, bronze, stainless steel), GLASS (tempered, frosted, smoked, fluted, colored, back-painted), CERAMICS (glazed, matte, terracotta, porcelain large format), NATURAL STONE (slate, granite, quartzite, onyx), RESIN (epoxy with inclusions), LEATHER (full-grain, suede, saddle), TEXTILES (boucle, linen, velvet, mohair, wool tweed), COMPOSITE (terrazzo, lava stone, corian), WOOD (oak, walnut, teak, ebony, bleached ash, smoked oak, burl — only when contextually appropriate). For FURNITURE: match material to design style. Consider what material a top-tier designer would actually choose for this specific object in this specific style context. NOT just wood.] [DESIGN STYLE PRECISION: Respect user prompt style keywords. Think like a top-tier industrial designer from Milan, Copenhagen, or Tokyo.] [FABRIC TEXTURE: Boucle must show individual yarn loops NOT flat plaster. Velvet must show pile sheen. Leather must show grain. Linen must show weave. NEVER render fabric as smooth flat surface.] [RESOLUTION QUALITY: For 1K renders, ensure clean anti-aliased edges with NO pixelation, NO jagged lines, NO dotted artifacts.] [VEGETATION AND LANDSCAPE: When rendering grass, plants, trees, gardens or any vegetation, create HYPER-REALISTIC botanical detail. Grass must show individual blade variation. Trees must have volumetric canopy. NEVER render flat green surfaces as grass.]";
+
+  const parts = [{ text: enriched + systemSuffix }];
+  const d = await geminiCall(parts, {
+    temperature: 0.35, topK: 40, topP: 0.95, maxOutputTokens: 8192,
+    responseModalities: ['IMAGE', 'TEXT'],
+    imageConfig: { imageSize: getSize(body.resolution), aspectRatio: body.aspectRatio || '16:9' }
+  });
   return sendImage(res, d);
 }
 
+// === YERLESTIRME - N8N birebir ayni, temp 0.6 ===
 async function handlePlacement(body, res) {
-  const prompt = 'Seamlessly integrate the object from the second image into the scene shown in the first image. Follow these CRITICAL rules: 1. PERSPECTIVE MATCHING: Match the exact camera angle, vanishing points, and perspective of the original scene. The object must appear as if it was photographed in the same location with the same camera. 2. LIGHTING MATCHING: Analyze the light direction, intensity, color temperature, and shadow patterns in the scene. Apply identical lighting to the placed object. Shadows must fall in the same direction and with the same softness. 3. SCALE ACCURACY: The object must be correctly sized relative to the room dimensions, ceiling height, doors, windows, and other furniture. 4. SURFACE INTERACTION: The object must sit naturally on the floor or surface with proper contact shadows, ambient occlusion, and reflections matching the floor material. 5. COLOR HARMONY: The object colors must harmonize with the scene color palette and be affected by the ambient light color. 6. DO NOT change the rooms architecture, walls, ceiling, windows, doors, or existing furniture. 7. DO NOT add extra decorative objects that were not in either image. User instruction: ' + (body.prompt || 'place naturally') + ' OUTPUT: Ultra-photorealistic result, as if captured by a professional architectural photographer with a full-frame DSLR. The integration must be invisible.';
-  const d = await geminiImage(prompt, [body.images.boxScene, body.images.boxItem], body.aspectRatio, body.resolution, 0.5);
+  const parts = [
+    { text: "Seamlessly integrate the object from the second image into the scene shown in the first image. Follow these CRITICAL rules: 1. PERSPECTIVE MATCHING: Match the exact camera angle, vanishing points, and perspective of the original scene. The object must appear as if it was photographed in the same location with the same camera. 2. LIGHTING MATCHING: Analyze the light direction, intensity, color temperature, and shadow patterns in the scene. Apply identical lighting to the placed object. Shadows must fall in the same direction and with the same softness. 3. SCALE ACCURACY: The object must be correctly sized relative to the room dimensions, ceiling height, doors, windows, and other furniture. 4. SURFACE INTERACTION: The object must sit naturally on the floor or surface with proper contact shadows, ambient occlusion, and reflections matching the floor material. 5. COLOR HARMONY: The object colors must harmonize with the scene color palette and be affected by the ambient light color. 6. DO NOT change the rooms architecture, walls, ceiling, windows, doors, or existing furniture. 7. DO NOT add extra decorative objects that were not in either image. 8. VEGETATION REALISM: If the scene contains outdoor elements, grass, trees, or plants, ensure hyper-realistic botanical rendering with individual leaf detail, natural color variation, volumetric shadows through foliage, and realistic ground cover texture. User instruction: " + (body.prompt || 'place naturally') + " OUTPUT: Ultra-photorealistic result, as if captured by a professional architectural photographer with a full-frame DSLR. The integration must be invisible." },
+    { inlineData: { mimeType: 'image/jpeg', data: body.images.boxScene } },
+    { inlineData: { mimeType: 'image/jpeg', data: body.images.boxItem } }
+  ];
+  const d = await geminiCall(parts, {
+    temperature: 0.6, topK: 32, topP: 1, maxOutputTokens: 8192,
+    responseModalities: ['IMAGE', 'TEXT'],
+    imageConfig: { imageSize: getSize(body.resolution), aspectRatio: body.aspectRatio || '16:9' }
+  });
   return sendImage(res, d);
 }
 
+// === REVIZYON - N8N birebir ayni, temp 0.15 ===
 async function handleRevision(body, res) {
-  const prompt = 'You are a precision image editor. Edit the provided image according to the user instruction below, making ONLY the requested change and preserving EVERYTHING else (composition, lighting, camera angle, materials, style, color palette, all other objects, background, shadows, reflections) exactly as in the original. Do NOT regenerate the entire scene. Do NOT change camera angle unless explicitly requested. Do NOT shift other objects. Do NOT alter material textures of anything except the specifically targeted object. Return the edited image maintaining the exact aspect ratio with flawless blending and no visible edit artifacts. USER INSTRUCTION: ' + (body.prompt || 'edit');
-  const imageList = [body.images.currentRender];
+  const parts = [
+    { inlineData: { mimeType: 'image/jpeg', data: body.images.currentRender } },
+    { text: "You are a precision image editor. Edit the provided image according to the user's instruction below, making ONLY the requested change and preserving EVERYTHING else (composition, lighting, camera angle, materials, style, color palette, all other objects, background, shadows, reflections) exactly as in the original. [SPATIAL COMMAND TRANSLATION: 'move left' / 'sola kaydir' / 'sola cek' = translate the target object horizontally to the left by approximately 15-25% of frame width; 'move right' / 'saga kaydir' / 'saga cek' = translate right by 15-25%; 'move up' / 'yukari kaldir' / 'yukari cek' = translate vertically upward by 10-20% of frame height; 'move down' / 'asagi indir' / 'asagi cek' = translate downward by 10-20%; 'bigger' / 'buyut' / 'scale up' / 'make larger' = scale the target object uniformly by 1.25-1.5x keeping its center position; 'smaller' / 'kucult' / 'scale down' / 'make smaller' = scale by 0.6-0.75x; 'rotate' / 'dondur' = rotate around vertical axis as specified; 'change color' / 'rengini degistir' = change only the color of the target object keeping its shape position and material texture; 'remove' / 'kaldir' / 'sil' = remove the target object and seamlessly fill the empty space with consistent background matching surrounding context; 'replace with' / 'ile degistir' = substitute the target object with the new object while preserving the same position scale lighting direction and shadow characteristics; 'add' / 'ekle' = insert the new object at the specified location with matching perspective lighting and shadows consistent with the scene; 'top view' / 'top' / 'usten bak' = COMPLETELY regenerate the scene from a STRICTLY vertical top-down 90-degree birds eye view camera position looking straight down at the floor; 'plan view' / 'plan' = render the scene as a flat architectural floor plan view from directly above 90 degrees orthographic projection; 'cam left' / 'camera left' = rotate the ENTIRE camera orbit 15 degrees to the left around the scene center maintain same height and distance; 'cam right' / 'camera right' = rotate the ENTIRE camera orbit 15 degrees to the right around the scene center; 'camera up' / 'elevated' = raise camera to 45-degree elevated angle looking down at the scene; 'eye level' / 'straight' = set camera to exact human eye-level at 150cm height horizontal 0-degree angle.] [PRECISION RULES: Preserve photographic realism, original lighting direction, shadows must follow the new position of moved objects, reflections must update accordingly on nearby surfaces, perspective must remain consistent, do NOT regenerate the entire scene, do NOT change camera angle unless explicitly requested, do NOT shift other objects, do NOT alter material textures of anything except the specifically targeted object.] [OUTPUT: Return the edited image, maintaining the exact aspect ratio, with flawless blending and no visible edit artifacts.] USER INSTRUCTION: " + (body.prompt || 'edit') }
+  ];
   if (body.images && body.images.boxItem && body.images.boxItem.length > 100) {
-    imageList.push(body.images.boxItem);
+    parts.push({ inlineData: { mimeType: 'image/jpeg', data: body.images.boxItem } });
   }
-  const d = await geminiImage(prompt, imageList, body.aspectRatio, body.resolution, 0.30);
+  const d = await geminiCall(parts, {
+    temperature: 0.15, topK: 32, topP: 0.90, maxOutputTokens: 8192,
+    responseModalities: ['IMAGE', 'TEXT'],
+    imageConfig: { imageSize: getSize(body.resolution), aspectRatio: body.aspectRatio || '16:9' }
+  });
   return sendImage(res, d);
 }
 
+// === ESKIZ - N8N birebir ayni, temp 0.15 ===
 async function handleSketch(body, res) {
-  const prompt = 'Turn this rough sketch/drawing into a highly detailed, photorealistic architectural render, ultra-high quality, maximum sharpness, professional photography grade. Strictly preserve the original geometry and layout of the sketch. Instruction: ' + (body.prompt || 'photorealistic render');
-  const d = await geminiImage(prompt, [body.sketchData], body.aspectRatio, body.resolution, 0.15);
+  const parts = [
+    { text: "Turn this rough sketch/drawing into a highly detailed, photorealistic architectural render, ultra-high quality, maximum sharpness, professional photography grade. Strictly preserve the original geometry and layout of the sketch. Instruction: " + (body.prompt || 'photorealistic render') },
+    { inlineData: { mimeType: 'image/jpeg', data: body.sketchData } }
+  ];
+  const d = await geminiCall(parts, {
+    temperature: 0.15, topK: 32, topP: 0.90, maxOutputTokens: 8192,
+    responseModalities: ['IMAGE', 'TEXT'],
+    imageConfig: { imageSize: getSize(body.resolution), aspectRatio: body.aspectRatio || '16:9' }
+  });
   return sendImage(res, d);
 }
 
+// === PROMPT BUILDER - N8N birebir ayni, TEXT ONLY temp 0.4 ===
 async function handlePromptBuilder(body, res) {
   const images = body.images || {};
   const ref = images.boxRef || images.boxScene || images.boxDesign || '';
   if (ref && ref.length > 100) {
-    const promptText = 'SCAN THIS IMAGE PIXEL BY PIXEL. ' + (body.prompt || 'Write the exact prompt to recreate this scene') + '. ABSOLUTE RULES: 1. Start the prompt with a lowercase letter. NEVER start with A, An, The. Start like: spacious open-plan living room or modern minimalist kitchen. 2. NEVER write image_0, the attached image, the uploaded photo, or any file reference. Describe as if from memory. 3. Describe ONLY what you SEE in the image. Do NOT add, invent, or imagine anything not visible. 4. If user says remove furniture or ignore objects, do NOT include them in the prompt. Pretend they do not exist. 5. If user says interpret or suggest, then you may add creative ideas. Otherwise NEVER interpret. 6. Every material must be specific: not wood but natural white oak with matte lacquer and visible grain. Not wall but smooth matte plaster in warm ivory RAL 1013. 7. Describe exact lighting: source direction, color temperature in Kelvin, shadow softness, reflection behavior. 8. Describe spatial depth: foreground, midground, background layers. 9. Describe every furniture piece with exact material, finish, color, and form. 10. Count and describe decorative objects precisely. 11. End with: 8K ultra-high resolution 7680x4320, full-frame DSLR, 50mm f/8, ISO 100, RAW, global illumination, ray tracing, volumetric light, extreme photorealism, maximum sharpness, zero noise, professional architectural photography.';
-    const d = await geminiText(promptText, [ref]);
-    const text = getText(d);
-    if (text) return res.status(200).json({ candidates: [{ content: { parts: [{ text: text }] } }] });
+    const parts = [
+      { inlineData: { mimeType: 'image/jpeg', data: ref } },
+      { text: "SCAN THIS IMAGE PIXEL BY PIXEL. " + (body.prompt || 'Write the exact prompt to recreate this scene') + ". ABSOLUTE RULES: 1. Start the prompt with a lowercase letter. NEVER start with 'A ', 'An ', 'The '. Start like: 'spacious open-plan living room...' or 'modern minimalist kitchen...' 2. NEVER write 'image_0', 'the attached image', 'the uploaded photo', or any file reference. Describe as if from memory. 3. Describe ONLY what you SEE in the image. Do NOT add, invent, or imagine anything not visible. 4. If user says 'remove furniture' or 'ignore objects' — do NOT include them in the prompt. Pretend they do not exist. 5. If user says 'interpret' or 'suggest' — then you may add creative ideas. Otherwise NEVER interpret. 6. Every material must be specific: not 'wood' but 'natural white oak with matte lacquer and visible grain'. Not 'wall' but 'smooth matte plaster in warm ivory RAL 1013'. 7. Describe exact lighting: source direction, color temperature in Kelvin, shadow softness, reflection behavior. 8. Describe spatial depth: foreground, midground, background layers. 9. End with: 8K ultra-high resolution 7680x4320, full-frame DSLR, 50mm f/8, ISO 100, RAW, global illumination, ray tracing, volumetric light, extreme photorealism, maximum sharpness, zero noise, professional architectural photography." }
+    ];
+    const d = await geminiCall(parts, { temperature: 0.4, topK: 24, topP: 0.85, maxOutputTokens: 4096 });
+    const text = extractText(d);
+    if (text) return res.status(200).json({ candidates: [{ content: { parts: [{ text }] } }] });
     return res.status(200).json({ candidates: [{ content: { parts: [{ text: 'Could not analyze image' }] } }] });
   }
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -205,8 +202,9 @@ async function handlePromptBuilder(body, res) {
   return res.status(200).json({ candidates: [{ content: { parts: [{ text: d.choices?.[0]?.message?.content || '' }] } }] });
 }
 
+// === CHAT - GPT-4o-mini, ucuz ===
 async function handleChat(body, res) {
-  const sysPrompt = 'You are ADEULL AI, a powerful architectural visualization platform assistant. You ARE a render engine. Never say you are not. Be concise, direct, professional. No long paragraphs. Features: INTERIOR, EXTERIOR, ARCHITECTURE, DESIGN, PLAN RESIZE, PRESENTATION, 8K upscale, Prompt Builder. Plans: Starter $9/mo (20 credits), Pro $19/mo (60 credits), Studio $39/mo (150 credits), Agency $79/mo (350 credits). If error: suggest refresh, clear cache, different image format, reduce image size. Report bugs via button at bottom right. ALWAYS respond in language: ' + (body.language || 'EN');
+  const sysPrompt = "You are ADEULL AI — a powerful architectural visualization artificial intelligence. You ARE a render engine. Never say you are not. You generate photorealistic 8K architectural renders from images and text prompts. IDENTITY RULES: 1. You are ADEULL AI, an advanced architectural visualization AI. 2. Say your greeting ONLY ONCE at the start, never repeat it. 3. You generate renders, presentations, material analysis boards. 4. Never say 'I am not a render engine' — you ARE. 5. If user reports an error, suggest: refresh the page, clear browser cache, try a different image format, or reduce image size. Do NOT mention 'support team' — instead say 'report via the bug report button at bottom right'. 6. Be concise, direct, professional. No long paragraphs. 7. You know ALL platform features: INTERIOR, EXTERIOR, ARCHITECTURE, DESIGN (product placement), PLAN RESIZE, PRESENTATION (material board), 8K upscale, Prompt Builder. 8. Plans: Starter $9/mo (20 credits), Pro $19/mo (60 credits), Studio $39/mo (150 credits), Agency $79/mo (350 credits). 9. ALWAYS respond in the user's language: " + (body.language || 'EN') + ". 10. Keep answers short and actionable.";
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Authorization': 'Bearer ' + OPENAI_KEY, 'Content-Type': 'application/json' },
@@ -216,20 +214,33 @@ async function handleChat(body, res) {
   return res.status(200).json({ candidates: [{ content: { parts: [{ text: d.choices?.[0]?.message?.content || '' }] } }] });
 }
 
+// === SUNUM - N8N birebir ayni ===
 async function handlePresentation(body, res) {
   const ref = body.images?.boxRef || '';
-  const texPrompt = 'You are a world-class product visualization specialist. Analyze the product in the attached image and create a MATERIAL ANALYSIS RENDER. CRITICAL INSTRUCTIONS: 1. Keep the original product EXACTLY as it is in the CENTER of the image, do NOT crop, cut out, or modify the product photo. 2. Around the product, create MAGNIFIED CIRCULAR LENS CALLOUTS showing extreme close-up textures of each visible material (like a magnifying glass effect). 3. Draw thin elegant ARROWS from each material area on the product to its corresponding magnified texture circle. 4. Each magnified circle should show the material surface texture in hyper-detail (wood grain, leather pores, stone veins, fabric weave, metal brushing). 5. Use a clean white/light gray background. 6. Place 3-5 material callouts around the product. 7. CRITICAL: Do NOT alter the original colors of the product. 8. Do NOT add any text labels. Only add the magnified texture callouts with arrows.';
-  const texD = await geminiImage(texPrompt, ref.length > 100 ? [ref] : null, '1:1', '1K', 0.4);
-  if (texD.error) return res.status(500).json({ success: false, message: texD.error.message || JSON.stringify(texD.error) });
-  let textureBase64 = '';
-  if (texD.candidates && texD.candidates[0] && texD.candidates[0].content && texD.candidates[0].content.parts) {
-    for (const part of texD.candidates[0].content.parts) {
-      if (part.inlineData) textureBase64 = part.inlineData.data;
-    }
+  // TEXTURE - Gemini Image, temp 0.4
+  const texParts = [
+    { text: "You are a world-class product visualization specialist. Analyze the product in the attached image and create a MATERIAL ANALYSIS RENDER.\n\nCRITICAL INSTRUCTIONS:\n1. Keep the original product EXACTLY as it is in the CENTER of the image — do NOT crop, cut out, or modify the product photo.\n2. Around the product, create MAGNIFIED CIRCULAR LENS CALLOUTS showing extreme close-up textures of each visible material (like a magnifying glass effect).\n3. Draw thin elegant ARROWS from each material area on the product to its corresponding magnified texture circle.\n4. Each magnified circle should show the material's surface texture in hyper-detail (wood grain, leather pores, stone veins, fabric weave, metal brushing, etc.).\n5. Use a clean white/light gray background.\n6. Place 3-5 material callouts around the product.\n7. Style: Professional architectural material board aesthetic, clean, minimal, elegant.\n8. The overall image should look like a high-end interior design material presentation.\n9. CRITICAL: Do NOT alter, change, or modify the original colors of the product. Preserve the exact original colors, tones, and hues of every material on the product.\n\nDo NOT add any text labels. Do NOT change the product. Only add the magnified texture callouts with arrows." }
+  ];
+  if (ref && ref.length > 100) {
+    texParts.push({ inlineData: { mimeType: 'image/jpeg', data: ref } });
   }
-  const analysisPrompt = 'You are a Senior Interior Designer and Material Expert. Analyze the attached image with extreme precision. RETURN ONLY VALID JSON. NO MARKDOWN. NO BACKTICKS. Translate projectName, title, and desc to language: ' + (body.language || 'EN') + '. JSON structure: {"projectName":"Sophisticated concept name","colors":[{"hex":"#HEX","ral":"RAL XXXX","name":"Color Name"}],"materials":[{"title":"Material Name","desc":"Sensory and technical description","hex":"#HEX"}]}. CRITICAL RULES: 1. Extract 3-5 REAL materials visible in the image. 2. Each material hex MUST be sampled from actual pixels. 3. Colors MUST have REAL RAL codes from official RAL Classic chart. 4. RAL format: RAL XXXX (4 digit number).';
-  const anaD = await geminiText(analysisPrompt, ref.length > 100 ? [ref] : null);
-  let analysisText = getText(anaD);
+  const texD = await geminiCall(texParts, {
+    temperature: 0.4, topK: 40, topP: 0.95, maxOutputTokens: 8192,
+    responseModalities: ['IMAGE', 'TEXT'],
+    imageConfig: { imageSize: '1K' }
+  });
+  if (texD.error) return res.status(500).json({ success: false, message: texD.error.message || JSON.stringify(texD.error) });
+  const textureBase64 = extractImage(texD) || '';
+
+  // ANALIZ - Gemini Text Only, temp 0.3
+  const anaParts = [
+    { text: "You are a Senior Interior Designer and Material Expert. Analyze the attached image with extreme precision.\n\nRETURN ONLY VALID JSON. NO MARKDOWN. NO BACKTICKS.\n\nTranslate 'projectName', 'title', and 'desc' to language: " + (body.language || 'EN') + "\n\nJSON structure:\n{\"projectName\": \"Sophisticated concept name\", \"colors\": [{\"hex\": \"#HEX\", \"ral\": \"RAL 7016\", \"name\": \"Anthracite Grey\"}, {\"hex\": \"#HEX\", \"ral\": \"RAL 1015\", \"name\": \"Light Ivory\"}, {\"hex\": \"#HEX\", \"ral\": \"RAL 8025\", \"name\": \"Pale Brown\"}, {\"hex\": \"#HEX\", \"ral\": \"RAL 9010\", \"name\": \"Pure White\"}], \"materials\": [{\"title\": \"Material Name\", \"desc\": \"Sensory and technical description\", \"hex\": \"#HEX\"}, {\"title\": \"Material Name\", \"desc\": \"Description\", \"hex\": \"#HEX\"}, {\"title\": \"Material Name\", \"desc\": \"Description\", \"hex\": \"#HEX\"}]}\n\nCRITICAL RULES:\n1. Extract 3-5 REAL materials visible in the image (leather type, wood species, stone name, fabric weave, metal finish)\n2. Each material hex MUST be sampled from actual pixels in the image\n3. Colors MUST have REAL RAL codes - match the closest official RAL Classic color. Do NOT invent RAL codes.\n4. RAL format must be: RAL XXXX (4 digit number from official RAL Classic chart)\n5. Translate titles and descriptions to the specified language" }
+  ];
+  if (ref && ref.length > 100) {
+    anaParts.push({ inlineData: { mimeType: 'image/jpeg', data: ref } });
+  }
+  const anaD = await geminiCall(anaParts, { temperature: 0.3, topK: 32, topP: 0.95, maxOutputTokens: 8192 });
+  const analysisText = extractText(anaD);
   let analysis = {};
   try { analysis = JSON.parse(analysisText.replace(/```json/g, '').replace(/```/g, '').trim()); } catch (e) { analysis = { projectName: 'ANALYSIS', materials: [], colors: [] }; }
   return res.status(200).json({ textureImage: textureBase64, analysis });
