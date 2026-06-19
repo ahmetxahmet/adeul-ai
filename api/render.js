@@ -166,7 +166,7 @@ async function handleRender(body, res) {
 
 async function handlePlacement(body, res) {
   const prompt = 'Seamlessly integrate the object from the second image into the scene shown in the first image. Follow these CRITICAL rules: 1. PERSPECTIVE MATCHING: Match the exact camera angle, vanishing points, and perspective of the original scene. The object must appear as if it was photographed in the same location with the same camera. 2. LIGHTING MATCHING: Analyze the light direction, intensity, color temperature, and shadow patterns in the scene. Apply identical lighting to the placed object. Shadows must fall in the same direction and with the same softness. 3. SCALE ACCURACY: The object must be correctly sized relative to the room dimensions, ceiling height, doors, windows, and other furniture. 4. SURFACE INTERACTION: The object must sit naturally on the floor or surface with proper contact shadows, ambient occlusion, and reflections matching the floor material. 5. COLOR HARMONY: The object colors must harmonize with the scene color palette and be affected by the ambient light color. 6. DO NOT change the rooms architecture, walls, ceiling, windows, doors, or existing furniture. 7. DO NOT add extra decorative objects that were not in either image. User instruction: ' + (body.prompt || 'place naturally') + ' OUTPUT: Ultra-photorealistic result, as if captured by a professional architectural photographer with a full-frame DSLR. The integration must be invisible.';
-  const d = await geminiImage(prompt, [body.images.boxScene, body.images.boxItem], body.aspectRatio, body.resolution, 0.6);
+  const d = await geminiImage(prompt, [body.images.boxScene, body.images.boxItem], body.aspectRatio, body.resolution, 0.5);
   return sendImage(res, d);
 }
 
@@ -176,7 +176,7 @@ async function handleRevision(body, res) {
   if (body.images && body.images.boxItem && body.images.boxItem.length > 100) {
     imageList.push(body.images.boxItem);
   }
-  const d = await geminiImage(prompt, imageList, body.aspectRatio, body.resolution, 0.15);
+  const d = await geminiImage(prompt, imageList, body.aspectRatio, body.resolution, 0.30);
   return sendImage(res, d);
 }
 
