@@ -605,10 +605,6 @@ async function simulateAPIConnection(btnId, is8K = false) {
         window.revisionHistory.push(cleanPrompt);
         payload.prompt = window.originalRenderPrompt + ' [APPLY ALL REVISIONS IN ORDER: ' + window.revisionHistory.join(' AND THEN ') + ']';
         payload.images = { currentRender: window.originalRenderBase64 || '' };
-        if (window.annotatedRender) {
-            payload.images.annotatedRender = window.annotatedRender;
-            window.annotatedRender = null;
-        }
         if (window.revisionImageBase64) {
             payload.images.boxItem = window.revisionImageBase64;
             window.revisionImageBase64 = null;
