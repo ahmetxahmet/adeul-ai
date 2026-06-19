@@ -671,7 +671,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
                 }
 
                 if (!window.isRevisionMode) {
-                    window.originalRenderBase64 = cleanBase64;
+                    window.originalRenderBase64 = rawOutput;
                     window.originalRenderPrompt = cleanPrompt;
                     window.revisionHistory = [];
                 }
