@@ -602,6 +602,7 @@ async function simulateAPIConnection(btnId, is8K = false) {
     };
 
     if (window.isRevisionMode) {
+        payload.isRevision = true;
         window.revisionHistory.push(cleanPrompt);
         payload.prompt = window.originalRenderPrompt + ' [APPLY ALL REVISIONS IN ORDER: ' + window.revisionHistory.join(' AND THEN ') + ']';
         payload.images = { currentRender: window.originalRenderBase64 || '' };
